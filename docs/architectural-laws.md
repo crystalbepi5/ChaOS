@@ -8,11 +8,11 @@ The laws are intentionally plain. Their job is to keep systems understandable, p
 
 ### Meaning
 
-Improving a messy system without first understanding it often produces a faster, larger, or more automated mess. Optimization should follow comprehension.
+Improving a messy system without first understanding it often produces a faster, larger, or more automated mess. Optimization must follow comprehension.
 
 ### Rationale
 
-Many systems fail because they improve surface speed while preserving underlying confusion. ChaOS should identify the shape of the problem before proposing tools or automations.
+Many systems fail because they improve surface speed while preserving underlying confusion. ChaOS must identify the shape of the problem before proposing tools or automations.
 
 ### Examples
 
@@ -56,7 +56,7 @@ If a system requires private memory, tribal knowledge, or a single person's expl
 
 ### Rationale
 
-Hidden context makes systems fragile. ChaOS should make assumptions, definitions, decisions, and evaluation criteria visible.
+Hidden context makes systems fragile. ChaOS must make assumptions, definitions, decisions, and evaluation criteria visible.
 
 ### Examples
 
@@ -70,11 +70,11 @@ Hidden context makes systems fragile. ChaOS should make assumptions, definitions
 - Relying on "everyone knows" logic.
 - Leaving edge cases in chat history instead of repository documents.
 
-## Law 4: Systems Should Be Understandable By Humans First
+## Law 4: Systems Must Be Understandable By Humans First
 
 ### Meaning
 
-A system that only machines can operate is not yet architecture. Humans should be able to inspect its logic, purpose, inputs, outputs, and tradeoffs.
+A system that only machines can operate is not yet architecture. Humans must be able to inspect its logic, purpose, inputs, outputs, and tradeoffs.
 
 ### Rationale
 
@@ -96,7 +96,7 @@ Human comprehension is the foundation of trust, maintenance, and responsible aut
 
 ### Meaning
 
-ChaOS should remain understandable and useful if its original creator is unavailable.
+ChaOS must remain understandable and useful if its original creator is unavailable.
 
 ### Rationale
 
@@ -118,11 +118,11 @@ Durable systems cannot depend on one person's memory. The repository must teach 
 
 ### Meaning
 
-A system should first prove that it can make useful recommendations before it is allowed to act automatically.
+A system must first prove that it can make useful recommendations before it is allowed to act automatically.
 
 ### Rationale
 
-Recommendation creates a learning loop with lower risk. Automation should be earned through repeated, evaluated recommendations.
+Recommendation creates a learning loop with lower risk. Automation must be earned through repeated, evaluated recommendations.
 
 ### Examples
 
@@ -158,11 +158,11 @@ Inspection enables trust, debugging, evaluation, and transfer across domains.
 - Treating "AI-powered" as an architecture.
 - Depending on outputs that cannot be traced to inputs.
 
-## Law 8: Every Decision Should Be Traceable
+## Law 8: Every Decision Must Be Traceable
 
 ### Meaning
 
-Important decisions should connect back to context, rationale, alternatives, expected consequences, and feedback.
+Important decisions must connect back to context, rationale, alternatives, expected consequences, and feedback.
 
 ### Rationale
 
@@ -188,7 +188,7 @@ Predictions are useful, but feedback is what lets systems learn.
 
 ### Rationale
 
-ChaOS should prefer loops that observe outcomes over claims that a design will work forever.
+ChaOS must prefer loops that observe outcomes over claims that a design will work forever.
 
 ### Examples
 
@@ -206,11 +206,11 @@ ChaOS should prefer loops that observe outcomes over claims that a design will w
 
 ### Meaning
 
-Architecture should be as simple as the problem allows, but no simpler than the system requires.
+Architecture must be as simple as the problem allows, but no simpler than the system requires.
 
 ### Rationale
 
-Simple systems are easier to teach, test, migrate, and repair. ChaOS should add structure only where it improves reuse and comprehension.
+Simple systems are easier to teach, test, migrate, and repair. ChaOS must add structure only where it improves reuse and comprehension.
 
 ### Examples
 
@@ -223,4 +223,3 @@ Simple systems are easier to teach, test, migrate, and repair. ChaOS should add 
 - Designing for imaginary scale.
 - Creating frameworks before patterns are proven.
 - Adding layers because architecture feels more serious with more boxes.
-

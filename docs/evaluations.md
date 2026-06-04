@@ -4,7 +4,7 @@ This document defines how ChaOS evaluates systems, workflows, agents, and archit
 
 ## Purpose
 
-Evaluation turns opinions into learning. A ChaOS evaluation should make quality visible and reusable.
+Evaluation turns opinions into learning. A ChaOS evaluation must make quality visible and reusable.
 
 ## Evaluation Principles
 
@@ -27,7 +27,7 @@ Evaluation turns opinions into learning. A ChaOS evaluation should make quality 
 
 ## Agent Evaluation
 
-Agent evaluation should review:
+Agent evaluation must review:
 
 - Input use
 - Reasoning visibility
@@ -39,7 +39,7 @@ Agent evaluation should review:
 
 ## Workflow Evaluation
 
-Workflow evaluation should review:
+Workflow evaluation must review:
 
 - Trigger quality
 - Input completeness
@@ -50,7 +50,7 @@ Workflow evaluation should review:
 
 ## Documentation Evaluation
 
-Documentation evaluation should review:
+Documentation evaluation must review:
 
 - Purpose
 - Fit within ChaOS
@@ -71,4 +71,3 @@ Documentation evaluation should review:
 ## Future Considerations
 
 Future versions may include automated evaluation suites. Version 0.1 defines evaluation as an architectural habit first.
-

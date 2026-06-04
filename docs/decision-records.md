@@ -1,6 +1,6 @@
 # Decision Records
 
-This document defines how ChaOS records important decisions. It exists because every decision should be traceable.
+This document defines how ChaOS records important decisions. It exists because every decision must be traceable.
 
 ## Purpose
 
@@ -22,7 +22,7 @@ Create a decision record when a change affects:
 
 ## Decision Record Structure
 
-Each decision record should include:
+Each decision record must include:
 
 - Title
 - Status
@@ -55,4 +55,3 @@ Feedback plan: Review whether future projects can inherit the structure without 
 ## Future Considerations
 
 Future versions may store decision records as individual files. Version 0.1 defines the pattern before multiplying documents.
-

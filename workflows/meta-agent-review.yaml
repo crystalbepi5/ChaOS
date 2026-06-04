@@ -74,7 +74,6 @@ stages:
       - Review feedback completeness.
       - Track repeated recommendation failures.
 evaluation:
-  - Recommendations should reduce more complexity than they add.
-  - Recommendations should be traceable to evidence.
+  - Recommendations must reduce more complexity than they add.
+  - Recommendations must be traceable to evidence.
   - Human approval must remain visible for constitutional changes.
-

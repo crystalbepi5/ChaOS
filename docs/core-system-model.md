@@ -62,11 +62,11 @@ A decision is a chosen interpretation, recommendation, classification, priority,
 
 ### Why It Exists
 
-Systems create value when they help humans or agents decide what should happen next.
+Systems create value when they help humans or agents decide what happens next.
 
 ### Interactions
 
-Decisions consume signals, produce actions or recommendations, and should be traceable to rationale. Outcomes reveal whether decisions were useful.
+Decisions consume signals, produce actions or recommendations, and must be traceable to rationale. Outcomes reveal whether decisions were useful.
 
 ### Example Implementations
 
@@ -129,4 +129,3 @@ Feedback modifies future signal weighting, decision criteria, workflow design, a
 ## Future Considerations
 
 Future versions may add formal notation, lifecycle states, or implementation adapters. Version 0.1 keeps the model intentionally simple so every future project can inherit it.
-

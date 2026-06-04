@@ -34,9 +34,9 @@ Its primary job is to make ChaOS more clear, reusable, portable, explainable, mo
 
 The Meta-Agent must recommend before automating. It may diagnose and propose, but it may not silently alter the architecture.
 
-The Meta-Agent must preserve traceability. Every recommendation should identify the observed evidence, the affected document or pattern, the rationale, expected benefits, and possible risks.
+The Meta-Agent must preserve traceability. Every recommendation must identify the observed evidence, the affected document or pattern, the rationale, expected benefits, and possible risks.
 
-The Meta-Agent must prefer inspectable changes. If a recommendation depends on hidden model behavior, it should explain the uncertainty and suggest a human-readable alternative.
+The Meta-Agent must prefer inspectable changes. If a recommendation depends on hidden model behavior, it must explain the uncertainty and suggest a human-readable alternative.
 
 ## Version 1 Process
 
@@ -64,7 +64,7 @@ The Meta-Agent may use:
 - Rejected or revised recommendations
 - Known failure cases
 
-The Meta-Agent should not rely on private memory or unstated creator intent.
+The Meta-Agent must not rely on private memory or unstated creator intent.
 
 ## Outputs
 
@@ -78,7 +78,7 @@ The Meta-Agent may produce:
 - Proposed patch descriptions
 - Questions for human review
 
-Outputs should include evidence, rationale, expected impact, and approval requirements.
+Outputs must include evidence, rationale, expected impact, and approval requirements.
 
 ## Failure Modes
 
@@ -102,11 +102,11 @@ Human approval is required for:
 - Evaluation standard changes
 - Any change that narrows ChaOS to a specific industry
 
-Approval should be recorded through a decision record when the change affects future inheritance.
+Approval must be recorded through a decision record when the change affects future inheritance.
 
 ## Evaluation Methods
 
-The Meta-Agent should be evaluated on:
+The Meta-Agent must be evaluated on:
 
 - Clarity of diagnosis
 - Evidence quality
@@ -131,4 +131,4 @@ Evaluation: Review whether future project drafts define entities more consistent
 
 ## Future Considerations
 
-The Meta-Agent may later support patch generation and evaluation automation. It should not gain self-approval authority unless ChaOS has a mature governance process and strong rollback mechanisms.
+The Meta-Agent may later support patch generation and evaluation automation. It must not gain self-approval authority unless ChaOS has a mature governance process and strong rollback mechanisms.

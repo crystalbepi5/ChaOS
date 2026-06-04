@@ -6,7 +6,7 @@ This file is the operating constitution for all future coding agents working in 
 
 ChaOS is the Chase Architecture Operating System. It is a documentation-first architecture repository for turning ideas into reusable systems. The goal is not to create application code. The goal is to create durable patterns that future projects can inherit.
 
-Agents working here should protect the repository from becoming too specific, too clever, too tool-bound, or too dependent on the memory of its creator.
+Agents working here must protect the repository from becoming too specific, too clever, too tool-bound, or too dependent on the memory of its creator.
 
 ## Architectural Laws
 
@@ -15,11 +15,11 @@ Agents must preserve and apply the architectural laws in `docs/architectural-law
 1. Do not optimize chaos into more chaos.
 2. Every component must remove more complexity than it adds.
 3. Context is a dependency. Minimize it.
-4. Systems should be understandable by humans first.
+4. Systems must be understandable by humans first.
 5. The system must survive the loss of its creator.
 6. Recommend before automating.
 7. Prefer inspectable systems over intelligent systems.
-8. Every decision should be traceable.
+8. Every decision must be traceable.
 9. Feedback is more valuable than prediction.
 10. The simplest architecture that works is the correct architecture.
 
@@ -31,11 +31,11 @@ ChaOS optimizes for clarity, reusability, portability, explainability, modularit
 
 ChaOS avoids premature complexity, hidden logic, vendor lock-in, platform-specific assumptions, AI hype, black-box decision making, and unnecessary dependencies.
 
-Agents should prefer explicit structure over impressive language. A good ChaOS document helps a future maintainer make better decisions.
+Agents must prefer explicit structure over impressive language. A good ChaOS document helps a future maintainer make better decisions.
 
 ## Documentation Standards
 
-Every Markdown file should explain:
+Every Markdown file must explain:
 
 - Why the file exists
 - What purpose it serves
@@ -60,11 +60,11 @@ Every agent specification must include:
 - Failure modes
 - Guardrails
 
-Agents should recommend before automating. They may analyze, diagnose, compare, summarize, and propose. They should not silently change architecture, policy, schemas, or evaluation criteria without human approval.
+Agents must recommend before automating. They may analyze, diagnose, compare, summarize, and propose. They must not silently change architecture, policy, schemas, or evaluation criteria without human approval.
 
 ## Workflow Standards
 
-Every workflow should follow:
+Every workflow must follow:
 
 Trigger -> Input -> Processing -> Decision -> Action -> Feedback
 
@@ -72,7 +72,7 @@ Workflow documentation must name responsibilities, failure modes, and evaluation
 
 ## Evaluation Standards
 
-Every meaningful output should be evaluated against visible criteria. Evaluation should be traceable to the purpose of the system, not to vague preference.
+Every meaningful output must be evaluated against visible criteria. Evaluation must be traceable to the purpose of the system, not to vague preference.
 
 Prefer evaluation rubrics that can be understood by humans and reused by agents. Capture both qualitative and quantitative feedback when possible.
 
@@ -89,9 +89,19 @@ A good change record states:
 - Expected consequences
 - Feedback plan
 
+## Modal Language Standards
+
+ChaOS uses absolute language where drift would weaken the architecture:
+
+- `Must` means required.
+- `Must not` means prohibited.
+- `May` means allowed, but not required.
+- `Should` is reserved for open questions, hypotheses, historical review artifacts, and future considerations.
+
+Constitutional rules, workflow requirements, agent requirements, evaluation requirements, approval boundaries, and change management rules must use `must` or `must not`.
+
 ## Working Agreement
 
 Before adding complexity, ask what complexity is being removed. Before adding automation, ask what recommendation pattern has been proven. Before adding intelligence, ask how the system will remain inspectable.
 
 Assume ChaOS will eventually outlive its creator.
-

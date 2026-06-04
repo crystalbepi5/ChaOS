@@ -15,7 +15,7 @@ Every agent must contain:
 
 Agents become dangerous or useless when their role is vague. The core agent model forces clarity before implementation. It separates what the agent is for, what it receives, how it reasons, what it produces, and how its work is judged.
 
-This structure also prevents agents from becoming personality-driven black boxes. An agent should be a documented system component, not a magic assistant with unclear boundaries.
+This structure also prevents agents from becoming personality-driven black boxes. An agent must be a documented system component, not a magic assistant with unclear boundaries.
 
 ## Purpose
 
@@ -27,31 +27,31 @@ A good purpose statement is narrow enough to evaluate. "Help with sales" is too 
 
 Inputs define what the agent is allowed to use. Inputs may include entities, signals, previous decisions, outcomes, user instructions, source documents, or evaluation history.
 
-Inputs should preserve source references. If the agent uses context that is not visible, that context should be documented as a dependency.
+Inputs must preserve source references. If the agent uses context that is not visible, that context must be documented as a dependency.
 
 ## Processing Logic
 
 Processing logic explains how the agent transforms inputs into outputs. This may include rules, rubrics, ranking methods, comparison steps, prompt structure, retrieval process, or human approval gates.
 
-The processing logic should be inspectable. If an agent uses a model, the agent specification should still describe the intended reasoning path.
+The processing logic must be inspectable. If an agent uses a model, the agent specification must still describe the intended reasoning path.
 
 ## Outputs
 
 Outputs define what the agent produces. Outputs may include recommendations, summaries, classifications, decision records, review comments, patches, evaluation reports, or questions for humans.
 
-Outputs should be structured enough to evaluate and reuse.
+Outputs must be structured enough to evaluate and reuse.
 
 ## Evaluation
 
-Evaluation defines how the agent is judged. It should include acceptance criteria, failure modes, review process, and feedback capture.
+Evaluation defines how the agent is judged. It must include acceptance criteria, failure modes, review process, and feedback capture.
 
-Evaluation should focus on usefulness, traceability, accuracy, completeness, and alignment with architectural laws.
+Evaluation must focus on usefulness, traceability, accuracy, completeness, and alignment with architectural laws.
 
 ## Examples
 
-Each agent should include examples from at least one domain. Reusable agents should include multiple domain examples when possible.
+Each agent must include examples from at least one domain. Reusable agents must include multiple domain examples when possible.
 
-## How Agents Should Be Designed
+## How Agents Must Be Designed
 
 1. Start with the decision or recommendation the agent supports.
 2. Identify the entity and signals involved.
@@ -61,11 +61,11 @@ Each agent should include examples from at least one domain. Reusable agents sho
 6. Define approval boundaries.
 7. Add examples and failure modes.
 
-## How Agents Should Be Tested
+## How Agents Must Be Tested
 
-Agents should be tested against representative examples, edge cases, ambiguous inputs, missing information, conflicting signals, and known failure scenarios.
+Agents must be tested against representative examples, edge cases, ambiguous inputs, missing information, conflicting signals, and known failure scenarios.
 
-Tests should ask:
+Tests must ask:
 
 - Did the agent use only allowed inputs?
 - Did it explain its reasoning?
@@ -74,13 +74,12 @@ Tests should ask:
 - Did it handle uncertainty honestly?
 - Did the output match the expected structure?
 
-## How Agents Should Evolve
+## How Agents Must Evolve
 
-Agents should evolve through feedback. Rejected recommendations, evaluation failures, repeated clarifications, and human corrections should become evidence for improvement.
+Agents must evolve through feedback. Rejected recommendations, evaluation failures, repeated clarifications, and human corrections must become evidence for improvement.
 
-Agent evolution should be documented. If an agent changes its purpose, inputs, outputs, or approval boundary, the change should create a decision record.
+Agent evolution must be documented. If an agent changes its purpose, inputs, outputs, or approval boundary, the change must create a decision record.
 
 ## Future Considerations
 
 Future versions may define maturity levels for agents, reusable prompt contracts, model-provider adapters, or automated evaluation suites. Version 0.1 keeps the model vendor-neutral and documentation-first.
-

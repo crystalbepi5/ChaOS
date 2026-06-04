@@ -75,7 +75,6 @@ stages:
       - Track repeated gaps across projects.
       - Review improvements proposed back to ChaOS.
 evaluation:
-  - Review should happen before implementation choices dominate.
-  - Review should verify that only business context changes when possible.
-  - Review should preserve lessons for future projects.
-
+  - Review must happen before implementation choices dominate.
+  - Review must verify that only business context changes when possible.
+  - Review must preserve lessons for future projects.

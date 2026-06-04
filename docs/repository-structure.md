@@ -53,7 +53,7 @@ ChaOS/
 
 ### README.md
 
-The README is the public orientation layer. It explains what ChaOS is, what it is not, who it is for, how it should be used, how future projects inherit from it, the long-term vision, and the first milestone.
+The README is the public orientation layer. It explains what ChaOS is, what it is not, who it is for, how it is used, how future projects inherit from it, the long-term vision, and the first milestone.
 
 Future consideration: The README may later include version history and project inheritance instructions.
 
@@ -67,7 +67,7 @@ Future consideration: This file may later include stricter agent permissions or 
 
 `.env.example` documents the environment variables needed to run local support tooling such as the Meta-Agent CLI.
 
-Future consideration: This file should remain minimal and should not become a general configuration system.
+Future consideration: This file must remain minimal and must not become a general configuration system.
 
 ## agents/
 
@@ -77,7 +77,7 @@ Examples:
 
 - `agents/meta-agent/prompt.md` defines the prompt contract for Meta-Agent review output.
 
-Future consideration: Additional agents should be added only when they remove more complexity than they add.
+Future consideration: Additional agents must be added only when they remove more complexity than they add.
 
 ## docs/
 
@@ -134,7 +134,7 @@ Examples:
 - A system design review workflow.
 - A reusable workflow template.
 
-Future consideration: Workflow definitions may later map to automation platforms, but the YAML should remain understandable without those platforms.
+Future consideration: Workflow definitions may later map to automation platforms, but the YAML must remain understandable without those platforms.
 
 ## examples/
 
@@ -151,7 +151,7 @@ Future consideration: Examples may later expand by domain, but Version 0.1 keeps
 
 ## scripts/
 
-The scripts directory contains small support tooling for repository review. Scripts should serve the documentation-first architecture and should not become product code.
+The scripts directory contains small support tooling for repository review. Scripts must serve the documentation-first architecture and must not become product code.
 
 Examples:
 
@@ -159,4 +159,4 @@ Examples:
 - `run_meta_agent.ps1` reads selected files, calls the LLM, and writes the review report.
 - `run_meta_agent.py` provides an alternate runner for environments with Python.
 
-Future consideration: If support tooling grows, ChaOS should decide which runner is primary and avoid duplicating logic unnecessarily.
+Future consideration: If support tooling grows, ChaOS must decide which runner is primary and avoid duplicating logic unnecessarily.

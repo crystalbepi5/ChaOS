@@ -38,5 +38,4 @@ Trigger -> Input -> Processing -> Decision -> Action -> Feedback
 
 ## Future Considerations
 
-The glossary should expand only when a term becomes important across multiple documents or future projects.
-
+The glossary must expand only when a term becomes important across multiple documents or future projects.

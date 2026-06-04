@@ -88,7 +88,7 @@ Processing transforms input into structured understanding.
 
 ### Purpose
 
-The decision stage chooses or recommends what should happen next.
+The decision stage chooses or recommends what happens next.
 
 ### Responsibilities
 
@@ -169,4 +169,3 @@ An RFP research workflow may begin when a new RFP is found. The input stage gath
 ## Future Considerations
 
 Future versions may define workflow maturity levels, event contracts, or adapters for automation tools. Version 0.1 defines the portable pattern first.
-

@@ -79,7 +79,6 @@ stages:
       - Track feedback completeness.
       - Review whether repeated failures decrease.
 evaluation:
-  - Workflow should be understandable without implementation code.
-  - Every decision should be traceable to inputs and signals.
-  - Feedback should improve future workflow behavior.
-
+  - Workflow must be understandable without implementation code.
+  - Every decision must be traceable to inputs and signals.
+  - Feedback must improve future workflow behavior.

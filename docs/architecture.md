@@ -26,7 +26,7 @@ ChaOS has five architectural layers:
 
 ## How The Pieces Fit Together
 
-The constitutional documents define the laws and language. The models define reusable patterns. The schemas make those patterns portable. The workflows show how work should move. The examples prove the patterns can be understood without implementation code.
+The constitutional documents define the laws and language. The models define reusable patterns. The schemas make those patterns portable. The workflows show how work moves. The examples prove the patterns can be understood without implementation code.
 
 The Meta-Agent sits above the repository as a reviewer, not an autonomous editor. It reads selected files, identifies contradictions and risks, and writes a Markdown report. It does not apply its own recommendations.
 
@@ -54,5 +54,4 @@ A future project inherits ChaOS to design a sales operating system. The project 
 
 ## Future Considerations
 
-Future versions may add project inheritance templates, richer evaluation reports, or optional adapters for implementation tools. Those additions should happen only after the simple review loop proves useful.
-
+Future versions may add project inheritance templates, richer evaluation reports, or optional adapters for implementation tools. Those additions must happen only after the simple review loop proves useful.
