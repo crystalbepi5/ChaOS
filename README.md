@@ -42,6 +42,10 @@ When context is sufficient, generate a reviewable Architecture Starter Package:
 
 Business Context -> Architecture Generation -> Architecture Starter Package -> Human Review -> Implementation Decision
 
+Use the starter package template for the generated output:
+
+`templates/architecture-starter-package.md`
+
 Next, model work through the core workflow model:
 
 Trigger -> Input -> Processing -> Decision -> Action -> Feedback

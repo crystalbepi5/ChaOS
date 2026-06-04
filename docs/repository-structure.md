@@ -52,11 +52,27 @@ ChaOS/
     workflow-template.yaml
   templates/
     README.md
+    architecture-starter-package.md
     project-intake-packet.md
   examples/
     decisions.csv
     feedback.csv
+    repo-seeds/
+      README.md
+      tool-based-agents/
+        README.md
+        agents/
+          ui-ux-developer/
+            agent.md
+            operating-prompt.md
+            output-template.md
+            review-checklist.md
     signals.csv
+    ui-mockups/
+      README.md
+      rootline-command/
+        README.md
+        index.html
     workflow-runs.csv
   scripts/
     run_meta_agent.cmd
@@ -160,6 +176,7 @@ The templates directory contains directly usable Markdown artifacts. Templates h
 Examples:
 
 - `project-intake-packet.md` captures raw business context and routes the project to Context Sufficiency Assessment, Architecture Generation, or no generation yet.
+- `architecture-starter-package.md` captures the standard Architecture Generation output for human review.
 
 Future consideration: Additional templates must be added only when repeated use proves that one reusable intake packet is not enough.
 
@@ -173,6 +190,8 @@ Examples:
 - Decisions made from signals.
 - Feedback captured after outcomes.
 - Workflow run history.
+- Repo seeds for future standalone projects.
+- Static UI mockups that explore possible product experience without defining implementation requirements.
 
 Future consideration: Examples may later expand by domain, but Version 0.1 keeps them cross-domain.
 

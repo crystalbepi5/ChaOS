@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rootline Command</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080a0a;
+      --panel: #111515;
+      --panel-2: #171c1b;
+      --panel-3: #202624;
+      --line: #2c3532;
+      --line-soft: #1e2523;
+      --text: #f1f0e8;
+      --muted: #a8ada5;
+      --dim: #70796f;
+      --green: #9be36f;
+      --green-2: #3ddc84;
+      --amber: #e2c15c;
+      --red: #ff6b5f;
+      --blue: #8fb7ff;
+      --paper: #d8d3c5;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .45);
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(155, 227, 111, .03) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(155, 227, 111, .025) 1px, transparent 1px),
+        linear-gradient(135deg, #080a0a 0%, #101211 52%, #080a0a 100%);
+      background-size: 28px 28px, 28px 28px, auto;
+      color: var(--text);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #121716;
+      color: var(--text);
+      border-radius: 7px;
+      min-height: 36px;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: #526158;
+      background: #18201e;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr) 340px;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: rgba(8, 10, 10, .86);
+      backdrop-filter: blur(16px);
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 4px 10px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, transparent 0 46%, rgba(8, 10, 10, .9) 47% 54%, transparent 55%),
+        linear-gradient(135deg, var(--green), #f1f0e8);
+      box-shadow: 0 0 24px rgba(155, 227, 111, .22);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .nav-group {
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav-title {
+      color: var(--dim);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      padding: 0 9px 5px;
+    }
+
+    .nav-item {
+      display: grid;
+      grid-template-columns: 20px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 9px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(241, 240, 232, .045);
+      border-color: var(--line-soft);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      box-shadow: inset 2px 0 0 var(--green);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      color: var(--green);
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .count {
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    .operator-card {
+      margin-top: auto;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(241, 240, 232, .05), rgba(241, 240, 232, .02));
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .operator-card .mono {
+      color: var(--green);
+      font-size: 11px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    .operator-card p {
+      margin: 8px 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      min-height: 68px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 22px;
+      background: rgba(10, 12, 12, .72);
+      backdrop-filter: blur(18px);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      background: #0d1110;
+      border-radius: 7px;
+      padding: 0 12px;
+      min-height: 38px;
+      width: min(520px, 100%);
+    }
+
+    .search span {
+      color: var(--green);
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      min-width: 0;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .primary {
+      background: var(--text);
+      color: #080a0a;
+      border-color: var(--text);
+      font-weight: 700;
+    }
+
+    .ghost {
+      background: transparent;
+    }
+
+    .content {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .header-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding: 4px 0 2px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 44px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      max-width: 740px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .status-pill {
+      border: 1px solid rgba(155, 227, 111, .45);
+      background: rgba(155, 227, 111, .08);
+      color: var(--green);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      white-space: nowrap;
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      background: rgba(17, 21, 21, .82);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 128px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric::after {
+      content: "";
+      position: absolute;
+      inset: auto 12px 12px auto;
+      width: 62px;
+      height: 28px;
+      background:
+        linear-gradient(135deg, transparent 0 12%, rgba(155, 227, 111, .4) 13% 15%, transparent 16% 34%, rgba(226, 193, 92, .5) 35% 37%, transparent 38% 54%, rgba(143, 183, 255, .45) 55% 57%, transparent 58%);
+      opacity: .55;
+    }
+
+    .metric-label {
+      color: var(--dim);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .metric-value {
+      margin-top: 18px;
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .metric-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(17, 21, 21, .86);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      min-height: 54px;
+      border-bottom: 1px solid var(--line-soft);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-title {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .panel-title strong {
+      font-size: 14px;
+    }
+
+    .panel-title span {
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    .segmented {
+      display: flex;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 3px;
+      background: #0b0f0e;
+    }
+
+    .segment {
+      border: 0;
+      background: transparent;
+      min-height: 28px;
+      padding: 0 10px;
+      color: var(--muted);
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .segment.active {
+      background: var(--paper);
+      color: #080a0a;
+      font-weight: 700;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--line-soft);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    tr:hover td {
+      background: rgba(241, 240, 232, .035);
+    }
+
+    .case {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 180px;
+    }
+
+    .case strong {
+      font-size: 13px;
+    }
+
+    .case span {
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 4px 8px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .badge.green {
+      color: var(--green);
+      border-color: rgba(155, 227, 111, .35);
+      background: rgba(155, 227, 111, .06);
+    }
+
+    .badge.amber {
+      color: var(--amber);
+      border-color: rgba(226, 193, 92, .35);
+      background: rgba(226, 193, 92, .06);
+    }
+
+    .badge.red {
+      color: var(--red);
+      border-color: rgba(255, 107, 95, .35);
+      background: rgba(255, 107, 95, .06);
+    }
+
+    .progress {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #0b0f0e;
+      border: 1px solid var(--line-soft);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--amber));
+      width: var(--value);
+    }
+
+    .insight-list {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .insight {
+      border: 1px solid var(--line-soft);
+      background: rgba(8, 10, 10, .42);
+      border-radius: 7px;
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .insight strong {
+      font-size: 13px;
+    }
+
+    .insight p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .terminal {
+      background: #050707;
+      border-top: 1px solid var(--line-soft);
+      padding: 14px 16px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: var(--green);
+      min-height: 162px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+
+    .terminal div {
+      color: #8edc8e;
+    }
+
+    .terminal .muted-line {
+      color: #6c766c;
+    }
+
+    .right-rail {
+      border-left: 1px solid var(--line);
+      background: rgba(8, 10, 10, .8);
+      padding: 18px 14px;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .rail-card {
+      border: 1px solid var(--line);
+      background: rgba(17, 21, 21, .86);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .rail-card h2 {
+      margin: 0;
+      font-size: 14px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .review-stack {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(241, 240, 232, .95), rgba(155, 227, 111, .7)),
+        repeating-linear-gradient(90deg, transparent 0 3px, rgba(0, 0, 0, .5) 4px 5px);
+      border: 1px solid rgba(241, 240, 232, .45);
+    }
+
+    .review-item strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .review-item span {
+      display: block;
+      color: var(--dim);
+      font-size: 12px;
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    .switch-row {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--line-soft);
+      gap: 12px;
+    }
+
+    .switch-row span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .switch {
+      width: 42px;
+      height: 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(155, 227, 111, .45);
+      background: rgba(155, 227, 111, .12);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      right: 2px;
+      top: 2px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(155, 227, 111, .4);
+    }
+
+    .command-input {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .command-input label {
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-size: 11px;
+    }
+
+    .command-input input {
+      width: 100%;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: #0b0f0e;
+      color: var(--text);
+      min-height: 38px;
+      padding: 0 10px;
+      outline: 0;
+    }
+
+    .chart {
+      height: 160px;
+      padding: 14px 16px 18px;
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      align-items: end;
+      gap: 4px;
+    }
+
+    .bar {
+      min-height: 10px;
+      height: var(--h);
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(180deg, var(--green), rgba(155, 227, 111, .18));
+      border: 1px solid rgba(155, 227, 111, .18);
+    }
+
+    .bar.warn {
+      background: linear-gradient(180deg, var(--amber), rgba(226, 193, 92, .14));
+      border-color: rgba(226, 193, 92, .22);
+    }
+
+    .bar.hot {
+      background: linear-gradient(180deg, var(--red), rgba(255, 107, 95, .14));
+      border-color: rgba(255, 107, 95, .22);
+    }
+
+    @media (max-width: 1180px) {
+      .app {
+        grid-template-columns: 82px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        padding-inline: 10px;
+      }
+
+      .brand div,
+      .nav-title,
+      .nav-item span:not(.icon),
+      .nav-item .count,
+      .operator-card {
+        display: none;
+      }
+
+      .nav-item {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .right-rail {
+        grid-column: 2;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar,
+      .header-band {
+        align-items: stretch;
+        flex-direction: column;
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .metrics,
+      .grid,
+      .right-rail {
+        grid-template-columns: 1fr;
+      }
+
+      .right-rail {
+        grid-column: 1;
+      }
+
+      th:nth-child(3),
+      td:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <strong>Rootline</strong>
+          <span>Command layer</span>
+        </div>
+      </div>
+
+      <nav class="nav-group">
+        <div class="nav-title">Operate</div>
+        <a class="nav-item active" href="#"><span class="icon">R</span><span>Risk room</span><span class="count">14</span></a>
+        <a class="nav-item" href="#"><span class="icon">D</span><span>Decision queue</span><span class="count">8</span></a>
+        <a class="nav-item" href="#"><span class="icon">S</span><span>Signal graph</span><span class="count">31</span></a>
+        <a class="nav-item" href="#"><span class="icon">A</span><span>Agent audit</span><span class="count">3</span></a>
+      </nav>
+
+      <nav class="nav-group">
+        <div class="nav-title">Govern</div>
+        <a class="nav-item" href="#"><span class="icon">P</span><span>Policies</span><span class="count">12</span></a>
+        <a class="nav-item" href="#"><span class="icon">H</span><span>Human review</span><span class="count">5</span></a>
+        <a class="nav-item" href="#"><span class="icon">L</span><span>Lineage</span><span class="count">99</span></a>
+      </nav>
+
+      <div class="operator-card">
+        <div class="mono">operator: awake</div>
+        <p>No black boxes. No vibes-based approvals. The machine may suggest; the adult in the room still signs.</p>
+        <button class="ghost" type="button">View audit trail</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="search" role="search">
+          <span aria-hidden="true">&gt;</span>
+          <input aria-label="Command search" value="trace every recommendation touching Q4 enterprise churn">
+        </div>
+        <div class="actions">
+          <button class="ghost" type="button">Export</button>
+          <button class="ghost" type="button">Review</button>
+          <button class="primary" type="button">Approve batch</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="header-band">
+          <div>
+            <h1>Risk room</h1>
+            <p class="subtitle">A calm place for operational alarms, agent recommendations, and decisions that still require an actual human with coffee and consequences.</p>
+          </div>
+          <div class="status-pill">SYSTEM POSTURE: HUMBLE</div>
+        </div>
+
+        <section class="metrics" aria-label="System metrics">
+          <article class="metric">
+            <div class="metric-label">Recommendations</div>
+            <div class="metric-value">1,284</div>
+            <div class="metric-note">92% traceable to source signals</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Human holds</div>
+            <div class="metric-value">37</div>
+            <div class="metric-note">Exactly where they belong</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Drift pressure</div>
+            <div class="metric-value">Low</div>
+            <div class="metric-note">Two policies getting spicy</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Audit debt</div>
+            <div class="metric-value">4h</div>
+            <div class="metric-note">Not bad. Suspicious, but not bad.</div>
+          </article>
+        </section>
+
+        <section class="grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div class="panel-title">
+                <strong>Decision queue</strong>
+                <span>Sorted by risk, confidence, and blast radius</span>
+              </div>
+              <div class="segmented" aria-label="Decision filters">
+                <button class="segment active" type="button">Now</button>
+                <button class="segment" type="button">Next</button>
+                <button class="segment" type="button">Later</button>
+              </div>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Case</th>
+                  <th>Decision</th>
+                  <th>Confidence</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="case"><strong>Enterprise churn cluster</strong><span>22 accounts, 4 signals converging</span></div></td>
+                  <td>Escalate to human success lead</td>
+                  <td><div class="progress" aria-label="Confidence 84%"><span style="--value: 84%"></span></div></td>
+                  <td><span class="badge amber">Needs review</span></td>
+                </tr>
+                <tr>
+                  <td><div class="case"><strong>Procurement anomaly</strong><span>Renewal language changed overnight</span></div></td>
+                  <td>Freeze auto-send sequence</td>
+                  <td><div class="progress" aria-label="Confidence 91%"><span style="--value: 91%"></span></div></td>
+                  <td><span class="badge red">Held</span></td>
+                </tr>
+                <tr>
+                  <td><div class="case"><strong>Expansion signal bundle</strong><span>Usage spike, new team invites</span></div></td>
+                  <td>Recommend account planning</td>
+                  <td><div class="progress" aria-label="Confidence 76%"><span style="--value: 76%"></span></div></td>
+                  <td><span class="badge green">Ready</span></td>
+                </tr>
+                <tr>
+                  <td><div class="case"><strong>Policy collision</strong><span>Automation scope conflicts with legal note</span></div></td>
+                  <td>Route to governance owner</td>
+                  <td><div class="progress" aria-label="Confidence 88%"><span style="--value: 88%"></span></div></td>
+                  <td><span class="badge amber">Needs review</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="terminal" aria-label="Audit terminal">
+              <div>&gt; trace rec_4819 --why</div>
+              <div class="muted-line">source: 4 signals, 2 outcomes, 1 human correction</div>
+              <div>rationale: customer risk increased after support severity + usage drop</div>
+              <div class="muted-line">automation: blocked by policy HUMANS_STILL_EXIST_01</div>
+              <div>&gt; good. weird name, good policy.</div>
+            </div>
+          </article>
+
+          <aside class="panel">
+            <div class="panel-head">
+              <div class="panel-title">
+                <strong>Signal weather</strong>
+                <span>Last 24 hours</span>
+              </div>
+              <span class="badge green">Stable</span>
+            </div>
+            <div class="chart" aria-label="Signal volume chart">
+              <div class="bar" style="--h: 44%"></div>
+              <div class="bar" style="--h: 38%"></div>
+              <div class="bar" style="--h: 52%"></div>
+              <div class="bar warn" style="--h: 64%"></div>
+              <div class="bar" style="--h: 48%"></div>
+              <div class="bar" style="--h: 56%"></div>
+              <div class="bar" style="--h: 42%"></div>
+              <div class="bar hot" style="--h: 82%"></div>
+              <div class="bar warn" style="--h: 66%"></div>
+              <div class="bar" style="--h: 50%"></div>
+              <div class="bar" style="--h: 46%"></div>
+              <div class="bar" style="--h: 58%"></div>
+              <div class="bar" style="--h: 40%"></div>
+              <div class="bar" style="--h: 45%"></div>
+              <div class="bar warn" style="--h: 62%"></div>
+              <div class="bar" style="--h: 49%"></div>
+              <div class="bar" style="--h: 54%"></div>
+              <div class="bar" style="--h: 43%"></div>
+              <div class="bar" style="--h: 47%"></div>
+              <div class="bar warn" style="--h: 61%"></div>
+              <div class="bar" style="--h: 39%"></div>
+              <div class="bar" style="--h: 35%"></div>
+              <div class="bar" style="--h: 44%"></div>
+              <div class="bar" style="--h: 51%"></div>
+            </div>
+            <div class="insight-list">
+              <div class="insight">
+                <strong>Oddly useful anomaly</strong>
+                <p>Support sentiment dipped before churn risk rose. The system noticed. It is trying not to be smug.</p>
+              </div>
+              <div class="insight">
+                <strong>Traceability gap</strong>
+                <p>Three recommendations cite stale firmographic data. They are quarantined until a human gives them a snack and a source.</p>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </section>
+    </main>
+
+    <aside class="right-rail" aria-label="Review rail">
+      <section class="rail-card">
+        <h2>Human review</h2>
+        <div class="review-stack">
+          <div class="review-item">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <strong>Mara approved 12 holds</strong>
+              <span>Approval boundary respected. Nobody touched production. We love growth.</span>
+            </div>
+          </div>
+          <div class="review-item">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <strong>Devon rejected 2 recs</strong>
+              <span>Reason: weak signal lineage. The model has been asked to sit quietly.</span>
+            </div>
+          </div>
+          <div class="review-item">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <strong>Priya requested context</strong>
+              <span>Missing stakeholder owner for contract exceptions.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="rail-card">
+        <h2>Control switches</h2>
+        <div class="switch-row">
+          <span>Require source trace before approval</span>
+          <div class="switch" aria-hidden="true"></div>
+        </div>
+        <div class="switch-row">
+          <span>Block autonomous customer outreach</span>
+          <div class="switch" aria-hidden="true"></div>
+        </div>
+        <div class="switch-row">
+          <span>Allow jokes in low-risk logs</span>
+          <div class="switch" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="rail-card">
+        <h2>Command note</h2>
+        <div class="command-input">
+          <label for="note">Add context</label>
+          <input id="note" value="Ask finance why renewal signal moved. Do not ask like a haunted printer.">
+          <button class="primary" type="button">Attach note</button>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    const segments = document.querySelectorAll('.segment');
+    segments.forEach((button) => {
+      button.addEventListener('click', () => {
+        segments.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
