@@ -1,0 +1,6 @@
+feedback_id,outcome_id,decision_id,human_response,lesson,recommended_change
+fb-001,out-001,dec-001,Accepted,Human follow-up led to a booked meeting,Keep pricing-page signal in prioritization rubric
+fb-002,out-002,dec-002,Accepted,Client rescheduled after personal outreach,Add missed-appointment retention workflow example
+fb-003,out-003,dec-003,Accepted,No-bid saved review time,Add certification mismatch as strong RFP disqualification signal
+fb-004,out-004,dec-004,Revised,Issue was missing source context rather than prompt wording,Improve input requirements before changing prompt
+

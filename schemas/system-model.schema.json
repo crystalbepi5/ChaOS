@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chaos.local/schemas/system-model.schema.json",
+  "title": "ChaOS Core System Model",
+  "type": "object",
+  "required": ["entity", "signals", "decisions", "outcomes", "feedback"],
+  "properties": {
+    "entity": {
+      "type": "object",
+      "required": ["id", "type", "description"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string" },
+        "description": { "type": "string" },
+        "domain": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "description", "observed_at"],
+        "properties": {
+          "id": { "type": "string" },
+          "source": { "type": "string" },
+          "description": { "type": "string" },
+          "observed_at": { "type": "string", "format": "date-time" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "decision", "rationale", "supporting_signal_ids"],
+        "properties": {
+          "id": { "type": "string" },
+          "decision": { "type": "string" },
+          "rationale": { "type": "string" },
+          "supporting_signal_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "approval_required": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "decision_id", "description", "observed_at"],
+        "properties": {
+          "id": { "type": "string" },
+          "decision_id": { "type": "string" },
+          "description": { "type": "string" },
+          "observed_at": { "type": "string", "format": "date-time" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "feedback": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "outcome_id", "lesson", "recommended_change"],
+        "properties": {
+          "id": { "type": "string" },
+          "outcome_id": { "type": "string" },
+          "lesson": { "type": "string" },
+          "recommended_change": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

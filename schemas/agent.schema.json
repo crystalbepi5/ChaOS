@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chaos.local/schemas/agent.schema.json",
+  "title": "ChaOS Agent Specification",
+  "type": "object",
+  "required": ["name", "purpose", "inputs", "processing_logic", "outputs", "evaluation", "examples", "guardrails"],
+  "properties": {
+    "name": { "type": "string" },
+    "purpose": { "type": "string" },
+    "inputs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "processing_logic": { "type": "string" },
+    "outputs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "evaluation": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["context", "input", "expected_output"],
+        "properties": {
+          "context": { "type": "string" },
+          "input": { "type": "string" },
+          "expected_output": { "type": "string" }
+        },
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "failure_modes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "guardrails": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "approval_required_for": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}
+

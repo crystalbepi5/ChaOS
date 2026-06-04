@@ -1,0 +1,5 @@
+run_id,workflow_name,entity_id,trigger,input_status,decision,action,outcome,feedback_status
+run-001,System Design Review,rfp-001,New RFP project proposed,Complete,Revise before implementation,Create decision record,Architecture clarified,Captured
+run-002,Meta-Agent Review,task-001,Repeated user rewrites observed,Partial,Recommend input standard update,Request human approval,Pending,Captured
+run-003,System Design Review,client-001,New retention workflow proposed,Complete,Approve with feedback loop,Document workflow,Ready for implementation,Captured
+

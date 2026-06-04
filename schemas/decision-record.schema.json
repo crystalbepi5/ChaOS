@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chaos.local/schemas/decision-record.schema.json",
+  "title": "ChaOS Decision Record",
+  "type": "object",
+  "required": ["title", "status", "date", "context", "decision", "rationale", "alternatives_considered", "consequences", "feedback_plan"],
+  "properties": {
+    "title": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "accepted", "rejected", "superseded"]
+    },
+    "date": { "type": "string", "format": "date" },
+    "context": { "type": "string" },
+    "decision": { "type": "string" },
+    "rationale": { "type": "string" },
+    "alternatives_considered": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "consequences": { "type": "string" },
+    "feedback_plan": { "type": "string" }
+  },
+  "additionalProperties": false
+}
+

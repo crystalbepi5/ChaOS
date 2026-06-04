@@ -1,0 +1,80 @@
+name: Meta-Agent Review
+purpose: Review ChaOS itself and recommend improvements without autonomous self-modification.
+stages:
+  - name: Trigger
+    purpose: Start review after significant documentation changes, evaluation failures, or human request.
+    responsibilities:
+      - Identify changed documents or observed failures.
+      - Define review scope.
+      - Confirm whether approval will be required.
+    failure_modes:
+      - Review starts without clear scope.
+      - Review ignores important changed areas.
+    evaluation_methods:
+      - Compare review scope against actual changes.
+      - Track missed architectural drift.
+  - name: Input
+    purpose: Gather repository documents, schemas, workflows, examples, and feedback.
+    responsibilities:
+      - Preserve source references.
+      - Include relevant evaluation history.
+      - Name assumptions.
+    failure_modes:
+      - Missing relevant feedback.
+      - Depending on private context.
+    evaluation_methods:
+      - Audit source coverage.
+      - Review assumption quality.
+  - name: Processing
+    purpose: Compare observed material against ChaOS laws and standards.
+    responsibilities:
+      - Identify drift.
+      - Detect repeated patterns.
+      - Separate style preference from architectural issue.
+    failure_modes:
+      - Overfitting to one project.
+      - Treating vague concerns as proof.
+    evaluation_methods:
+      - Review evidence quality.
+      - Check portability of findings.
+  - name: Decision
+    purpose: Decide whether to recommend no change, document change, schema change, workflow change, or evaluation change.
+    responsibilities:
+      - State recommendation.
+      - Explain rationale.
+      - Identify approval requirement.
+    failure_modes:
+      - Recommending unnecessary complexity.
+      - Hiding tradeoffs.
+    evaluation_methods:
+      - Track human acceptance and rejection.
+      - Compare recommendations to later outcomes.
+  - name: Action
+    purpose: Deliver recommendation or patch proposal for human approval.
+    responsibilities:
+      - Produce inspectable output.
+      - Avoid applying constitutional changes without approval.
+      - Link recommendation to evidence.
+    failure_modes:
+      - Silent self-modification.
+      - Missing approval path.
+    evaluation_methods:
+      - Audit approval compliance.
+      - Review action traceability.
+  - name: Feedback
+    purpose: Capture human response and later impact.
+    responsibilities:
+      - Record accepted, rejected, or deferred recommendations.
+      - Capture reasons.
+      - Identify recurring rejection patterns.
+    failure_modes:
+      - Rejections are ignored.
+      - Lessons do not update future reviews.
+    evaluation_methods:
+      - Review feedback completeness.
+      - Track repeated recommendation failures.
+evaluation:
+  - Recommendations should reduce more complexity than they add.
+  - Recommendations should be traceable to evidence.
+  - Human approval must remain visible for constitutional changes.
+

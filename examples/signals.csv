@@ -1,0 +1,6 @@
+entity_id,entity_type,domain,signal_id,signal_source,signal_description,observed_at,confidence
+account-001,Account,Sales,sig-001,Website Analytics,Visited pricing page twice in one week,2026-06-01T14:30:00Z,0.82
+client-001,Client,MedSpa,sig-002,Scheduling System,Missed appointment without rescheduling,2026-06-01T16:00:00Z,0.90
+rfp-001,Opportunity,RFP Research,sig-003,RFP Document,Requires certification the company does not currently hold,2026-06-01T18:20:00Z,0.95
+task-001,Task,AI Agent System,sig-004,User Feedback,User manually rewrote generated summary,2026-06-01T19:10:00Z,0.78
+

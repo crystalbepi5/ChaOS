@@ -1,0 +1,81 @@
+name: System Design Review
+purpose: Review a future project design for alignment with ChaOS before implementation.
+stages:
+  - name: Trigger
+    purpose: Start when a new project, major feature, or architecture change is proposed.
+    responsibilities:
+      - Identify the project or feature.
+      - Define review scope.
+      - Confirm the business context.
+    failure_modes:
+      - Review starts after implementation is already committed.
+      - Scope is too broad to evaluate.
+    evaluation_methods:
+      - Track review timing.
+      - Review whether scope was actionable.
+  - name: Input
+    purpose: Gather project purpose, entities, signals, decisions, outcomes, workflows, agents, and constraints.
+    responsibilities:
+      - Validate that the core system model is present.
+      - Validate that workflow stages are present.
+      - Capture assumptions.
+    failure_modes:
+      - Missing entity definitions.
+      - Hidden vendor assumptions.
+      - No outcome definition.
+    evaluation_methods:
+      - Check completeness against ChaOS models.
+      - Review assumption visibility.
+  - name: Processing
+    purpose: Compare the design against ChaOS laws and inherited patterns.
+    responsibilities:
+      - Identify complexity risks.
+      - Identify missing feedback loops.
+      - Identify portability issues.
+    failure_modes:
+      - Review focuses on tools before architecture.
+      - Review misses hidden context dependencies.
+    evaluation_methods:
+      - Audit findings against architectural laws.
+      - Compare to prior project reviews.
+  - name: Decision
+    purpose: Recommend approve, revise, defer, or reject.
+    responsibilities:
+      - State decision.
+      - Explain rationale.
+      - Identify required changes.
+    failure_modes:
+      - Recommendation is vague.
+      - Decision lacks traceability.
+    evaluation_methods:
+      - Track whether required changes were clear.
+      - Compare recommendation to project outcome.
+  - name: Action
+    purpose: Record review result and route next steps.
+    responsibilities:
+      - Create decision record when needed.
+      - Identify owner for revisions.
+      - Preserve review output.
+    failure_modes:
+      - Review result is not recorded.
+      - Owner is unclear.
+    evaluation_methods:
+      - Audit review records.
+      - Track unresolved revisions.
+  - name: Feedback
+    purpose: Capture what the review taught ChaOS.
+    responsibilities:
+      - Record project-specific gaps.
+      - Identify reusable improvements.
+      - Recommend updates to ChaOS when patterns repeat.
+    failure_modes:
+      - Lessons remain project-local.
+      - ChaOS does not learn from inheritance.
+    evaluation_methods:
+      - Track repeated gaps across projects.
+      - Review improvements proposed back to ChaOS.
+evaluation:
+  - Review should happen before implementation choices dominate.
+  - Review should verify that only business context changes when possible.
+  - Review should preserve lessons for future projects.
+

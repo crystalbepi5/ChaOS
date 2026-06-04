@@ -1,0 +1,85 @@
+name: Reusable ChaOS Workflow Template
+purpose: Define a portable workflow using the ChaOS stage model.
+stages:
+  - name: Trigger
+    purpose: Start the workflow when a defined condition occurs.
+    responsibilities:
+      - Identify the affected entity.
+      - Record why the workflow started.
+      - Prevent accidental duplicate starts.
+    failure_modes:
+      - Trigger fires without enough context.
+      - Trigger misses important events.
+    evaluation_methods:
+      - Review false starts and missed starts.
+      - Compare trigger criteria to successful outcomes.
+  - name: Input
+    purpose: Gather and validate required information.
+    responsibilities:
+      - Collect source data.
+      - Validate completeness.
+      - Record assumptions.
+    failure_modes:
+      - Missing fields.
+      - Conflicting sources.
+      - Stale information.
+    evaluation_methods:
+      - Track input correction frequency.
+      - Review decisions affected by missing input.
+  - name: Processing
+    purpose: Transform inputs into structured understanding.
+    responsibilities:
+      - Normalize inputs.
+      - Identify relevant signals.
+      - Preserve traceability.
+    failure_modes:
+      - Hidden logic.
+      - Loss of source references.
+      - Over-processing.
+    evaluation_methods:
+      - Compare processed output to source material.
+      - Review explainability.
+  - name: Decision
+    purpose: Recommend or choose the next step.
+    responsibilities:
+      - State the decision.
+      - Explain rationale.
+      - Name uncertainty.
+    failure_modes:
+      - Untraceable decision.
+      - Overconfidence.
+      - No human override path.
+    evaluation_methods:
+      - Track acceptance and rejection.
+      - Compare decisions to outcomes.
+  - name: Action
+    purpose: Execute, route, or record the approved next step.
+    responsibilities:
+      - Respect approval boundaries.
+      - Record action taken.
+      - Preserve reversibility where possible.
+    failure_modes:
+      - Unauthorized action.
+      - Silent failure.
+      - Wrong entity updated.
+    evaluation_methods:
+      - Audit action logs.
+      - Review approval compliance.
+  - name: Feedback
+    purpose: Capture learning from the outcome.
+    responsibilities:
+      - Record outcome.
+      - Capture human judgment.
+      - Recommend improvements.
+    failure_modes:
+      - Feedback not captured.
+      - Feedback too vague.
+      - Lessons not applied.
+    evaluation_methods:
+      - Track feedback completeness.
+      - Review whether repeated failures decrease.
+evaluation:
+  - Workflow should be understandable without implementation code.
+  - Every decision should be traceable to inputs and signals.
+  - Feedback should improve future workflow behavior.
+

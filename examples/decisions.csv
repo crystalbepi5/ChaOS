@@ -1,0 +1,6 @@
+decision_id,entity_id,supporting_signal_ids,decision,rationale,approval_required
+dec-001,account-001,sig-001,Recommend human follow-up,Repeated pricing interest suggests buying intent but message should be reviewed by account owner,true
+dec-002,client-001,sig-002,Recommend retention call,Missed appointment may indicate churn risk and human contact is low risk,true
+dec-003,rfp-001,sig-003,Recommend no-bid,Required certification creates likely disqualification,false
+dec-004,task-001,sig-004,Recommend prompt evaluation,Manual rewrite indicates output quality issue that should be studied before automation,false
+
