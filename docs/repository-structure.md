@@ -21,11 +21,21 @@ ChaOS/
     core-workflow-model.md
     decisions/
       0003-repository-alignment.md
+      0004-authority-and-implementation-boundary.md
+      0005-candidate-constitutional-concepts.md
+      0006-architecture-generation-workflow.md
+      0007-modal-language-authority.md
+      0008-context-sufficiency-assessment.md
+      0009-project-intake-packet.md
     decision-records.md
     evaluations.md
     glossary.md
     journal/
       0001-meta-agent-review.md
+      0003-synapse-inheritance-review.md
+      0004-cross-project-pattern-analysis.md
+      0005-architecture-generation-test-rfp-discovery.md
+      0006-context-sufficiency-test-community-garden.md
       README.md
     meta-agent.md
     repository-structure.md
@@ -35,9 +45,14 @@ ChaOS/
     system-model.schema.json
     workflow.schema.json
   workflows/
+    architecture-generation.yaml
+    context-sufficiency-assessment.yaml
     meta-agent-review.yaml
     system-design-review.yaml
     workflow-template.yaml
+  templates/
+    README.md
+    project-intake-packet.md
   examples/
     decisions.csv
     feedback.csv
@@ -132,9 +147,21 @@ Examples:
 
 - A Meta-Agent review workflow.
 - A system design review workflow.
+- A context sufficiency assessment workflow.
+- An architecture generation workflow.
 - A reusable workflow template.
 
 Future consideration: Workflow definitions may later map to automation platforms, but the YAML must remain understandable without those platforms.
+
+## templates/
+
+The templates directory contains directly usable Markdown artifacts. Templates help humans and agents capture project context before applying ChaOS workflows.
+
+Examples:
+
+- `project-intake-packet.md` captures raw business context and routes the project to Context Sufficiency Assessment, Architecture Generation, or no generation yet.
+
+Future consideration: Additional templates must be added only when repeated use proves that one reusable intake packet is not enough.
 
 ## examples/
 

@@ -28,7 +28,13 @@ ChaOS has five architectural layers:
 
 The constitutional documents define the laws and language. The models define reusable patterns. The schemas make those patterns portable. The workflows show how work moves. The examples prove the patterns can be understood without implementation code.
 
+Templates provide a usable intake layer. They help humans and agents capture project context before applying workflow contracts.
+
 The Meta-Agent sits above the repository as a reviewer, not an autonomous editor. It reads selected files, identifies contradictions and risks, and writes a Markdown report. It does not apply its own recommendations.
+
+Context Sufficiency Assessment sits before Architecture Generation when business context is incomplete, ambiguous, conflicting, or inherited from private memory. It separates known facts, reasonable inferences, and unknown information before ChaOS generates architecture.
+
+Architecture Generation transforms sufficient business context into a reviewable Architecture Starter Package. It may generate project summaries, entity models, workflow models, agent definitions, governance requirements, risks, guardrails, and evaluation criteria. It must not create implementation requirements or approve architecture changes automatically.
 
 ## Current Implementation Boundary
 

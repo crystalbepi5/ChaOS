@@ -1,0 +1,101 @@
+name: Architecture Generation
+purpose: Transform sufficient business context into a reviewable Architecture Starter Package without creating implementation requirements.
+stages:
+  - name: Trigger
+    purpose: Start when a project needs an initial architecture draft and Context Sufficiency Assessment is complete or not required.
+    responsibilities:
+      - Produce a project name or one-sentence project description.
+      - Name the requested Architecture Starter Package sections.
+      - Record the sufficiency status: READY, PARTIAL, not required, or human-approved exception.
+      - If sufficiency status is PARTIAL, list the allowed sections from Context Sufficiency Assessment.
+      - If sufficiency status is not required, record the reason context is already complete enough for generation.
+      - If sufficiency status is human-approved exception, record the human approver, reason, and known risk.
+    failure_modes:
+      - Generation starts from incomplete context without sufficiency assessment.
+      - Scope is broad enough to become implementation planning.
+      - Private memory is treated as source context.
+    evaluation_methods:
+      - Confirm sufficiency status is recorded before generation begins.
+      - Confirm not required and human-approved exception statuses include a reason.
+      - Check that requested sections are architecture sections, not implementation deliverables.
+  - name: Input
+    purpose: Gather the business context and inherited ChaOS patterns needed for generation.
+    responsibilities:
+      - List project purpose, users, entities, signals, decisions, outcomes, feedback, constraints, and governance needs when known.
+      - List missing or blocked sections inherited from Context Sufficiency Assessment.
+      - Reference the specific ChaOS laws, core models, workflow contracts, agent standards, candidate concepts, and decision records used.
+      - Preserve Known, Inferred, and Unknown labels when inherited from Context Sufficiency Assessment.
+    failure_modes:
+      - Missing source references.
+      - Candidate concepts are treated as approved architecture.
+      - Implementation preferences enter as requirements.
+    evaluation_methods:
+      - Compare input lists against provided business context and sufficiency results.
+      - Confirm every inherited ChaOS pattern is named explicitly.
+      - Confirm candidate concepts are labeled as candidates, not approved architecture.
+  - name: Processing
+    purpose: Map business context through the reusable ChaOS models.
+    responsibilities:
+      - Produce an Entity -> Signal -> Decision -> Outcome -> Feedback mapping for each supported primary entity.
+      - Produce a Trigger -> Input -> Processing -> Decision -> Action -> Feedback mapping for each supported workflow.
+      - Produce Purpose, Inputs, Processing Logic, Outputs, Evaluation, Examples, Failure Modes, and Guardrails when an agent is in scope.
+      - Produce governance requirements for approval boundaries, decision records, and human review.
+      - Produce risks and guardrails tied to specific failure modes.
+    failure_modes:
+      - Business context is forced into a pattern it does not support.
+      - Architecture becomes software design.
+      - Unsupported assumptions are hidden inside generated sections.
+    evaluation_methods:
+      - Review each generated section against source context.
+      - Check whether each model element is traceable to Known evidence or labeled Inferred.
+      - Confirm no generated section depends on an Unknown item unless marked incomplete.
+  - name: Decision
+    purpose: Decide which Architecture Starter Package sections are supported by the available evidence.
+    responsibilities:
+      - Label each requested section as complete, partial, blocked, or not applicable.
+      - For each partial or blocked section, state the missing context.
+      - State all human approval requirements.
+      - Decide whether the package is ready for human review, needs clarification first, or must stop.
+    failure_modes:
+      - Partial architecture is presented as complete.
+      - Unsupported sections are generated to make the package feel finished.
+      - Human approval boundaries are vague.
+    evaluation_methods:
+      - Compare every complete, partial, blocked, and not applicable label against source evidence.
+      - Confirm unsupported areas are withheld or marked incomplete.
+      - Confirm approval requirements are visible before any implementation decision.
+  - name: Action
+    purpose: Produce the Architecture Starter Package for human review.
+    responsibilities:
+      - Produce only the approved starter package sections: Project Summary, Entity Model, Workflow Model, Agent Definition, Governance Requirements, Risks, Guardrails, Evaluation Criteria, and Open Questions.
+      - Exclude implementation requirements, schemas, databases, infrastructure, frontends, orchestration, and autonomous actions.
+      - Include an Open Questions section when any requested section is partial or blocked.
+      - Route the package to Human Review before any Implementation Decision.
+    failure_modes:
+      - Starter package includes implementation design.
+      - Generated architecture creates new ChaOS concepts without governance.
+      - Questions are omitted because they make the output feel less complete.
+    evaluation_methods:
+      - Audit package contents against the allowed starter package section list.
+      - Confirm no implementation deliverables are included.
+      - Review whether open questions and risks are specific enough for human decision making.
+  - name: Feedback
+    purpose: Capture whether the generated architecture reduced startup effort and remained useful after human review.
+    responsibilities:
+      - Record each starter package section as accepted, revised, deferred, or rejected.
+      - Record the reason for every revised, deferred, or rejected section.
+      - Record whether the starter package stayed within evidence.
+      - Record recurring gaps that may create candidate concept pressure.
+    failure_modes:
+      - Human revisions are not captured.
+      - Rejected sections do not inform future generation.
+      - Candidate concept pressure is treated as automatic approval.
+    evaluation_methods:
+      - Track architecture usefulness after human review by section.
+      - Compare repeated gaps across generation tests.
+      - Review whether generated packages create unnecessary complexity.
+evaluation:
+  - Architecture Generation must produce reviewable architecture, not implementation requirements.
+  - Generated sections must be traceable to business context, ChaOS patterns, or explicit inference.
+  - Human review must remain required before implementation decisions.
+  - Candidate concepts may be referenced as pressure labels but must not become approved architecture automatically.

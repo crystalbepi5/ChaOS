@@ -7,6 +7,7 @@ stages:
       - Identify the affected entity.
       - Record why the workflow started.
       - Prevent accidental duplicate starts.
+      - Name the concrete output this workflow is expected to produce.
     failure_modes:
       - Trigger fires without enough context.
       - Trigger misses important events.
@@ -19,6 +20,7 @@ stages:
       - Collect source data.
       - Validate completeness.
       - Record assumptions.
+      - Separate known facts, inferences, and unknown information when context quality affects the workflow.
     failure_modes:
       - Missing fields.
       - Conflicting sources.
@@ -45,6 +47,7 @@ stages:
       - State the decision.
       - Explain rationale.
       - Name uncertainty.
+      - Name allowed, blocked, or deferred actions when the decision limits what may happen next.
     failure_modes:
       - Untraceable decision.
       - Overconfidence.
@@ -82,3 +85,4 @@ evaluation:
   - Workflow must be understandable without implementation code.
   - Every decision must be traceable to inputs and signals.
   - Feedback must improve future workflow behavior.
+  - Each stage must name concrete outputs or routing decisions, not only general activities.

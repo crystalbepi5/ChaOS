@@ -1,0 +1,96 @@
+name: Context Sufficiency Assessment
+purpose: Evaluate whether available business context is sufficient before Architecture Generation.
+stages:
+  - name: Trigger
+    purpose: Start when a project requests Architecture Generation and the business context is incomplete, ambiguous, conflicting, or inherited from private memory.
+    responsibilities:
+      - Produce a project name or one-sentence project description.
+      - Record the specific context risk: incomplete, ambiguous, conflicting, inherited from private memory, or a named combination.
+      - Name the requested Architecture Generation output, such as full starter package, entity model only, workflow model only, or agent definition only.
+    failure_modes:
+      - Assessment starts after architecture has already hardened assumptions.
+      - Assessment starts without a clear project or requested output.
+      - Hidden context is treated as shared knowledge.
+    evaluation_methods:
+      - Confirm the assessment record exists before any Architecture Starter Package.
+      - Check that the trigger names at least one specific context risk.
+  - name: Input
+    purpose: Gather available business context and preserve source boundaries.
+    responsibilities:
+      - List directly provided facts under Known.
+      - List source references for each known fact when a source exists.
+      - List missing definitions for core terms such as entity names, role names, decision terms, outcomes, constraints, and governance rules.
+      - List business context that came from private memory separately from sourced context.
+    failure_modes:
+      - Private memory is used without being named.
+      - Assumptions are mixed with facts.
+      - Important source material is omitted.
+    evaluation_methods:
+      - Confirm every Known item is either source-referenced or marked as unsourced human-provided context.
+      - Confirm missing definitions are named instead of summarized as general uncertainty.
+  - name: Processing
+    purpose: Separate known facts, reasonable inferences, and unknown information.
+    responsibilities:
+      - Classify each important claim as Known, Inferred, or Unknown.
+      - For each Inferred item, state the Known item or pattern that supports the inference.
+      - For each Unknown item, state which architecture section it affects.
+      - Identify any unsupported assumption that must not appear in generated architecture.
+      - Identify which ChaOS model sections are supported: Entity, Signal, Decision, Outcome, Feedback, Workflow, Agent, Governance, Evaluation.
+    failure_modes:
+      - Inferences are presented as facts.
+      - Unknowns are ignored to complete the architecture.
+      - The assessment over-processes simple context.
+    evaluation_methods:
+      - Audit whether every Inferred item points to supporting evidence.
+      - Check whether every Unknown item maps to at least one affected architecture section.
+      - Check whether unsupported assumptions are excluded from later generated sections.
+  - name: Decision
+    purpose: Decide whether the context is ready for full, partial, clarified, or deferred architecture generation.
+    responsibilities:
+      - Choose READY, PARTIAL, NEEDS CLARIFICATION, or DO NOT GENERATE YET.
+      - State the decision in one sentence.
+      - List the evidence that supports the decision.
+      - List the architecture outputs that are allowed.
+      - List the architecture outputs that are blocked until clarification.
+    failure_modes:
+      - Readiness decision is vague.
+      - Partial readiness is treated as full readiness.
+      - Clarifying questions are skipped when unknowns affect core architecture.
+    evaluation_methods:
+      - Confirm the readiness decision uses exactly one allowed value.
+      - Compare allowed and blocked outputs against the Known, Inferred, and Unknown lists.
+      - Track whether later Architecture Generation obeyed the allowed and blocked output lists.
+  - name: Action
+    purpose: Route the project to clarifying questions, partial architecture, full Architecture Generation, or deferral.
+    responsibilities:
+      - If READY, route to full Architecture Generation and preserve the sufficiency assessment as input.
+      - If PARTIAL, route only the allowed architecture outputs to Architecture Generation.
+      - If NEEDS CLARIFICATION, produce a numbered list of architecture-critical questions grouped by Entity, Workflow, Agent, Governance, and Evaluation when relevant.
+      - If DO NOT GENERATE YET, state the minimum missing context required before generation may begin.
+    failure_modes:
+      - Questions are too broad to improve context.
+      - Unsupported sections are generated anyway.
+      - Deferral lacks a clear reason.
+    evaluation_methods:
+      - Confirm each clarifying question maps to an Unknown item.
+      - Audit whether generated architecture stayed within the readiness decision.
+      - Confirm deferral states a concrete missing input rather than a vague concern.
+  - name: Feedback
+    purpose: Capture what the sufficiency assessment taught ChaOS.
+    responsibilities:
+      - Record the original readiness decision.
+      - Record whether the decision was accepted, revised, or rejected after human review.
+      - Record which clarifying questions produced useful new context.
+      - Record repeated missing-context patterns across projects.
+    failure_modes:
+      - Feedback is not connected to the readiness decision.
+      - Repeated context gaps do not inform ChaOS.
+      - A failed generation is not traced back to sufficiency assessment.
+    evaluation_methods:
+      - Track repeated missing-context patterns by category.
+      - Review whether future assessments ask more targeted questions after feedback.
+evaluation:
+  - Context Sufficiency Assessment must happen before Architecture Generation when context is incomplete, ambiguous, conflicting, or inherited from private memory.
+  - Known facts, reasonable inferences, and unknown information must remain visibly separated.
+  - Readiness decisions must be traceable to available evidence.
+  - Clarifying questions must target architecture-critical gaps.

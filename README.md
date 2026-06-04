@@ -26,9 +26,21 @@ The repository is also for future maintainers who were not present when the orig
 
 ## How To Use ChaOS
 
+For a new project, start with the Project Intake Packet:
+
+`templates/project-intake-packet.md`
+
 Start with the architectural laws, then model the domain through the core system model:
 
 Entity -> Signal -> Decision -> Outcome -> Feedback
+
+If the business context is incomplete, ambiguous, conflicting, or inherited from private memory, run Context Sufficiency Assessment before Architecture Generation:
+
+Known / Inferred / Unknown -> Readiness Decision -> Clarifying Questions or Architecture Generation
+
+When context is sufficient, generate a reviewable Architecture Starter Package:
+
+Business Context -> Architecture Generation -> Architecture Starter Package -> Human Review -> Implementation Decision
 
 Next, model work through the core workflow model:
 
@@ -73,7 +85,7 @@ Version 0.1 defines the constitution:
 - Documentation standards
 - Evaluation standards
 - Change management standards
-- Portable schemas, workflows, and examples
+- Portable schemas, workflows, templates, and examples
 
 Version 0.1 intentionally avoids code. The first milestone is conceptual clarity.
 
