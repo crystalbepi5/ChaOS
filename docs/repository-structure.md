@@ -61,12 +61,22 @@ ChaOS/
       README.md
       tool-based-agents/
         README.md
+        standards/
+          tool-access.md
         agents/
+          documentation/
+            agent.md
+          qa-developer/
+            agent.md
+          research/
+            agent.md
           ui-ux-developer/
             agent.md
             operating-prompt.md
             output-template.md
             review-checklist.md
+          workflow-designer/
+            agent.md
     signals.csv
     ui-mockups/
       README.md

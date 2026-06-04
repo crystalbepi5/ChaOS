@@ -11,12 +11,22 @@ Tool-Based Agents exists to turn high-level agent roles into inspectable operati
 ```text
 tool-based-agents/
   README.md
+  standards/
+    tool-access.md
   agents/
+    documentation/
+      agent.md
+    qa-developer/
+      agent.md
+    research/
+      agent.md
     ui-ux-developer/
       agent.md
       operating-prompt.md
       review-checklist.md
       output-template.md
+    workflow-designer/
+      agent.md
 ```
 
 ## Agent Standard
@@ -33,14 +43,20 @@ Every agent must include:
 - Failure modes
 - Guardrails
 
-## First Agent
+## Agent Bench
 
-The first agent is the UI/UX Developer Agent. It reviews and improves product interfaces using source files, screenshots, browser inspection, and implementation tools.
+- Documentation Agent: Creates and improves durable documentation.
+- QA Developer Agent: Verifies behavior with tests, browser checks, logs, and evidence.
+- Research Agent: Produces source-backed research for decisions.
+- UI/UX Developer Agent: Reviews and improves product interfaces with visual verification.
+- Workflow Designer Agent: Turns unclear processes into inspectable workflow contracts.
 
 ## Operating Principle
 
 Agents must not rely on taste alone. They must connect recommendations to visible evidence, product purpose, user workflow, accessibility, responsiveness, and implementation constraints.
 
+Agents may receive broad tool access only when tool use remains scoped to the agent's documented job. See `standards/tool-access.md`.
+
 ## Future Considerations
 
-Future agents may include Research Agent, QA Agent, Documentation Agent, Data Analyst Agent, and Workflow Designer Agent. New agents must be added only when their tool use and evaluation criteria are specific enough to inspect.
+Future agents may include Data Analyst Agent, Security Review Agent, Presentation Agent, Spreadsheet Agent, and Release Manager Agent. New agents must be added only when their tool use and evaluation criteria are specific enough to inspect.
