@@ -13,16 +13,16 @@ This file explains what the local engine does, what it must not do, how to run i
 The purpose of the local engine is simple:
 
 ```text
-Read fixtures. Resolve only strong evidence. Write outputs. Do not get fancy.
+Read fixtures. Resolve only strong evidence. Attach signals through links. Do not get fancy.
 ```
 
 The current engine proves this spine:
 
 ```text
-local fake GTM fixture files -> deterministic identity resolution -> local output files
+local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> local output files
 ```
 
-It now performs first-pass identity resolution for source records with strong keys. It still does not perform signal attachment logic or entity state computation.
+It now performs first-pass identity resolution for source records with strong keys and first-pass signal attachment from local signal evidence. It still does not perform entity state computation.
 
 ## How This Fits Into ChaOS
 
@@ -37,7 +37,7 @@ This engine follows:
 - `docs/order-graph/validation-checks.md`
 - `docs/order-graph/technical-requirements-and-development-roadmap.md`
 
-This identity-resolution step supports Gate 2 evidence and prepares for Gate 3. It does not attempt to pass Gate 3 or Gate 4.
+This signal-attachment step prepares and partially proves Gate 3. It does not attempt to pass Gate 4.
 
 ## What The Engine Does
 
@@ -52,7 +52,6 @@ It reads:
 - `source-records.json`
 - `signals.json`
 - `expected-entities.json`
-- `expected-signal-links.json`
 - `expected-entity-states.json`
 
 It writes deterministic local output files to:
@@ -90,13 +89,33 @@ Similar account names with missing domains must remain unresolved.
 
 The resolver must preserve unresolved cases as valid graph output. It must not treat uncertainty as failure.
 
-## What Still Uses Fixture Projection
+## Signal Attachment Rules
 
-Signal links still project from `expected-signal-links.json`.
+Signals live once and attach through generated links. Views must use links instead of duplicating signal objects.
+
+Signal attachment uses only explicit local fixture evidence:
+
+- Signal source-record references.
+- Generated entity source-record mappings.
+- Canonical domains present in source records and entities.
+- Normalized contact emails present in source records and entities.
+- Source-native sequence evidence present in source records and entities.
+
+A single signal may generate multiple links when the roles are explicit. For example, an email reply may attach to a Contact as actor, an Account as parent account, and a Sequence as source workflow.
+
+Duplicate links must be prevented by the stable tuple:
+
+```text
+signal_id + entity_id + relationship_role
+```
+
+Signals with missing or unresolved entity evidence must preserve uncertainty instead of inventing links.
+
+## What Still Uses Fixture Projection
 
 Entity states still project from `expected-entity-states.json`.
 
-Those projections remain intentional until later PRs add deterministic signal attachment and explainable state logic.
+That projection remains intentional until a later PR adds explainable entity state logic.
 
 ## What The Engine Must Not Do
 
@@ -115,8 +134,6 @@ It must not use a database.
 It must not require credentials.
 
 It must not mutate fixture input files.
-
-It must not attach signals through new logic yet.
 
 It must not compute entity state yet.
 
@@ -148,9 +165,9 @@ It includes canonical entities, unresolved source records, and explicit non-merg
 
 ### `signal-links.json`
 
-This file contains a projection of `expected-signal-links.json`.
+This file contains generated signal links from `signals.json`, generated entities, and local source-record evidence.
 
-It includes expected signal links and no-duplicate signal expectations. It also includes a warning that no signal attachment logic was performed.
+It includes generated signal links, unlinked signal notes when applicable, storage model principles, and warnings.
 
 ### `entity-states.json`
 
@@ -169,7 +186,7 @@ It includes:
 - Signal count.
 - Resolved entity count.
 - Unresolved record count.
-- Expected signal link count.
+- Generated signal link count.
 - Expected entity state count.
 - Input directory.
 - Output directory.
@@ -178,13 +195,15 @@ It includes:
 
 ## Why This Exists Before More Logic
 
-The Order Graph must prove identity behavior before it adds signal attachment, state computation, recommendations, agents, UI, or integrations.
+The Order Graph must prove identity and signal attachment behavior before it adds state computation, recommendations, agents, UI, or integrations.
 
-A small deterministic identity resolver removes ambiguity about:
+A small deterministic local engine removes ambiguity about:
 
 - Which source records can safely merge.
 - Which records must remain separate.
 - Which weak matches must remain unresolved.
+- Which signals can attach to which generated entities.
+- Which signals must remain single source objects.
 - Which output files future logic must consume.
 - Which implementation boundaries remain prohibited.
 
@@ -202,21 +221,22 @@ A reviewer may run the builder and confirm that:
 - Same-name people at different domains remain separate.
 - Similar account names with different domains remain separate.
 - Missing-domain account records remain unresolved.
-- The build summary clearly states `builder_mode: identity_resolution`.
+- Signal links are generated without duplicating signal objects.
+- A single signal can attach to multiple entities through explicit roles.
+- The build summary clearly states `builder_mode: signal_attachment`.
 
-A reviewer must reject the change if the resolver guesses weak matches, calls external systems, hides logic, or acts like a production graph engine.
+A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
 
 ## Future Considerations
 
 Future PRs may add real deterministic behavior in small steps after review gates allow it.
 
-The next likely PR is `Add signal attachment logic`.
+The next likely PR is `Add entity state computation`.
 
-That future PR must remain local-only and deterministic. It must prove that signals live once and attach to every relevant entity through explicit links without duplicating signal objects.
+That future PR must remain local-only and deterministic. It must compute state from generated entities, generated signal links, and local fixture evidence without hidden scoring, external enrichment, LLM reasoning, UI, agents, or integrations.
 
 Later PRs may add:
 
-- Duplicate-signal checks.
 - Explainable entity state computation.
 - Local validation reports.
 - Additional fixture cases.
