@@ -81,6 +81,8 @@ Canonical object definitions for:
 
 The contract may also define required fields, allowed relationship types, and traceability rules in plain language.
 
+Passing Phase 1 or Gate 1 does not approve code, real integrations, databases, UI work, or autonomous agents. It only approves moving from conceptual documentation into schema and fixture preparation.
+
 ### What Must Not Be Added Yet
 
 - Application code
@@ -93,7 +95,7 @@ The contract may also define required fields, allowed relationship types, and tr
 
 ### Critical Test Point
 
-A reviewer can map a simple GTM example into the canonical objects without guessing which object owns which responsibility.
+A reviewer can map a simple GTM or Customer Success example into the canonical objects without guessing which object owns which responsibility.
 
 ### Stop Condition
 
@@ -108,7 +110,7 @@ Prove the contract using fake/sample fixture data only.
 ### What Gets Created
 
 - Small fixture examples
-- Sample GTM source records
+- Sample source records
 - Expected entity outputs
 - Expected relationship outputs
 - Expected signal attachments
