@@ -46,6 +46,7 @@ class BuildSummary:
     generated_entity_state_count: int
     validation_check_count: int
     failed_validation_check_count: int
+    top_10_recommendation_count: int
     input_dir: str
     output_dir: str
     output_files: list[str]
