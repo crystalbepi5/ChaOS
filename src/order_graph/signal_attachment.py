@@ -38,7 +38,7 @@ def generate_signal_links(
             unlinked_signals.append(
                 {
                     "signal_id": signal.get("signal_id"),
-                    "reason": "No generated entity link found from explicit local fixture evidence.",
+                    "reason": _unlinked_reason_for_signal(signal),
                 }
             )
             continue
@@ -156,35 +156,11 @@ def _email_reply_links(signal: JsonObject, index: JsonObject) -> list[JsonObject
 
 
 def _meeting_links(signal: JsonObject, index: JsonObject) -> list[JsonObject]:
-    # The meeting fixture is outcome evidence tied to the first critical path.
-    # It has no production calendar parser; it links through prior resolved local
-    # fixture entities that the signal summary explicitly names.
-    account = index["entities_by_id"].get("ent_acct_novaworks")
-    contact = index["entities_by_id"].get("ent_contact_taylor_morgan")
-    links = []
-    if account:
-        links.append(
-            _link(
-                signal,
-                account,
-                "outcome_account",
-                "high",
-                signal.get("confidence", "high"),
-                "Meeting booked fixture names NovaWorks Labs as the account context.",
-            )
-        )
-    if contact:
-        links.append(
-            _link(
-                signal,
-                contact,
-                "meeting_participant",
-                "high",
-                signal.get("confidence", "high"),
-                "Meeting booked fixture names Taylor Morgan as the participant.",
-            )
-        )
-    return links
+    # The current meeting signal references an outcome fixture path, not a
+    # source record or structured entity reference. Summary text is not a safe
+    # structured key, so the signal must remain unlinked until the fixture
+    # supplies explicit entity evidence.
+    return []
 
 
 def _website_visit_links(signal: JsonObject, index: JsonObject) -> list[JsonObject]:
@@ -261,6 +237,12 @@ def _source_record_id_from_signal(signal: JsonObject) -> str | None:
     if not reference:
         return None
     return str(reference).rstrip("/").rsplit("/", 1)[-1]
+
+
+def _unlinked_reason_for_signal(signal: JsonObject) -> str:
+    if signal.get("signal_type") == "meeting_booked":
+        return "Meeting signal references an outcome fixture path, but no outcome-to-entity fixture exists yet."
+    return "No generated entity link found from explicit local fixture evidence."
 
 
 def _entity_for_source_record(index: JsonObject, source_record_id: str | None, entity_type: str) -> JsonObject | None:
