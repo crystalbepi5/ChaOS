@@ -1,0 +1,81 @@
+{
+  "fixture_set": "order-graph-gtm-v0",
+  "purpose": "Fake GTM signals for proving independent signal storage, signal-to-entity links, and stale or low-confidence signal handling.",
+  "signals": [
+    {
+      "signal_id": "sig_6s_intent_nova_001",
+      "signal_type": "intent_spike",
+      "source_system": "6sense-like intent source",
+      "fixture_case": "first_critical_success_path",
+      "occurred_at": "2026-01-10T14:00:00Z",
+      "observed_at": "2026-01-10T15:00:00Z",
+      "raw_payload_or_source_reference": "fixture://gtm/source-records/sr_6s_company_nova_001",
+      "normalized_summary": "NovaWorks Labs showed elevated interest in cloud security research.",
+      "strength_or_weight": "high",
+      "confidence": "medium_high",
+      "expiration_or_stale_after_rule": "30 days after observed_at",
+      "expected_state_support": true,
+      "expected_state_note": "Recent high-strength intent should support NovaWorks account priority."
+    },
+    {
+      "signal_id": "sig_out_email_reply_taylor_001",
+      "signal_type": "email_reply",
+      "source_system": "Outreach-like engagement tool",
+      "fixture_case": "signal_attachment_example",
+      "occurred_at": "2026-01-11T16:30:00Z",
+      "observed_at": "2026-01-11T16:31:00Z",
+      "raw_payload_or_source_reference": "fixture://gtm/source-records/sr_out_prospect_taylor_001",
+      "normalized_summary": "Taylor Morgan replied to the January Cloud Security Follow-up sequence and asked for meeting times.",
+      "strength_or_weight": "high",
+      "confidence": "high",
+      "expiration_or_stale_after_rule": "14 days after observed_at unless meeting is booked",
+      "expected_state_support": true,
+      "expected_state_note": "Recent reply should support NovaWorks account priority and recommended human follow-up."
+    },
+    {
+      "signal_id": "sig_calendar_meeting_nova_001",
+      "signal_type": "meeting_booked",
+      "source_system": "calendar-like fixture source",
+      "fixture_case": "first_critical_success_path",
+      "occurred_at": "2026-01-12T18:00:00Z",
+      "observed_at": "2026-01-12T18:05:00Z",
+      "raw_payload_or_source_reference": "fixture://gtm/outcomes/outcome_meeting_booked_nova_001",
+      "normalized_summary": "Meeting booked with Taylor Morgan at NovaWorks Labs after human follow-up.",
+      "strength_or_weight": "high",
+      "confidence": "high",
+      "expiration_or_stale_after_rule": "does not expire as historical outcome evidence",
+      "expected_state_support": true,
+      "expected_state_note": "Historical outcome evidence should support feedback and outcome traceability, not duplicate the email reply signal."
+    },
+    {
+      "signal_id": "sig_6s_intent_acme_001",
+      "signal_type": "intent_spike",
+      "source_system": "6sense-like intent source",
+      "fixture_case": "messy_resolvable_account_match",
+      "occurred_at": "2026-01-10T12:00:00Z",
+      "observed_at": "2026-01-10T12:30:00Z",
+      "raw_payload_or_source_reference": "fixture://gtm/source-records/sr_6s_company_acme_001",
+      "normalized_summary": "Acme showed medium interest in implementation planning content.",
+      "strength_or_weight": "medium",
+      "confidence": "medium",
+      "expiration_or_stale_after_rule": "30 days after observed_at",
+      "expected_state_support": true,
+      "expected_state_note": "Recent medium-confidence signal should support Acme state, but less strongly than NovaWorks."
+    },
+    {
+      "signal_id": "sig_web_visit_pioneer_old_001",
+      "signal_type": "website_visit",
+      "source_system": "web-analytics-like fixture source",
+      "fixture_case": "stale_or_low_confidence_signal",
+      "occurred_at": "2025-09-01T13:00:00Z",
+      "observed_at": "2025-09-01T13:05:00Z",
+      "raw_payload_or_source_reference": "fixture://gtm/source-records/sr_sf_acct_pioneer_001",
+      "normalized_summary": "A visit that may relate to Pioneer Systems was observed months before the active review window.",
+      "strength_or_weight": "low",
+      "confidence": "low",
+      "expiration_or_stale_after_rule": "30 days after observed_at",
+      "expected_state_support": false,
+      "expected_state_note": "Signal should exist for traceability but should not drive high priority because it is stale and low confidence."
+    }
+  ]
+}

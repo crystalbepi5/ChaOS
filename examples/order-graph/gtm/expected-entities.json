@@ -1,0 +1,171 @@
+{
+  "fixture_set": "order-graph-gtm-v0",
+  "purpose": "Expected canonical entities and unresolved source records for fake GTM fixture review.",
+  "canonical_entities": [
+    {
+      "entity_id": "ent_acct_novaworks",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Account",
+      "canonical_name": "NovaWorks Labs",
+      "canonical_keys": {
+        "canonical_domain": "novaworks.example",
+        "normalized_name": "novaworks labs"
+      },
+      "source_traceability": [
+        "sr_sf_acct_nova_001",
+        "sr_out_acct_nova_001",
+        "sr_6s_company_nova_001"
+      ],
+      "confidence": "high",
+      "resolution_reason": "Salesforce-like Account, Outreach-like Account, and 6sense-like Company share the same canonical domain and normalized company name.",
+      "current_state_reference": "state_acct_novaworks_priority"
+    },
+    {
+      "entity_id": "ent_contact_taylor_morgan",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Contact",
+      "canonical_name": "Taylor Morgan",
+      "canonical_keys": {
+        "normalized_email": "taylor.morgan@novaworks.example",
+        "canonical_domain": "novaworks.example"
+      },
+      "source_traceability": [
+        "sr_sf_contact_taylor_001",
+        "sr_out_prospect_taylor_001"
+      ],
+      "confidence": "high",
+      "resolution_reason": "Same normalized email resolves to the same Contact across Salesforce-like Contact and Outreach-like Prospect records.",
+      "current_state_reference": null
+    },
+    {
+      "entity_id": "ent_sequence_cloud_security_followup",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Sequence",
+      "canonical_name": "January Cloud Security Follow-up",
+      "canonical_keys": {
+        "source_system": "Outreach-like engagement tool",
+        "source_native_id": "out_fake_sequence_001"
+      },
+      "source_traceability": [
+        "sr_out_sequence_001"
+      ],
+      "confidence": "high",
+      "resolution_reason": "Single Outreach-like Sequence source record creates the source workflow entity used for signal attachment.",
+      "current_state_reference": null
+    },
+    {
+      "entity_id": "ent_acct_acme",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Account",
+      "canonical_name": "ACME Corporation",
+      "canonical_keys": {
+        "canonical_domain": "acme.com",
+        "normalized_name": "acme"
+      },
+      "source_traceability": [
+        "sr_sf_acct_acme_001",
+        "sr_out_acct_acme_001",
+        "sr_6s_company_acme_001"
+      ],
+      "confidence": "high",
+      "resolution_reason": "Messy names ACME Corporation, Acme Corp., and Acme resolve because canonical domain acme.com is strong evidence.",
+      "current_state_reference": "state_acct_acme_priority"
+    },
+    {
+      "entity_id": "ent_acct_pioneer_systems",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Account",
+      "canonical_name": "Pioneer Systems",
+      "canonical_keys": {
+        "canonical_domain": "pioneersystems.com",
+        "normalized_name": "pioneer systems"
+      },
+      "source_traceability": [
+        "sr_sf_acct_pioneer_001"
+      ],
+      "confidence": "medium_high",
+      "resolution_reason": "Record has its own canonical domain and must remain separate from similar names with different domains.",
+      "current_state_reference": "state_acct_pioneer_low_priority"
+    },
+    {
+      "entity_id": "ent_acct_pioneer_solutions",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Account",
+      "canonical_name": "Pioneer System Solutions",
+      "canonical_keys": {
+        "canonical_domain": "pioneersolutions.io",
+        "normalized_name": "pioneer system solutions"
+      },
+      "source_traceability": [
+        "sr_6s_company_pioneer_002"
+      ],
+      "confidence": "medium_high",
+      "resolution_reason": "Similar company name but different canonical domain means this must remain a separate Account from Pioneer Systems.",
+      "current_state_reference": null
+    },
+    {
+      "entity_id": "ent_contact_jordan_lee_acme",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Contact",
+      "canonical_name": "Jordan Lee",
+      "canonical_keys": {
+        "normalized_email": "jordan.lee@acme.com",
+        "canonical_domain": "acme.com"
+      },
+      "source_traceability": [
+        "sr_sf_contact_jordan_acme_001"
+      ],
+      "confidence": "high",
+      "resolution_reason": "Contact has unique email at acme.com and must not merge with same-name contact at a different company/domain.",
+      "current_state_reference": null
+    },
+    {
+      "entity_id": "ent_contact_jordan_lee_northstar",
+      "domain_id": "domain_gtm_sales",
+      "entity_type": "Contact",
+      "canonical_name": "Jordan Lee",
+      "canonical_keys": {
+        "normalized_email": "jordan.lee@northstar.example",
+        "canonical_domain": "northstar.example"
+      },
+      "source_traceability": [
+        "sr_out_prospect_jordan_northstar_001"
+      ],
+      "confidence": "high",
+      "resolution_reason": "Same name is not enough to merge people when email and company/domain differ.",
+      "current_state_reference": null
+    }
+  ],
+  "unresolved_source_records": [
+    {
+      "source_record_ids": [
+        "sr_out_acct_zenith_unknown_001",
+        "sr_sf_acct_zenith_unknown_001"
+      ],
+      "fixture_case": "missing_domain_weak_account_case",
+      "expected_status": "unresolved",
+      "reason": "Similar names with no canonical domain and no other strong key must remain unresolved. Do not guess.",
+      "unknowns_to_preserve": [
+        "canonical_domain",
+        "whether Zenith Labs and Zenith Laboratory Group are the same account",
+        "source authority for account identity"
+      ]
+    }
+  ],
+  "explicit_non_merges": [
+    {
+      "records_or_entities": [
+        "sr_sf_acct_pioneer_001",
+        "sr_6s_company_pioneer_002"
+      ],
+      "reason": "Similar names but different domains should remain separate accounts."
+    },
+    {
+      "records_or_entities": [
+        "sr_sf_contact_jordan_acme_001",
+        "sr_out_prospect_jordan_northstar_001"
+      ],
+      "reason": "Same person name but different email and company/domain should not merge."
+    }
+  ]
+}

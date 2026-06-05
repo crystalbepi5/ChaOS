@@ -1,0 +1,304 @@
+{
+  "fixture_set": "order-graph-gtm-v0",
+  "purpose": "Fake GTM source records for proving Order Graph identity resolution behavior without real customer data.",
+  "domain": {
+    "domain_id": "domain_gtm_sales",
+    "name": "GTM / Sales",
+    "business_function": "revenue generation",
+    "owner_or_responsible_team": "revenue operations",
+    "primary_objective": "prioritize accounts for human review",
+    "success_metric": "reviewed recommendations that lead to qualified meetings",
+    "allowed_entity_types": ["Account", "Contact", "Sequence"],
+    "active_rules_or_constraints": [
+      "Fake data only.",
+      "Canonical domain is strong account evidence.",
+      "Same email is strong contact evidence.",
+      "Same name without same company or email is weak person evidence.",
+      "Similar account name without domain is unresolved unless another strong key exists."
+    ]
+  },
+  "source_records": [
+    {
+      "source_record_id": "sr_sf_acct_nova_001",
+      "source_system": "Salesforce-like CRM",
+      "source_object_type": "Account",
+      "source_native_id": "sf_fake_account_001",
+      "fixture_case": "clean_account_match",
+      "raw_values": {
+        "account_name": "NovaWorks Labs",
+        "website": "https://www.novaworks.example",
+        "owner": "Fake AE One",
+        "stage": "Target"
+      },
+      "normalized_values": {
+        "normalized_name": "novaworks labs",
+        "canonical_domain": "novaworks.example"
+      },
+      "ingested_or_observed_at": "2026-01-05T09:00:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_sf_acct_nova_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_out_acct_nova_001",
+      "source_system": "Outreach-like engagement tool",
+      "source_object_type": "Account",
+      "source_native_id": "out_fake_account_001",
+      "fixture_case": "clean_account_match",
+      "raw_values": {
+        "account_name": "NovaWorks Labs",
+        "company_domain": "novaworks.example",
+        "sequence_status": "active"
+      },
+      "normalized_values": {
+        "normalized_name": "novaworks labs",
+        "canonical_domain": "novaworks.example"
+      },
+      "ingested_or_observed_at": "2026-01-05T09:05:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_out_acct_nova_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_6s_company_nova_001",
+      "source_system": "6sense-like intent source",
+      "source_object_type": "Company",
+      "source_native_id": "six_fake_company_001",
+      "fixture_case": "clean_account_match",
+      "raw_values": {
+        "company_name": "NovaWorks Labs",
+        "domain": "novaworks.example",
+        "intent_segment": "cloud-security-research"
+      },
+      "normalized_values": {
+        "normalized_name": "novaworks labs",
+        "canonical_domain": "novaworks.example"
+      },
+      "ingested_or_observed_at": "2026-01-05T09:10:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_6s_company_nova_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_sf_contact_taylor_001",
+      "source_system": "Salesforce-like CRM",
+      "source_object_type": "Contact",
+      "source_native_id": "sf_fake_contact_001",
+      "fixture_case": "clean_contact_match",
+      "raw_values": {
+        "full_name": "Taylor Morgan",
+        "email": "taylor.morgan@novaworks.example",
+        "account_name": "NovaWorks Labs"
+      },
+      "normalized_values": {
+        "normalized_name": "taylor morgan",
+        "normalized_email": "taylor.morgan@novaworks.example",
+        "canonical_domain": "novaworks.example"
+      },
+      "ingested_or_observed_at": "2026-01-05T10:00:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_sf_contact_taylor_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_out_prospect_taylor_001",
+      "source_system": "Outreach-like engagement tool",
+      "source_object_type": "Prospect",
+      "source_native_id": "out_fake_prospect_001",
+      "fixture_case": "clean_contact_match",
+      "raw_values": {
+        "full_name": "Taylor Morgan",
+        "email": "taylor.morgan@novaworks.example",
+        "company": "NovaWorks Labs",
+        "sequence_id": "seq_out_gtm_001"
+      },
+      "normalized_values": {
+        "normalized_name": "taylor morgan",
+        "normalized_email": "taylor.morgan@novaworks.example",
+        "canonical_domain": "novaworks.example"
+      },
+      "ingested_or_observed_at": "2026-01-05T10:05:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_out_prospect_taylor_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_sf_acct_acme_001",
+      "source_system": "Salesforce-like CRM",
+      "source_object_type": "Account",
+      "source_native_id": "sf_fake_account_002",
+      "fixture_case": "messy_resolvable_account_match",
+      "raw_values": {
+        "account_name": "ACME Corporation",
+        "website": "https://www.acme.com"
+      },
+      "normalized_values": {
+        "normalized_name": "acme corporation",
+        "canonical_domain": "acme.com"
+      },
+      "ingested_or_observed_at": "2026-01-06T09:00:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_sf_acct_acme_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_out_acct_acme_001",
+      "source_system": "Outreach-like engagement tool",
+      "source_object_type": "Account",
+      "source_native_id": "out_fake_account_002",
+      "fixture_case": "messy_resolvable_account_match",
+      "raw_values": {
+        "account_name": "Acme Corp.",
+        "company_domain": "acme.com"
+      },
+      "normalized_values": {
+        "normalized_name": "acme corp",
+        "canonical_domain": "acme.com"
+      },
+      "ingested_or_observed_at": "2026-01-06T09:05:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_out_acct_acme_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_6s_company_acme_001",
+      "source_system": "6sense-like intent source",
+      "source_object_type": "Company",
+      "source_native_id": "six_fake_company_002",
+      "fixture_case": "messy_resolvable_account_match",
+      "raw_values": {
+        "company_name": "Acme",
+        "domain": "www.acme.com"
+      },
+      "normalized_values": {
+        "normalized_name": "acme",
+        "canonical_domain": "acme.com"
+      },
+      "ingested_or_observed_at": "2026-01-06T09:10:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_6s_company_acme_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_sf_acct_pioneer_001",
+      "source_system": "Salesforce-like CRM",
+      "source_object_type": "Account",
+      "source_native_id": "sf_fake_account_003",
+      "fixture_case": "ambiguous_account_case",
+      "raw_values": {
+        "account_name": "Pioneer Systems",
+        "website": "https://pioneersystems.com"
+      },
+      "normalized_values": {
+        "normalized_name": "pioneer systems",
+        "canonical_domain": "pioneersystems.com"
+      },
+      "ingested_or_observed_at": "2026-01-07T09:00:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_sf_acct_pioneer_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_6s_company_pioneer_002",
+      "source_system": "6sense-like intent source",
+      "source_object_type": "Company",
+      "source_native_id": "six_fake_company_003",
+      "fixture_case": "ambiguous_account_case",
+      "raw_values": {
+        "company_name": "Pioneer System Solutions",
+        "domain": "pioneersolutions.io"
+      },
+      "normalized_values": {
+        "normalized_name": "pioneer system solutions",
+        "canonical_domain": "pioneersolutions.io"
+      },
+      "ingested_or_observed_at": "2026-01-07T09:10:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_6s_company_pioneer_002",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_sf_contact_jordan_acme_001",
+      "source_system": "Salesforce-like CRM",
+      "source_object_type": "Contact",
+      "source_native_id": "sf_fake_contact_002",
+      "fixture_case": "weak_person_match",
+      "raw_values": {
+        "full_name": "Jordan Lee",
+        "email": "jordan.lee@acme.com",
+        "account_name": "ACME Corporation"
+      },
+      "normalized_values": {
+        "normalized_name": "jordan lee",
+        "normalized_email": "jordan.lee@acme.com",
+        "canonical_domain": "acme.com"
+      },
+      "ingested_or_observed_at": "2026-01-08T09:00:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_sf_contact_jordan_acme_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_out_prospect_jordan_northstar_001",
+      "source_system": "Outreach-like engagement tool",
+      "source_object_type": "Prospect",
+      "source_native_id": "out_fake_prospect_002",
+      "fixture_case": "weak_person_match",
+      "raw_values": {
+        "full_name": "Jordan Lee",
+        "email": "jordan.lee@northstar.example",
+        "company": "Northstar Example"
+      },
+      "normalized_values": {
+        "normalized_name": "jordan lee",
+        "normalized_email": "jordan.lee@northstar.example",
+        "canonical_domain": "northstar.example"
+      },
+      "ingested_or_observed_at": "2026-01-08T09:05:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_out_prospect_jordan_northstar_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_out_acct_zenith_unknown_001",
+      "source_system": "Outreach-like engagement tool",
+      "source_object_type": "Account",
+      "source_native_id": "out_fake_account_003",
+      "fixture_case": "missing_domain_weak_account_case",
+      "raw_values": {
+        "account_name": "Zenith Labs",
+        "company_domain": null
+      },
+      "normalized_values": {
+        "normalized_name": "zenith labs",
+        "canonical_domain": null
+      },
+      "ingested_or_observed_at": "2026-01-09T09:00:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_out_acct_zenith_unknown_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_sf_acct_zenith_unknown_001",
+      "source_system": "Salesforce-like CRM",
+      "source_object_type": "Account",
+      "source_native_id": "sf_fake_account_004",
+      "fixture_case": "missing_domain_weak_account_case",
+      "raw_values": {
+        "account_name": "Zenith Laboratory Group",
+        "website": null
+      },
+      "normalized_values": {
+        "normalized_name": "zenith laboratory group",
+        "canonical_domain": null
+      },
+      "ingested_or_observed_at": "2026-01-09T09:05:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_sf_acct_zenith_unknown_001",
+      "status": "active"
+    },
+    {
+      "source_record_id": "sr_out_sequence_001",
+      "source_system": "Outreach-like engagement tool",
+      "source_object_type": "Sequence",
+      "source_native_id": "out_fake_sequence_001",
+      "fixture_case": "signal_attachment_example",
+      "raw_values": {
+        "sequence_name": "January Cloud Security Follow-up",
+        "sequence_status": "active"
+      },
+      "normalized_values": {
+        "normalized_name": "january cloud security follow-up"
+      },
+      "ingested_or_observed_at": "2026-01-05T08:30:00Z",
+      "source_reference": "fixture://gtm/source-records/sr_out_sequence_001",
+      "status": "active"
+    }
+  ]
+}
