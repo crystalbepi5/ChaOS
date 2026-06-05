@@ -113,6 +113,8 @@ signal_id + entity_id + relationship_role
 
 Signals with missing or unresolved entity evidence must preserve uncertainty instead of inventing links.
 
+Meeting signals that reference only an outcome fixture path must remain unlinked until the fixture supplies structured entity evidence.
+
 ## What Still Uses Fixture Projection
 
 Entity states still project from `expected-entity-states.json`.
@@ -224,7 +226,8 @@ A reviewer may run the builder and confirm that:
 - Similar account names with different domains remain separate.
 - Missing-domain account records remain unresolved.
 - Signal links are generated without duplicating signal objects.
-- A single signal can attach to multiple entities through explicit roles.
+- A single signal can attach to multiple entities through explicit roles when structured evidence exists.
+- The meeting signal remains unlinked because no outcome-to-entity fixture exists yet.
 - The build summary clearly states `builder_mode: signal_attachment`.
 
 A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
