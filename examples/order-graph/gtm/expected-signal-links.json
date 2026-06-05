@@ -1,0 +1,104 @@
+{
+  "fixture_set": "order-graph-gtm-v0",
+  "purpose": "Expected SignalEntityLink outputs proving that signals live once and attach to relevant entities through links.",
+  "storage_model_principle": [
+    "Signals live once as independent time-based objects.",
+    "Signals attach to every relevant entity through SignalEntityLink.",
+    "Entity views may show signals under accounts, people, opportunities, workflows, or other objects without duplicating the underlying signal."
+  ],
+  "expected_signal_links": [
+    {
+      "link_id": "link_intent_nova_to_account",
+      "signal_id": "sig_6s_intent_nova_001",
+      "entity_id": "ent_acct_novaworks",
+      "relationship_role": "target_account",
+      "relevance_weight": "high",
+      "evidence_or_matching_rule": "Signal source company domain novaworks.example matches canonical Account domain.",
+      "confidence": "medium_high"
+    },
+    {
+      "link_id": "link_reply_taylor_to_contact_actor",
+      "signal_id": "sig_out_email_reply_taylor_001",
+      "entity_id": "ent_contact_taylor_morgan",
+      "relationship_role": "actor",
+      "relevance_weight": "high",
+      "evidence_or_matching_rule": "Reply came from taylor.morgan@novaworks.example, which resolves to Contact Taylor Morgan.",
+      "confidence": "high"
+    },
+    {
+      "link_id": "link_reply_taylor_to_account_parent",
+      "signal_id": "sig_out_email_reply_taylor_001",
+      "entity_id": "ent_acct_novaworks",
+      "relationship_role": "parent_account",
+      "relevance_weight": "high",
+      "evidence_or_matching_rule": "Contact email domain novaworks.example and source prospect company resolve to Account NovaWorks Labs.",
+      "confidence": "high"
+    },
+    {
+      "link_id": "link_reply_taylor_to_sequence_workflow",
+      "signal_id": "sig_out_email_reply_taylor_001",
+      "entity_id": "ent_sequence_cloud_security_followup",
+      "relationship_role": "source_workflow",
+      "relevance_weight": "medium",
+      "evidence_or_matching_rule": "Outreach-like prospect record references seq_out_gtm_001, which resolves to the sequence entity.",
+      "confidence": "high"
+    },
+    {
+      "link_id": "link_meeting_nova_to_account",
+      "signal_id": "sig_calendar_meeting_nova_001",
+      "entity_id": "ent_acct_novaworks",
+      "relationship_role": "outcome_account",
+      "relevance_weight": "high",
+      "evidence_or_matching_rule": "Meeting was booked after reply from Contact linked to NovaWorks Account.",
+      "confidence": "high"
+    },
+    {
+      "link_id": "link_meeting_nova_to_contact",
+      "signal_id": "sig_calendar_meeting_nova_001",
+      "entity_id": "ent_contact_taylor_morgan",
+      "relationship_role": "meeting_participant",
+      "relevance_weight": "high",
+      "evidence_or_matching_rule": "Taylor Morgan is the fake meeting participant.",
+      "confidence": "high"
+    },
+    {
+      "link_id": "link_intent_acme_to_account",
+      "signal_id": "sig_6s_intent_acme_001",
+      "entity_id": "ent_acct_acme",
+      "relationship_role": "target_account",
+      "relevance_weight": "medium",
+      "evidence_or_matching_rule": "Signal source domain acme.com matches canonical Account domain.",
+      "confidence": "medium"
+    },
+    {
+      "link_id": "link_old_web_visit_to_pioneer",
+      "signal_id": "sig_web_visit_pioneer_old_001",
+      "entity_id": "ent_acct_pioneer_systems",
+      "relationship_role": "possible_account_activity",
+      "relevance_weight": "low",
+      "evidence_or_matching_rule": "Source reference points to Pioneer Systems record, but signal is stale and low confidence.",
+      "confidence": "low"
+    }
+  ],
+  "expected_no_duplicate_signals": [
+    {
+      "signal_id": "sig_out_email_reply_taylor_001",
+      "expected_single_storage_object": true,
+      "expected_visible_from_entities": [
+        "ent_contact_taylor_morgan",
+        "ent_acct_novaworks",
+        "ent_sequence_cloud_security_followup"
+      ],
+      "reason": "The email reply affects Contact, Account, and Sequence views but must remain one Signal object."
+    },
+    {
+      "signal_id": "sig_calendar_meeting_nova_001",
+      "expected_single_storage_object": true,
+      "expected_visible_from_entities": [
+        "ent_acct_novaworks",
+        "ent_contact_taylor_morgan"
+      ],
+      "reason": "Meeting booked evidence can appear in account and contact views without duplicating the signal."
+    }
+  ]
+}
