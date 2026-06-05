@@ -19,8 +19,6 @@ ChaOS/
     core-agent-model.md
     core-system-model.md
     core-workflow-model.md
-    decision-records/
-      0001-order-graph-reference-implementation.md
     decisions/
       0003-repository-alignment.md
       0004-authority-and-implementation-boundary.md
@@ -40,10 +38,6 @@ ChaOS/
       0006-context-sufficiency-test-community-garden.md
       README.md
     meta-agent.md
-    order-graph/
-      overview.md
-      build-roadmap.md
-      testing-gates.md
     repository-structure.md
   schemas/
     agent.schema.json
@@ -138,16 +132,6 @@ Examples:
 
 Future consideration: The docs directory may later be split into constitution, patterns, and governance if the repository grows.
 
-### docs/decision-records/
-
-The decision-records directory contains approved decision records for implementation-track boundaries that must remain separate from exploratory journal entries.
-
-Examples:
-
-- `0001-order-graph-reference-implementation.md` approves the controlled Order Graph reference implementation track while prohibiting production integrations, real customer data ingestion, databases, frontends, autonomous actions, and vendor lock-in at this stage.
-
-Future consideration: If decision records remain split between `docs/decisions/` and `docs/decision-records/`, ChaOS must clarify whether the distinction is historical, structural, or temporary.
-
 ### docs/decisions/
 
 The decisions directory contains approved decision records. These records explain accepted changes, rationale, alternatives, consequences, and feedback plans.
@@ -167,18 +151,6 @@ Examples:
 - A Meta-Agent review report.
 
 Future consideration: Journal entries may later use review-type prefixes if numbered files become too vague.
-
-### docs/order-graph/
-
-The order-graph directory contains documentation rails for the Order Graph reference implementation track.
-
-Examples:
-
-- `overview.md` defines the Order Graph and its relationship to ChaOS.
-- `build-roadmap.md` defines the controlled phase sequence.
-- `testing-gates.md` defines the strict gates that must stop implementation from outrunning understanding.
-
-Future consideration: This directory may later include contracts, fixtures, or schema documentation only after the relevant testing gates allow that work.
 
 ## schemas/
 
