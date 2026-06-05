@@ -21,7 +21,6 @@ class FixtureBundle:
     source_records: JsonObject
     signals: JsonObject
     expected_entities: JsonObject
-    expected_signal_links: JsonObject
     expected_entity_states: JsonObject
 
 
@@ -46,7 +45,7 @@ class BuildSummary:
     signal_count: int
     resolved_entity_count: int
     unresolved_record_count: int
-    expected_signal_link_count: int
+    generated_signal_link_count: int
     expected_entity_state_count: int
     input_dir: str
     output_dir: str
