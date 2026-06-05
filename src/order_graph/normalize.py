@@ -1,7 +1,8 @@
-"""Tiny normalization helpers for future deterministic Order Graph logic.
+"""Tiny normalization helpers for deterministic Order Graph fixture logic.
 
-These helpers are intentionally small. They must not become identity resolution,
-fuzzy matching, enrichment, or vendor-specific business logic in this PR.
+These helpers support local fixture identity resolution. They must not become
+fuzzy matching, enrichment, vendor-specific business logic, or production data
+normalization.
 """
 
 from __future__ import annotations
