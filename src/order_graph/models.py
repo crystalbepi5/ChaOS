@@ -20,8 +20,6 @@ class FixtureBundle:
 
     source_records: JsonObject
     signals: JsonObject
-    expected_entities: JsonObject
-    expected_entity_states: JsonObject
 
 
 @dataclass(frozen=True)
@@ -46,7 +44,7 @@ class BuildSummary:
     resolved_entity_count: int
     unresolved_record_count: int
     generated_signal_link_count: int
-    expected_entity_state_count: int
+    generated_entity_state_count: int
     input_dir: str
     output_dir: str
     output_files: list[str]

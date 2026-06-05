@@ -4,8 +4,8 @@ This module proves this spine:
 
     local fake fixtures -> deterministic local output files
 
-This PR adds first-pass signal attachment for explicit local fixture evidence.
-Entity states remain projected fixture expectations until later gates.
+This PR adds first-pass entity state computation from explicit local fixture
+evidence. Entity states must explain themselves without hidden scoring.
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
+from .entity_state import compute_entity_states
 from .identity import resolve_entities_from_source_records
 from .models import BuildPaths, BuildSummary, FixtureBundle, JsonObject
 from .signal_attachment import generate_signal_links
@@ -26,8 +27,6 @@ DEFAULT_OUTPUT_DIR = REPO_ROOT / "outputs" / "order-graph" / "gtm"
 INPUT_FILES = {
     "source_records": "source-records.json",
     "signals": "signals.json",
-    "expected_entities": "expected-entities.json",
-    "expected_entity_states": "expected-entity-states.json",
 }
 
 OUTPUT_FILES = {
@@ -43,7 +42,8 @@ BUILD_WARNINGS = [
     "Contact-like records merge by normalized email only.",
     "Missing-domain account-like records remain unresolved.",
     "Signal links are generated from local signals and resolved entities.",
-    "Entity states are still projected from expected fixture files.",
+    "Entity states are generated from resolved entities, signal links, and local fixture evidence.",
+    "No numeric scoring or hidden weighting is used for entity state.",
     "No external APIs, LLMs, databases, credentials, integrations, UI, agents, or deployment work are used.",
 ]
 
@@ -75,23 +75,7 @@ def load_fixture_bundle(input_dir: Path) -> FixtureBundle:
     return FixtureBundle(
         source_records=load_json(input_dir / INPUT_FILES["source_records"]),
         signals=load_json(input_dir / INPUT_FILES["signals"]),
-        expected_entities=load_json(input_dir / INPUT_FILES["expected_entities"]),
-        expected_entity_states=load_json(input_dir / INPUT_FILES["expected_entity_states"]),
     )
-
-
-def project_entity_states(expected_entity_states: JsonObject) -> JsonObject:
-    """Project expected entity-state fixture data into output shape."""
-
-    return {
-        "builder_mode": "signal_attachment",
-        "source_fixture": INPUT_FILES["expected_entity_states"],
-        "warning": "Projected expected entity states only; no state computation was performed.",
-        "fixture_set": expected_entity_states.get("fixture_set"),
-        "expected_entity_states": expected_entity_states.get("expected_entity_states", []),
-        "expected_top_10_fixture_preview": expected_entity_states.get("expected_top_10_fixture_preview", []),
-        "explicit_state_guardrails": expected_entity_states.get("explicit_state_guardrails", []),
-    }
 
 
 def count_unresolved_records(entities_output: JsonObject) -> int:
@@ -112,17 +96,18 @@ def make_build_summary(
     fixtures: FixtureBundle,
     entities_output: JsonObject,
     signal_links_output: JsonObject,
+    entity_states_output: JsonObject,
 ) -> BuildSummary:
     """Create a deterministic local build summary."""
 
     return BuildSummary(
-        builder_mode="signal_attachment",
+        builder_mode="entity_state_computation",
         source_record_count=len(fixtures.source_records.get("source_records", [])),
         signal_count=len(fixtures.signals.get("signals", [])),
         resolved_entity_count=len(entities_output.get("canonical_entities", [])),
         unresolved_record_count=count_unresolved_records(entities_output),
         generated_signal_link_count=len(signal_links_output.get("generated_signal_links", [])),
-        expected_entity_state_count=len(fixtures.expected_entity_states.get("expected_entity_states", [])),
+        generated_entity_state_count=len(entity_states_output.get("computed_entity_states", [])),
         input_dir=str(paths.input_dir.as_posix()),
         output_dir=str(paths.output_dir.as_posix()),
         output_files=[
@@ -150,15 +135,18 @@ def build_graph_from_fixtures(
         entities_output,
         fixtures.source_records,
     )
+    entity_states_output = compute_entity_states(
+        entities_output,
+        signal_links_output,
+        fixtures.signals,
+        fixtures.source_records,
+    )
 
     write_json(paths.output_dir / OUTPUT_FILES["entities"], entities_output)
     write_json(paths.output_dir / OUTPUT_FILES["signal_links"], signal_links_output)
-    write_json(
-        paths.output_dir / OUTPUT_FILES["entity_states"],
-        project_entity_states(fixtures.expected_entity_states),
-    )
+    write_json(paths.output_dir / OUTPUT_FILES["entity_states"], entity_states_output)
 
-    summary = make_build_summary(paths, fixtures, entities_output, signal_links_output)
+    summary = make_build_summary(paths, fixtures, entities_output, signal_links_output, entity_states_output)
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
 

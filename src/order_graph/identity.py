@@ -98,7 +98,7 @@ def resolve_entities_from_source_records(source_fixture: JsonObject) -> JsonObje
     return {
         "builder_mode": "identity_resolution",
         "source_fixture": "source-records.json",
-        "warning": "Entities are resolved from strong deterministic fixture keys only; signal links and entity states are not computed in this PR.",
+        "warning": "Entities are resolved from strong deterministic fixture keys only.",
         "fixture_set": source_fixture.get("fixture_set"),
         "canonical_entities": canonical_entities,
         "unresolved_source_records": unresolved_source_records,
