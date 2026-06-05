@@ -4,8 +4,8 @@ This module proves this spine:
 
     local fake fixtures -> deterministic local output files
 
-This PR adds first-pass entity state computation from explicit local fixture
-evidence. Entity states must explain themselves without hidden scoring.
+This PR adds the first deterministic top-10 account workflow from generated
+entity states and local validation evidence.
 """
 
 from __future__ import annotations
@@ -19,6 +19,7 @@ from .entity_state import compute_entity_states
 from .identity import resolve_entities_from_source_records
 from .models import BuildPaths, BuildSummary, FixtureBundle, JsonObject
 from .signal_attachment import generate_signal_links
+from .top_10_workflow import generate_top_10_account_workflow
 from .validation_report import generate_validation_report
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -35,6 +36,7 @@ OUTPUT_FILES = {
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
     "validation_report": "validation-report.json",
+    "top_10_accounts": "top-10-accounts.json",
     "build_summary": "build-summary.json",
 }
 
@@ -46,8 +48,9 @@ BUILD_WARNINGS = [
     "Signal links are generated from local signals and resolved entities.",
     "Entity states are generated from resolved entities, signal links, and local fixture evidence.",
     "Validation reports are generated from local outputs only.",
+    "Top-10 account recommendations are generated for human review only.",
     "No numeric scoring or hidden weighting is used for entity state.",
-    "No external APIs, LLMs, databases, credentials, integrations, UI, agents, or deployment work are used.",
+    "No outreach automation, CRM writes, external APIs, LLMs, databases, credentials, integrations, UI, agents, or deployment work are used.",
 ]
 
 
@@ -101,6 +104,7 @@ def make_build_summary(
     signal_links_output: JsonObject,
     entity_states_output: JsonObject,
     validation_report_output: JsonObject,
+    top_10_output: JsonObject,
 ) -> BuildSummary:
     """Create a deterministic local build summary."""
 
@@ -114,6 +118,7 @@ def make_build_summary(
         generated_entity_state_count=len(entity_states_output.get("computed_entity_states", [])),
         validation_check_count=int(validation_report_output.get("check_count", 0)),
         failed_validation_check_count=int(validation_report_output.get("failed_check_count", 0)),
+        top_10_recommendation_count=int(top_10_output.get("recommendation_count", 0)),
         input_dir=str(paths.input_dir.as_posix()),
         output_dir=str(paths.output_dir.as_posix()),
         output_files=[
@@ -121,6 +126,7 @@ def make_build_summary(
             OUTPUT_FILES["signal_links"],
             OUTPUT_FILES["entity_states"],
             OUTPUT_FILES["validation_report"],
+            OUTPUT_FILES["top_10_accounts"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=BUILD_WARNINGS,
@@ -154,11 +160,17 @@ def build_graph_from_fixtures(
         entity_states_output,
         fixtures.signals,
     )
+    top_10_output = generate_top_10_account_workflow(
+        entities_output,
+        entity_states_output,
+        validation_report_output,
+    )
 
     write_json(paths.output_dir / OUTPUT_FILES["entities"], entities_output)
     write_json(paths.output_dir / OUTPUT_FILES["signal_links"], signal_links_output)
     write_json(paths.output_dir / OUTPUT_FILES["entity_states"], entity_states_output)
     write_json(paths.output_dir / OUTPUT_FILES["validation_report"], validation_report_output)
+    write_json(paths.output_dir / OUTPUT_FILES["top_10_accounts"], top_10_output)
 
     summary = make_build_summary(
         paths,
@@ -167,6 +179,7 @@ def build_graph_from_fixtures(
         signal_links_output,
         entity_states_output,
         validation_report_output,
+        top_10_output,
     )
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
