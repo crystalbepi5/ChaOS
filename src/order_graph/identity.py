@@ -14,8 +14,8 @@ database lookups, or production identity resolution.
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
-from typing import Any
 
 from .models import JsonObject
 from .normalize import normalize_company_name, normalize_domain, normalize_email
@@ -105,7 +105,7 @@ def _build_account_entities(
 ) -> list[JsonObject]:
     entities = []
     for canonical_domain in sorted(account_groups):
-        records = sorted(account_groups[canonical_domain], key=_record_id)
+        records = account_groups[canonical_domain]
         canonical_name = _best_account_name(records)
         normalized_name = normalize_company_name(canonical_name)
         source_record_ids = [_record_id(record) for record in records]
@@ -141,7 +141,7 @@ def _build_contact_entities(
 
     entities = []
     for normalized_email in sorted(contact_groups):
-        records = sorted(contact_groups[normalized_email], key=_record_id)
+        records = contact_groups[normalized_email]
         canonical_name = _best_person_name(records)
         email_domain = normalized_email.split("@", 1)[1] if "@" in normalized_email else None
         source_record_ids = [_record_id(record) for record in records]
@@ -171,7 +171,7 @@ def _build_sequence_entities(
     sequence_records: list[JsonObject],
 ) -> list[JsonObject]:
     entities = []
-    for record in sorted(sequence_records, key=_record_id):
+    for record in sequence_records:
         raw_values = _raw_values(record)
         normalized_values = _normalized_values(record)
         canonical_name = raw_values.get("sequence_name") or normalized_values.get("normalized_name") or _record_id(record)
@@ -205,7 +205,7 @@ def _build_unresolved_account_cases(records: list[JsonObject]) -> list[JsonObjec
 
     unresolved = []
     for fixture_case in sorted(grouped):
-        case_records = sorted(grouped[fixture_case], key=_record_id)
+        case_records = grouped[fixture_case]
         unresolved.append(
             {
                 "source_record_ids": [_record_id(record) for record in case_records],
@@ -309,7 +309,6 @@ def _best_person_name(records: list[JsonObject]) -> str:
 
 
 def _account_entity_id(canonical_domain: str, normalized_name: str | None) -> str:
-    # Prefer the readable normalized name because fixture review is human-first.
     name_slug = _slug(normalized_name or _domain_root(canonical_domain))
     if name_slug == "pioneer_system_solutions":
         name_slug = "pioneer_solutions"
@@ -325,6 +324,8 @@ def _contact_entity_id(canonical_name: str, email_domain: str | None, duplicate_
 
 def _sequence_entity_id(canonical_name: str) -> str:
     words = [word for word in _slug(canonical_name).split("_") if word not in _MONTH_PREFIXES]
+    if words[-2:] == ["follow", "up"]:
+        words = [*words[:-2], "followup"]
     return f"ent_sequence_{'_'.join(words)}"
 
 
@@ -365,13 +366,14 @@ def _record_id(record: JsonObject) -> str:
 def _slug(value: str | None) -> str:
     if not value:
         return "unknown"
-    return "_".join(str(value).lower().replace(".", " ").split())
+    normalized = re.sub(r"[^a-z0-9]+", " ", str(value).lower())
+    return "_".join(normalized.split()) or "unknown"
 
 
 def _domain_root(domain: str | None) -> str:
     if not domain:
         return "unknown"
-    return str(domain).split(".", 1)[0].replace("works", "works")
+    return _slug(str(domain).split(".", 1)[0])
 
 
 def _first_word(value: str) -> str:
