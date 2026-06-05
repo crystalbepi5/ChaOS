@@ -146,15 +146,19 @@ Examples:
 
 - `0001-order-graph-reference-implementation.md` approves the controlled Order Graph reference implementation track while prohibiting production integrations, real customer data ingestion, databases, frontends, autonomous actions, and vendor lock-in at this stage.
 
+Current boundary: ChaOS currently contains both `docs/decision-records/` and `docs/decisions/`. Until a future cleanup decision is made, new formal architecture decision records must use `docs/decision-records/`. The `docs/decisions/` folder must not be expanded without a decision record clarifying its purpose.
+
 Future consideration: If decision records remain split between `docs/decisions/` and `docs/decision-records/`, ChaOS must clarify whether the distinction is historical, structural, or temporary.
 
 ### docs/decisions/
 
-The decisions directory contains approved decision records. These records explain accepted changes, rationale, alternatives, consequences, and feedback plans.
+The decisions directory contains earlier decision records. These records explain accepted changes, rationale, alternatives, consequences, and feedback plans.
 
 Examples:
 
 - A decision record accepting repository alignment after a Meta-Agent review.
+
+Current boundary: This folder must not receive new formal architecture decision records until ChaOS clarifies the relationship between `docs/decisions/` and `docs/decision-records/` through an explicit decision record.
 
 Future consideration: Decision records may later receive an index if the directory becomes difficult to scan.
 

@@ -205,6 +205,48 @@ Signals then attach to the account and to other relevant entities. For example, 
 
 The account state may compute a priority score or recommended next action, but the reason must remain visible. The state must show which source records, signals, and outcomes contributed to the recommendation.
 
+## Customer Success Example
+
+Domain: Customer Success
+
+Entity: Customer
+
+Source records:
+
+- CRM Account
+- Support account
+- Product workspace
+- Contract record
+
+Signals:
+
+- Product usage drop
+- Support ticket escalation
+- Renewal date approaching
+- New executive sponsor
+- NPS response
+
+State:
+
+- Health score
+- Renewal risk
+- Active issues
+- Expansion potential
+- Recommended next action
+
+Outcome:
+
+- Renewal saved
+- Expansion created
+- Churned
+- Support issue resolved
+
+In this example, the customer may appear across commercial, support, product, and contract systems. The Order Graph keeps those source records traceable while resolving them into one durable customer entity when the evidence supports that resolution.
+
+Signals attach to the customer and to other relevant entities, such as support tickets, product workspaces, stakeholders, or renewal workflows. The customer state must explain why the customer is healthy, at risk, ready for expansion, or in need of review.
+
+This example keeps the Order Graph portable. The model must serve business understanding across domains, not only GTM or sales prioritization.
+
 ## Org-Wide Understanding Before Automation
 
 The Order Graph supports org-wide understanding before it supports automation or AI agents.
@@ -225,7 +267,9 @@ Only after those gates pass may future work consider real integrations, automati
 
 A sales leader wants to know which accounts deserve attention today. The Order Graph can combine source records, signals, states, outcomes, and feedback to produce a reviewable top-10 account recommendation.
 
-A future maintainer wants to understand why an account was prioritized. The Order Graph can trace the recommendation back to source records, signals, state computation, decisions, actions, outcomes, and feedback.
+A customer success leader wants to identify customers at renewal risk. The Order Graph can combine usage signals, support escalations, stakeholder changes, renewal dates, outcomes, and feedback into a reviewable recommendation.
+
+A future maintainer wants to understand why an account or customer was prioritized. The Order Graph can trace the recommendation back to source records, signals, state computation, decisions, actions, outcomes, and feedback.
 
 A reviewer finds a bad recommendation. The graph can preserve the correction as feedback instead of hiding the failure in a model prompt or dashboard note.
 

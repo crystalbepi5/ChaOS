@@ -72,25 +72,31 @@ Confirm that the Order Graph reference implementation track has an approved boun
 - Autonomous agents
 - Vendor-specific implementation choices
 
-## Gate 1: Core Schemas Validate
+## Gate 1: Core Contracts Validate
 
 ### Purpose
 
-Confirm that the canonical Order Graph objects can be represented by inspectable contracts.
+Confirm that the canonical Order Graph objects can be represented by inspectable plain-language contracts.
+
+Contracts are plain-language definitions of required objects, fields, relationships, examples, and validation expectations. These may later become JSON schemas, database schemas, or API contracts, but Gate 1 does not require implementation artifacts.
+
+Passing Gate 1 does not approve code, real integrations, databases, UI work, or autonomous agents. It only approves moving from conceptual documentation into schema and fixture preparation.
 
 ### Required Evidence
 
-- Canonical object definitions for Domain, Entity, SourceRecord, EntityRelationship, Signal, EntityState, Decision, Action, Outcome, and Feedback
-- Schema or contract validation method when schemas are introduced
-- Example objects that pass validation
-- Example invalid objects that fail validation
+- Plain-language contract definitions for Domain, Entity, SourceRecord, EntityRelationship, Signal, EntityState, Decision, Action, Outcome, and Feedback
+- Required fields and relationship responsibilities for each object
+- Example objects that satisfy the contracts
+- Example invalid objects that fail the stated validation expectations
+- Traceability expectations that preserve source references
 
 ### Pass Criteria
 
 - Required fields are clear.
 - Object responsibilities do not overlap confusingly.
-- Validation catches missing or malformed required fields.
+- Validation expectations catch missing or malformed required fields.
 - Contracts preserve source references and traceability.
+- The contracts can be reviewed without reading code or schemas.
 
 ### Fail Criteria
 
@@ -98,12 +104,14 @@ Confirm that the canonical Order Graph objects can be represented by inspectable
 - Signal and EntityState are confused.
 - Decision and Action are confused.
 - Contracts depend on vendor-specific fields as core requirements.
-- Validation cannot be inspected by a human.
+- Validation expectations cannot be inspected by a human.
+- The gate requires JSON schemas, database schemas, API contracts, or source code before plain-language contracts are accepted.
 
 ### Work Allowed After Pass
 
-- Create fixture-only source records.
-- Create expected fixture outputs.
+- Prepare fixture-only source records.
+- Prepare expected fixture outputs.
+- Prepare schema proposals when justified by the accepted contracts.
 - Test resolution against fake/sample data.
 
 ### Work Still Prohibited
