@@ -13,16 +13,16 @@ This file explains what the local engine does, what it must not do, how to run i
 The purpose of the local engine is simple:
 
 ```text
-Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Do not get fancy.
+Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Validate locally. Do not get fancy.
 ```
 
 The current engine proves this spine:
 
 ```text
-local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local output files
+local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local validation report -> local output files
 ```
 
-It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, and first-pass entity state computation from generated graph outputs.
+It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, first-pass entity state computation from generated graph outputs, and a local validation report over the generated outputs.
 
 ## How This Fits Into ChaOS
 
@@ -37,7 +37,7 @@ This engine follows:
 - `docs/order-graph/validation-checks.md`
 - `docs/order-graph/technical-requirements-and-development-roadmap.md`
 
-This entity-state step prepares and partially proves Gate 4.
+This validation-report step collects local evidence before Gate 5 workflow work begins.
 
 ## What The Engine Does
 
@@ -67,6 +67,7 @@ It writes:
 - `entities.json`
 - `signal-links.json`
 - `entity-states.json`
+- `validation-report.json`
 - `build-summary.json`
 
 ## Identity Resolution Rules
@@ -113,6 +114,24 @@ Unlinked signals must not support entity state until structured entity evidence 
 
 Stale or low-confidence signals may remain traceable without raising priority.
 
+## Local Validation Report Rules
+
+The validation report must validate generated outputs only.
+
+The validation report may check:
+
+- Generated signal links reference generated entities.
+- Signal link tuples are unique.
+- The email reply signal attaches to multiple entities through links.
+- The meeting signal remains unlinked until structured entity evidence exists.
+- Entity states reference generated entities or preserve unresolved identity.
+- Entity state explanation inputs reference local signals and generated links.
+- Entity states do not use numeric scores.
+- Stale or low-confidence signals do not drive high-priority state.
+- Expected fixture projection keys are absent from generated state output.
+
+The validation report must not call external systems, use LLM judgment, introduce hidden scoring, rank accounts, recommend actions beyond existing state text, or imply production readiness.
+
 ## Signal Attachment Rules
 
 Signals live once and attach through generated links. Views must use links instead of duplicating signal objects.
@@ -157,6 +176,8 @@ It must not mutate fixture input files.
 
 It must not compute entity state with hidden numeric scoring or hidden weighting.
 
+It must not validate outputs with hidden judgment or external systems.
+
 It must not create UI, agents, deployment configuration, real integrations, or production behavior.
 
 ## How To Run It
@@ -195,6 +216,12 @@ This file contains generated entity state computation output.
 
 It includes computed entity states, visible state rules, ranked state preview, preserved unlinked signals, and warnings.
 
+### `validation-report.json`
+
+This file contains deterministic local validation results for generated entities, signal links, and entity states.
+
+It includes pass or fail status, check count, failed check count, individual check results, observed evidence, and warnings.
+
 ### `build-summary.json`
 
 This file summarizes the run.
@@ -208,6 +235,8 @@ It includes:
 - Unresolved record count.
 - Generated signal link count.
 - Generated entity state count.
+- Validation check count.
+- Failed validation check count.
 - Input directory.
 - Output directory.
 - Output files.
@@ -226,6 +255,7 @@ A small deterministic local engine removes ambiguity about:
 - Which signals must remain single source objects.
 - Which states are supported by generated links and fixture evidence.
 - Which states preserve missing or weak evidence.
+- Which generated outputs pass local validation checks.
 - Which output files future logic must consume.
 - Which implementation boundaries remain prohibited.
 
@@ -248,21 +278,22 @@ A reviewer may run the builder and confirm that:
 - The meeting signal remains unlinked because no outcome-to-entity fixture exists yet.
 - Entity states are generated without reading `expected-entity-states.json`.
 - Entity states use visible rule labels instead of numeric scores.
+- The validation report passes with zero failed checks.
 - The build summary clearly states `builder_mode: entity_state_computation`.
 
-A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
+A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if validation relies on hidden judgment, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
 
 ## Future Considerations
 
 Future PRs may add real deterministic behavior in small steps after review gates allow it.
 
-The next likely PR is `Add local validation report`.
+The next likely PR is `Add top-10 account workflow`.
 
-That future PR must remain local-only and deterministic. It must validate generated entities, generated signal links, and generated entity states without external enrichment, LLM reasoning, UI, agents, or integrations.
+That future PR must remain local-only and deterministic. It must produce recommendations from generated entity states and local validation evidence without automatic outreach, CRM writes, UI, agents, integrations, or hidden ranking logic.
 
 Later PRs may add:
 
-- Local validation reports.
+- Top-10 recommendation output.
 - Additional fixture cases.
 
 Each future PR must preserve traceability, inspectability, and the gated Order Graph build sequence.
