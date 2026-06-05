@@ -54,6 +54,8 @@ It reads:
 - `expected-entities.json`
 - `expected-entity-states.json`
 
+It must not read `expected-signal-links.json` to produce output links. That fixture may remain available as a human review reference, but `signal-links.json` must be generated from `signals.json`, resolved entities, and explicit local source-record evidence.
+
 It writes deterministic local output files to:
 
 ```text
