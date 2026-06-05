@@ -29,7 +29,7 @@ def generate_top_10_account_workflow(
     if validation_passed:
         account_names = _account_names_by_id(entities_output)
         ranked_states = sorted(
-            _recommendable_account_states(entity_states_output),
+            _recommendable_account_states_for_accounts(entity_states_output, account_names),
             key=_recommendation_sort_key,
         )
         recommendations = [
@@ -75,6 +75,13 @@ def generate_top_10_account_workflow(
 
 
 def _recommendable_account_states(entity_states_output: JsonObject) -> list[JsonObject]:
+    return _recommendable_account_states_for_accounts(entity_states_output, None)
+
+
+def _recommendable_account_states_for_accounts(
+    entity_states_output: JsonObject,
+    account_names: dict[str, str] | None,
+) -> list[JsonObject]:
     states = entity_states_output.get("computed_entity_states", [])
     if not isinstance(states, list):
         return []
@@ -84,6 +91,7 @@ def _recommendable_account_states(entity_states_output: JsonObject) -> list[Json
         if isinstance(state, dict)
         and state.get("entity_id")
         and state.get("priority_band") in PRIORITY_ORDER
+        and (account_names is None or str(state.get("entity_id")) in account_names)
     ]
 
 
