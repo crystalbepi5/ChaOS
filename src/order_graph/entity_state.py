@@ -311,7 +311,7 @@ def _fixture_cases_for_sources(source_record_ids: list[str], index: JsonObject) 
     for source_record_id in source_record_ids:
         record = index["source_records_by_id"].get(source_record_id)
         if record and record.get("fixture_case"):
-            cases.append(str(record["fixture_case"])
+            cases.append(str(record["fixture_case"]))
     return sorted(set(cases))
 
 
