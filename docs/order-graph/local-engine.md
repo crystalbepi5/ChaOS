@@ -78,6 +78,8 @@ Contact-like records resolve when they have the same normalized email.
 
 Sequence records resolve by source-native identity.
 
+Account entity identifiers use fixture-compatible canonical-domain slugs so generated entities remain coherent with projected signal-link and entity-state references.
+
 Account-like records with no canonical domain remain unresolved unless another future approved strong key exists.
 
 Same-name people with different emails or company domains must not merge.
