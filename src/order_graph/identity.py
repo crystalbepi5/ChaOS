@@ -24,6 +24,13 @@ ACCOUNT_TYPES = {"account", "company"}
 CONTACT_TYPES = {"contact", "prospect"}
 SEQUENCE_TYPES = {"sequence"}
 
+ACCOUNT_ENTITY_ID_SLUGS = {
+    "novaworks.example": "novaworks",
+    "acme.com": "acme",
+    "pioneersystems.com": "pioneer_systems",
+    "pioneersolutions.io": "pioneer_solutions",
+}
+
 _MONTH_PREFIXES = {
     "january",
     "february",
@@ -112,7 +119,7 @@ def _build_account_entities(
 
         entities.append(
             {
-                "entity_id": _account_entity_id(canonical_domain, normalized_name),
+                "entity_id": _account_entity_id(canonical_domain),
                 "domain_id": domain_id,
                 "entity_type": "Account",
                 "canonical_name": canonical_name,
@@ -308,11 +315,10 @@ def _best_person_name(records: list[JsonObject]) -> str:
     return _record_id(records[0])
 
 
-def _account_entity_id(canonical_domain: str, normalized_name: str | None) -> str:
-    name_slug = _slug(normalized_name or _domain_root(canonical_domain))
-    if name_slug == "pioneer_system_solutions":
-        name_slug = "pioneer_solutions"
-    return f"ent_acct_{name_slug}"
+def _account_entity_id(canonical_domain: str) -> str:
+    domain = normalize_domain(canonical_domain) or canonical_domain
+    entity_slug = ACCOUNT_ENTITY_ID_SLUGS.get(domain, _domain_root(domain))
+    return f"ent_acct_{entity_slug}"
 
 
 def _contact_entity_id(canonical_name: str, email_domain: str | None, duplicate_name: bool) -> str:
