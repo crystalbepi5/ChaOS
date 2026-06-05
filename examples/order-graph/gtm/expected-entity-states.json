@@ -1,0 +1,124 @@
+{
+  "fixture_set": "order-graph-gtm-v0",
+  "purpose": "Expected EntityState outputs for fake GTM fixtures. These states are review targets, not implementation logic.",
+  "expected_entity_states": [
+    {
+      "entity_state_id": "state_acct_novaworks_priority",
+      "entity_id": "ent_acct_novaworks",
+      "computed_at": "2026-01-13T09:00:00Z",
+      "state_label": "high_priority_human_review",
+      "score_or_priority_if_applicable": 92,
+      "primary_reason": "Clean account identity, recent high-strength intent spike, recent email reply from resolved contact, and meeting booked outcome evidence make this the first critical success path account.",
+      "supporting_signals": [
+        "sig_6s_intent_nova_001",
+        "sig_out_email_reply_taylor_001",
+        "sig_calendar_meeting_nova_001"
+      ],
+      "supporting_source_records_or_relationships": [
+        "sr_sf_acct_nova_001",
+        "sr_out_acct_nova_001",
+        "sr_6s_company_nova_001",
+        "sr_sf_contact_taylor_001",
+        "sr_out_prospect_taylor_001",
+        "link_reply_taylor_to_account_parent",
+        "link_reply_taylor_to_contact_actor"
+      ],
+      "unknowns": [
+        "budget owner not confirmed",
+        "opportunity amount not known",
+        "human approval still required before any action"
+      ],
+      "confidence": "high",
+      "recommended_next_decision_or_action_if_applicable": "recommend human review for follow-up; do not automate outreach",
+      "fixture_case": "first_critical_success_path"
+    },
+    {
+      "entity_state_id": "state_acct_acme_priority",
+      "entity_id": "ent_acct_acme",
+      "computed_at": "2026-01-13T09:00:00Z",
+      "state_label": "medium_priority_review",
+      "score_or_priority_if_applicable": 64,
+      "primary_reason": "Messy but resolvable account identity and recent medium-confidence intent signal support review, but no contact reply or meeting signal exists.",
+      "supporting_signals": [
+        "sig_6s_intent_acme_001"
+      ],
+      "supporting_source_records_or_relationships": [
+        "sr_sf_acct_acme_001",
+        "sr_out_acct_acme_001",
+        "sr_6s_company_acme_001",
+        "link_intent_acme_to_account"
+      ],
+      "unknowns": [
+        "active stakeholder not known",
+        "last meaningful human touch not known",
+        "meeting outcome not known"
+      ],
+      "confidence": "medium",
+      "recommended_next_decision_or_action_if_applicable": "recommend human review only if higher-priority accounts are exhausted",
+      "fixture_case": "messy_resolvable_account_match"
+    },
+    {
+      "entity_state_id": "state_acct_pioneer_low_priority",
+      "entity_id": "ent_acct_pioneer_systems",
+      "computed_at": "2026-01-13T09:00:00Z",
+      "state_label": "low_priority_or_monitor_only",
+      "score_or_priority_if_applicable": 18,
+      "primary_reason": "Pioneer Systems remains separate from Pioneer System Solutions, and the only linked signal is stale and low confidence.",
+      "supporting_signals": [],
+      "signals_present_but_not_supporting_priority": [
+        "sig_web_visit_pioneer_old_001"
+      ],
+      "supporting_source_records_or_relationships": [
+        "sr_sf_acct_pioneer_001",
+        "link_old_web_visit_to_pioneer"
+      ],
+      "unknowns": [
+        "no recent high-confidence buying signal",
+        "unclear whether historical website visit reflects current interest",
+        "no resolved contact activity"
+      ],
+      "confidence": "medium",
+      "recommended_next_decision_or_action_if_applicable": "do not prioritize from stale signal alone",
+      "fixture_case": "stale_or_low_confidence_signal"
+    },
+    {
+      "entity_state_id": "state_unresolved_zenith_missing_domain",
+      "entity_id": null,
+      "computed_at": "2026-01-13T09:00:00Z",
+      "state_label": "unresolved_no_canonical_entity",
+      "score_or_priority_if_applicable": null,
+      "primary_reason": "Similar account names without canonical domain or another strong key must remain unresolved. The system must not invent an Account entity.",
+      "supporting_signals": [],
+      "supporting_source_records_or_relationships": [
+        "sr_out_acct_zenith_unknown_001",
+        "sr_sf_acct_zenith_unknown_001"
+      ],
+      "unknowns": [
+        "canonical domain missing",
+        "whether source records describe the same company",
+        "which source should be trusted for identity"
+      ],
+      "confidence": "low",
+      "recommended_next_decision_or_action_if_applicable": "request human clarification before resolution",
+      "fixture_case": "missing_domain_weak_account_case"
+    }
+  ],
+  "expected_top_10_fixture_preview": [
+    {
+      "rank": 1,
+      "entity_id": "ent_acct_novaworks",
+      "reason": "Clean resolution plus recent intent and reply signals."
+    },
+    {
+      "rank": 2,
+      "entity_id": "ent_acct_acme",
+      "reason": "Messy but resolved identity plus medium intent signal."
+    }
+  ],
+  "explicit_state_guardrails": [
+    "Unresolved source records must not receive invented high-priority state.",
+    "Stale or low-confidence signals may remain traceable without driving high priority.",
+    "Every priority state must preserve unknowns.",
+    "Recommendations remain recommendations and must not imply automated action."
+  ]
+}
