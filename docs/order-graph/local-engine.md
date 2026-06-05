@@ -13,16 +13,16 @@ This file explains what the local engine does, what it must not do, how to run i
 The purpose of the local engine is simple:
 
 ```text
-Read fixtures. Resolve only strong evidence. Attach signals through links. Do not get fancy.
+Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Do not get fancy.
 ```
 
 The current engine proves this spine:
 
 ```text
-local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> local output files
+local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local output files
 ```
 
-It now performs first-pass identity resolution for source records with strong keys and first-pass signal attachment from local signal evidence. It still does not perform entity state computation.
+It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, and first-pass entity state computation from generated graph outputs.
 
 ## How This Fits Into ChaOS
 
@@ -37,7 +37,7 @@ This engine follows:
 - `docs/order-graph/validation-checks.md`
 - `docs/order-graph/technical-requirements-and-development-roadmap.md`
 
-This signal-attachment step prepares and partially proves Gate 3. It does not attempt to pass Gate 4.
+This entity-state step prepares and partially proves Gate 4.
 
 ## What The Engine Does
 
@@ -51,10 +51,10 @@ It reads:
 
 - `source-records.json`
 - `signals.json`
-- `expected-entities.json`
-- `expected-entity-states.json`
 
 It must not read `expected-signal-links.json` to produce output links. That fixture may remain available as a human review reference, but `signal-links.json` must be generated from `signals.json`, resolved entities, and explicit local source-record evidence.
+
+It must not read `expected-entity-states.json` to produce output states. That fixture may remain available as a human review reference, but `entity-states.json` must be generated from generated entities, generated signal links, signals, and source records.
 
 It writes deterministic local output files to:
 
@@ -91,6 +91,28 @@ Similar account names with missing domains must remain unresolved.
 
 The resolver must preserve unresolved cases as valid graph output. It must not treat uncertainty as failure.
 
+## Entity State Rules
+
+Entity states must explain themselves from visible local evidence.
+
+The current state computation uses deterministic rule labels instead of numeric scores.
+
+The state computation may use:
+
+- Generated Account entities.
+- Generated signal links.
+- Signal fixture fields.
+- Source-record traceability.
+- Unresolved source-record cases.
+
+The state computation must not use `expected-entity-states.json` as implementation input.
+
+State labels must preserve the difference between supporting evidence, non-supporting evidence, missing evidence, and unresolved identity.
+
+Unlinked signals must not support entity state until structured entity evidence exists.
+
+Stale or low-confidence signals may remain traceable without raising priority.
+
 ## Signal Attachment Rules
 
 Signals live once and attach through generated links. Views must use links instead of duplicating signal objects.
@@ -115,12 +137,6 @@ Signals with missing or unresolved entity evidence must preserve uncertainty ins
 
 Meeting signals that reference only an outcome fixture path must remain unlinked until the fixture supplies structured entity evidence.
 
-## What Still Uses Fixture Projection
-
-Entity states still project from `expected-entity-states.json`.
-
-That projection remains intentional until a later PR adds explainable entity state logic.
-
 ## What The Engine Must Not Do
 
 The engine must not use fuzzy matching.
@@ -139,7 +155,7 @@ It must not require credentials.
 
 It must not mutate fixture input files.
 
-It must not compute entity state yet.
+It must not compute entity state with hidden numeric scoring or hidden weighting.
 
 It must not create UI, agents, deployment configuration, real integrations, or production behavior.
 
@@ -175,9 +191,9 @@ It includes generated signal links, unlinked signal notes when applicable, stora
 
 ### `entity-states.json`
 
-This file contains a projection of `expected-entity-states.json`.
+This file contains generated entity state computation output.
 
-It includes expected entity states, the top-10 fixture preview, and state guardrails. It also includes a warning that no entity state computation was performed.
+It includes computed entity states, visible state rules, ranked state preview, preserved unlinked signals, and warnings.
 
 ### `build-summary.json`
 
@@ -191,7 +207,7 @@ It includes:
 - Resolved entity count.
 - Unresolved record count.
 - Generated signal link count.
-- Expected entity state count.
+- Generated entity state count.
 - Input directory.
 - Output directory.
 - Output files.
@@ -199,7 +215,7 @@ It includes:
 
 ## Why This Exists Before More Logic
 
-The Order Graph must prove identity and signal attachment behavior before it adds state computation, recommendations, agents, UI, or integrations.
+The Order Graph must prove identity, signal attachment, and explainable entity state behavior before it adds recommendations, agents, UI, or integrations.
 
 A small deterministic local engine removes ambiguity about:
 
@@ -208,6 +224,8 @@ A small deterministic local engine removes ambiguity about:
 - Which weak matches must remain unresolved.
 - Which signals can attach to which generated entities.
 - Which signals must remain single source objects.
+- Which states are supported by generated links and fixture evidence.
+- Which states preserve missing or weak evidence.
 - Which output files future logic must consume.
 - Which implementation boundaries remain prohibited.
 
@@ -228,21 +246,22 @@ A reviewer may run the builder and confirm that:
 - Signal links are generated without duplicating signal objects.
 - A single signal can attach to multiple entities through explicit roles when structured evidence exists.
 - The meeting signal remains unlinked because no outcome-to-entity fixture exists yet.
-- The build summary clearly states `builder_mode: signal_attachment`.
+- Entity states are generated without reading `expected-entity-states.json`.
+- Entity states use visible rule labels instead of numeric scores.
+- The build summary clearly states `builder_mode: entity_state_computation`.
 
-A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
+A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
 
 ## Future Considerations
 
 Future PRs may add real deterministic behavior in small steps after review gates allow it.
 
-The next likely PR is `Add entity state computation`.
+The next likely PR is `Add local validation report`.
 
-That future PR must remain local-only and deterministic. It must compute state from generated entities, generated signal links, and local fixture evidence without hidden scoring, external enrichment, LLM reasoning, UI, agents, or integrations.
+That future PR must remain local-only and deterministic. It must validate generated entities, generated signal links, and generated entity states without external enrichment, LLM reasoning, UI, agents, or integrations.
 
 Later PRs may add:
 
-- Explainable entity state computation.
 - Local validation reports.
 - Additional fixture cases.
 
