@@ -2,33 +2,33 @@
 
 ## Why This File Exists
 
-This file documents the first local-only implementation skeleton for the Order Graph reference implementation track.
+This file documents the local-only implementation track for the Order Graph reference implementation.
 
-The skeleton exists because ChaOS has now defined Order Graph contracts, fake GTM fixtures, and validation checks. The next controlled step is to prove that fixture input can become deterministic local output without introducing real integrations, databases, UI, autonomous agents, LLM validation, or hidden business logic.
+The local engine exists because ChaOS has defined Order Graph contracts, fake GTM fixtures, validation checks, and a controlled implementation boundary. The engine must prove one small deterministic behavior at a time without introducing real integrations, databases, UI, autonomous agents, LLM validation, or hidden business logic.
 
-This file explains what the skeleton does, what it must not do, how to run it, and how it fits into the gated build path.
+This file explains what the local engine does, what it must not do, how to run it, and how it fits into the gated build path.
 
 ## Purpose
 
-The purpose of the local engine skeleton is simple:
+The purpose of the local engine is simple:
 
 ```text
-Read fixtures. Write outputs. Do not get fancy.
+Read fixtures. Resolve only strong evidence. Write outputs. Do not get fancy.
 ```
 
-The skeleton proves only this spine:
+The current engine proves this spine:
 
 ```text
-local fake GTM fixture files -> deterministic local output files
+local fake GTM fixture files -> deterministic identity resolution -> local output files
 ```
 
-It does not prove real identity resolution, real signal attachment, or real entity state computation.
+It now performs first-pass identity resolution for source records with strong keys. It still does not perform signal attachment logic or entity state computation.
 
 ## How This Fits Into ChaOS
 
-ChaOS must remain documentation-first and human-inspectable. This skeleton is allowed only because prior Order Graph documents established a controlled implementation boundary.
+ChaOS must remain documentation-first and human-inspectable. This local engine is allowed only because prior Order Graph documents established a controlled implementation boundary.
 
-This skeleton follows:
+This engine follows:
 
 - `docs/decision-records/0001-order-graph-reference-implementation.md`
 - `docs/order-graph/overview.md`
@@ -37,13 +37,11 @@ This skeleton follows:
 - `docs/order-graph/validation-checks.md`
 - `docs/order-graph/technical-requirements-and-development-roadmap.md`
 
-This skeleton prepares for Gate 3 and Gate 4, but it does not attempt to pass them.
+This identity-resolution step supports Gate 2 evidence and prepares for Gate 3. It does not attempt to pass Gate 3 or Gate 4.
 
-Gate 3 requires signal attachment to be correct without duplication. Gate 4 requires entity state to be explainable. This skeleton creates the local file movement needed for later PRs to test those behaviors.
+## What The Engine Does
 
-## What The Skeleton Does
-
-The skeleton reads fake GTM fixture files from:
+The engine reads fake GTM fixture files from:
 
 ```text
 examples/order-graph/gtm/
@@ -70,19 +68,43 @@ It writes:
 - `entity-states.json`
 - `build-summary.json`
 
-For this milestone, the builder projects expected fixture files into output files. That projection is intentional. It proves the local input/output boundary before future PRs add real deterministic graph logic.
+## Identity Resolution Rules
 
-## What The Skeleton Must Not Do
+The current identity resolver uses only strong deterministic fixture evidence.
 
-The skeleton must not implement real identity resolution.
+Account-like records resolve when they have the same canonical domain.
 
-It must not decide that two accounts match.
+Contact-like records resolve when they have the same normalized email.
 
-It must not decide that two contacts match.
+Sequence records resolve by source-native identity.
 
-It must not attach signals through new logic.
+Account entity identifiers use fixture-compatible canonical-domain slugs so generated entities remain coherent with projected signal-link and entity-state references.
 
-It must not compute entity state.
+Account-like records with no canonical domain remain unresolved unless another future approved strong key exists.
+
+Same-name people with different emails or company domains must not merge.
+
+Similar account names with different canonical domains must not merge.
+
+Similar account names with missing domains must remain unresolved.
+
+The resolver must preserve unresolved cases as valid graph output. It must not treat uncertainty as failure.
+
+## What Still Uses Fixture Projection
+
+Signal links still project from `expected-signal-links.json`.
+
+Entity states still project from `expected-entity-states.json`.
+
+Those projections remain intentional until later PRs add deterministic signal attachment and explainable state logic.
+
+## What The Engine Must Not Do
+
+The engine must not use fuzzy matching.
+
+It must not infer identity from name similarity alone.
+
+It must not enrich records from external sources.
 
 It must not call external APIs.
 
@@ -93,6 +115,10 @@ It must not use a database.
 It must not require credentials.
 
 It must not mutate fixture input files.
+
+It must not attach signals through new logic yet.
+
+It must not compute entity state yet.
 
 It must not create UI, agents, deployment configuration, real integrations, or production behavior.
 
@@ -116,19 +142,19 @@ The command uses only the Python standard library.
 
 ### `entities.json`
 
-This file contains a skeleton projection of `expected-entities.json`.
+This file contains generated identity-resolution output from `source-records.json`.
 
-It includes canonical entities, unresolved source records, and explicit non-merge examples. It also includes a warning that no identity resolution was performed.
+It includes canonical entities, unresolved source records, and explicit non-merge examples.
 
 ### `signal-links.json`
 
-This file contains a skeleton projection of `expected-signal-links.json`.
+This file contains a projection of `expected-signal-links.json`.
 
 It includes expected signal links and no-duplicate signal expectations. It also includes a warning that no signal attachment logic was performed.
 
 ### `entity-states.json`
 
-This file contains a skeleton projection of `expected-entity-states.json`.
+This file contains a projection of `expected-entity-states.json`.
 
 It includes expected entity states, the top-10 fixture preview, and state guardrails. It also includes a warning that no entity state computation was performed.
 
@@ -141,25 +167,25 @@ It includes:
 - Builder mode.
 - Source record count.
 - Signal count.
-- Expected entity count.
+- Resolved entity count.
+- Unresolved record count.
 - Expected signal link count.
 - Expected entity state count.
-- Unresolved record count.
 - Input directory.
 - Output directory.
 - Output files.
 - Warnings.
 
-## Why This Exists Before Real Logic
+## Why This Exists Before More Logic
 
-The Order Graph must prove its local spine before it adds graph intelligence.
+The Order Graph must prove identity behavior before it adds signal attachment, state computation, recommendations, agents, UI, or integrations.
 
-A small deterministic skeleton removes ambiguity about:
+A small deterministic identity resolver removes ambiguity about:
 
-- Which fixture files are inputs.
-- Which output files future logic must produce.
-- Where local outputs belong.
-- How summaries are reported.
+- Which source records can safely merge.
+- Which records must remain separate.
+- Which weak matches must remain unresolved.
+- Which output files future logic must consume.
 - Which implementation boundaries remain prohibited.
 
 This makes future changes easier to review because later PRs can focus on one behavior at a time.
@@ -171,24 +197,25 @@ A reviewer may run the builder and confirm that:
 - The command reads only local fake fixture files.
 - The command creates `outputs/order-graph/gtm/` when needed.
 - The command writes stable JSON files.
-- The output files preserve expected unresolved cases.
-- The output files preserve expected signal-link examples.
-- The output files preserve expected entity-state guardrails.
-- The build summary clearly states `builder_mode: skeleton`.
+- Same-domain account records resolve into one Account.
+- Same-email contact records resolve into one Contact.
+- Same-name people at different domains remain separate.
+- Similar account names with different domains remain separate.
+- Missing-domain account records remain unresolved.
+- The build summary clearly states `builder_mode: identity_resolution`.
 
-A reviewer must reject the change if the skeleton starts making real matching decisions, calling external systems, hiding logic, or acting like a production graph engine.
+A reviewer must reject the change if the resolver guesses weak matches, calls external systems, hides logic, or acts like a production graph engine.
 
 ## Future Considerations
 
 Future PRs may add real deterministic behavior in small steps after review gates allow it.
 
-The next likely PR is `Add identity resolution logic`.
+The next likely PR is `Add signal attachment logic`.
 
-That future PR must remain local-only and deterministic. It must prove account and contact resolution behavior against fake fixtures without production matching, fuzzy black-box logic, external enrichment, databases, LLMs, UI, autonomous agents, or real integrations.
+That future PR must remain local-only and deterministic. It must prove that signals live once and attach to every relevant entity through explicit links without duplicating signal objects.
 
 Later PRs may add:
 
-- Deterministic signal attachment logic.
 - Duplicate-signal checks.
 - Explainable entity state computation.
 - Local validation reports.

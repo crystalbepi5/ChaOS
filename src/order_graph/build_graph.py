@@ -1,12 +1,11 @@
-"""Deterministic local builder skeleton for Order Graph GTM fixtures.
+"""Deterministic local builder for Order Graph GTM fixtures.
 
-This module proves only this spine:
+This module proves this spine:
 
     local fake fixtures -> deterministic local output files
 
-It does not perform real identity resolution, signal attachment, state
-computation, enrichment, API access, LLM calls, database writes, or autonomous
-actions.
+This PR adds first-pass identity resolution for strong fixture keys only. Signal
+links and entity states remain projected fixture expectations until later gates.
 """
 
 from __future__ import annotations
@@ -16,6 +15,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
+from .identity import resolve_entities_from_source_records
 from .models import BuildPaths, BuildSummary, FixtureBundle, JsonObject
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -37,11 +37,13 @@ OUTPUT_FILES = {
     "build_summary": "build-summary.json",
 }
 
-SKELETON_WARNINGS = [
-    "Skeleton mode projects expected fixture files into local outputs.",
-    "No real identity resolution is performed.",
-    "No signal attachment logic is performed.",
-    "No entity state computation is performed.",
+BUILD_WARNINGS = [
+    "Identity resolution uses strong deterministic fixture keys only.",
+    "Account-like records merge by canonical domain only.",
+    "Contact-like records merge by normalized email only.",
+    "Missing-domain account-like records remain unresolved.",
+    "Signal links are still projected from expected fixture files.",
+    "Entity states are still projected from expected fixture files.",
     "No external APIs, LLMs, databases, credentials, integrations, UI, agents, or deployment work are used.",
 ]
 
@@ -68,7 +70,7 @@ def write_json(path: Path, data: Any) -> None:
 
 
 def load_fixture_bundle(input_dir: Path) -> FixtureBundle:
-    """Load the fake GTM fixture bundle required by this skeleton."""
+    """Load the fake GTM fixture bundle required by the local builder."""
 
     return FixtureBundle(
         source_records=load_json(input_dir / INPUT_FILES["source_records"]),
@@ -79,25 +81,11 @@ def load_fixture_bundle(input_dir: Path) -> FixtureBundle:
     )
 
 
-def project_entities(expected_entities: JsonObject) -> JsonObject:
-    """Project expected entity fixture data into skeleton output shape."""
-
-    return {
-        "builder_mode": "skeleton",
-        "source_fixture": INPUT_FILES["expected_entities"],
-        "warning": "Projected expected entities only; no identity resolution was performed.",
-        "fixture_set": expected_entities.get("fixture_set"),
-        "canonical_entities": expected_entities.get("canonical_entities", []),
-        "unresolved_source_records": expected_entities.get("unresolved_source_records", []),
-        "explicit_non_merges": expected_entities.get("explicit_non_merges", []),
-    }
-
-
 def project_signal_links(expected_signal_links: JsonObject) -> JsonObject:
-    """Project expected signal-link fixture data into skeleton output shape."""
+    """Project expected signal-link fixture data into output shape."""
 
     return {
-        "builder_mode": "skeleton",
+        "builder_mode": "identity_resolution",
         "source_fixture": INPUT_FILES["expected_signal_links"],
         "warning": "Projected expected signal links only; no signal attachment logic was performed.",
         "fixture_set": expected_signal_links.get("fixture_set"),
@@ -108,10 +96,10 @@ def project_signal_links(expected_signal_links: JsonObject) -> JsonObject:
 
 
 def project_entity_states(expected_entity_states: JsonObject) -> JsonObject:
-    """Project expected entity-state fixture data into skeleton output shape."""
+    """Project expected entity-state fixture data into output shape."""
 
     return {
-        "builder_mode": "skeleton",
+        "builder_mode": "identity_resolution",
         "source_fixture": INPUT_FILES["expected_entity_states"],
         "warning": "Projected expected entity states only; no state computation was performed.",
         "fixture_set": expected_entity_states.get("fixture_set"),
@@ -121,10 +109,10 @@ def project_entity_states(expected_entity_states: JsonObject) -> JsonObject:
     }
 
 
-def count_unresolved_records(expected_entities: JsonObject) -> int:
-    """Count unresolved source record identifiers from expected fixture data."""
+def count_unresolved_records(entities_output: JsonObject) -> int:
+    """Count unresolved source record identifiers from generated entity output."""
 
-    unresolved_cases = expected_entities.get("unresolved_source_records", [])
+    unresolved_cases = entities_output.get("unresolved_source_records", [])
     count = 0
     for unresolved_case in unresolved_cases:
         if isinstance(unresolved_case, dict):
@@ -134,17 +122,21 @@ def count_unresolved_records(expected_entities: JsonObject) -> int:
     return count
 
 
-def make_build_summary(paths: BuildPaths, fixtures: FixtureBundle) -> BuildSummary:
-    """Create a deterministic skeleton build summary."""
+def make_build_summary(
+    paths: BuildPaths,
+    fixtures: FixtureBundle,
+    entities_output: JsonObject,
+) -> BuildSummary:
+    """Create a deterministic local build summary."""
 
     return BuildSummary(
-        builder_mode="skeleton",
+        builder_mode="identity_resolution",
         source_record_count=len(fixtures.source_records.get("source_records", [])),
         signal_count=len(fixtures.signals.get("signals", [])),
-        expected_entity_count=len(fixtures.expected_entities.get("canonical_entities", [])),
+        resolved_entity_count=len(entities_output.get("canonical_entities", [])),
+        unresolved_record_count=count_unresolved_records(entities_output),
         expected_signal_link_count=len(fixtures.expected_signal_links.get("expected_signal_links", [])),
         expected_entity_state_count=len(fixtures.expected_entity_states.get("expected_entity_states", [])),
-        unresolved_record_count=count_unresolved_records(fixtures.expected_entities),
         input_dir=str(paths.input_dir.as_posix()),
         output_dir=str(paths.output_dir.as_posix()),
         output_files=[
@@ -153,7 +145,7 @@ def make_build_summary(paths: BuildPaths, fixtures: FixtureBundle) -> BuildSumma
             OUTPUT_FILES["entity_states"],
             OUTPUT_FILES["build_summary"],
         ],
-        warnings=SKELETON_WARNINGS,
+        warnings=BUILD_WARNINGS,
     )
 
 
@@ -161,15 +153,14 @@ def build_graph_from_fixtures(
     input_dir: Path = DEFAULT_INPUT_DIR,
     output_dir: Path = DEFAULT_OUTPUT_DIR,
 ) -> BuildSummary:
-    """Read fake fixtures and write deterministic local skeleton outputs."""
+    """Read fake fixtures and write deterministic local outputs."""
 
     paths = BuildPaths(input_dir=input_dir, output_dir=output_dir)
     fixtures = load_fixture_bundle(paths.input_dir)
 
-    write_json(
-        paths.output_dir / OUTPUT_FILES["entities"],
-        project_entities(fixtures.expected_entities),
-    )
+    entities_output = resolve_entities_from_source_records(fixtures.source_records)
+
+    write_json(paths.output_dir / OUTPUT_FILES["entities"], entities_output)
     write_json(
         paths.output_dir / OUTPUT_FILES["signal_links"],
         project_signal_links(fixtures.expected_signal_links),
@@ -179,13 +170,13 @@ def build_graph_from_fixtures(
         project_entity_states(fixtures.expected_entity_states),
     )
 
-    summary = make_build_summary(paths, fixtures)
+    summary = make_build_summary(paths, fixtures, entities_output)
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
 
 
 def main() -> None:
-    """Run the skeleton builder from the repository root."""
+    """Run the local builder from the repository root."""
 
     summary = build_graph_from_fixtures()
     print(json.dumps(asdict(summary), indent=2, sort_keys=True))
