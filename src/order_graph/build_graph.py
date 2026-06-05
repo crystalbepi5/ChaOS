@@ -4,8 +4,8 @@ This module proves this spine:
 
     local fake fixtures -> deterministic local output files
 
-This PR adds the first deterministic top-10 account workflow from generated
-entity states and local validation evidence.
+This PR adds the first deterministic human review override model for generated
+top-10 account recommendations.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from .entity_state import compute_entity_states
+from .human_review import generate_human_review_override_model
 from .identity import resolve_entities_from_source_records
 from .models import BuildPaths, BuildSummary, FixtureBundle, JsonObject
 from .signal_attachment import generate_signal_links
@@ -37,6 +38,7 @@ OUTPUT_FILES = {
     "entity_states": "entity-states.json",
     "validation_report": "validation-report.json",
     "top_10_accounts": "top-10-accounts.json",
+    "human_review_overrides": "human-review-overrides.json",
     "build_summary": "build-summary.json",
 }
 
@@ -49,6 +51,7 @@ BUILD_WARNINGS = [
     "Entity states are generated from resolved entities, signal links, and local fixture evidence.",
     "Validation reports are generated from local outputs only.",
     "Top-10 account recommendations are generated for human review only.",
+    "Human review override examples are generated as local feedback records only.",
     "No numeric scoring or hidden weighting is used for entity state.",
     "No outreach automation, CRM writes, external APIs, LLMs, databases, credentials, integrations, UI, agents, or deployment work are used.",
 ]
@@ -105,11 +108,12 @@ def make_build_summary(
     entity_states_output: JsonObject,
     validation_report_output: JsonObject,
     top_10_output: JsonObject,
+    human_review_output: JsonObject,
 ) -> BuildSummary:
     """Create a deterministic local build summary."""
 
     return BuildSummary(
-        builder_mode="entity_state_computation",
+        builder_mode="human_review_override_model",
         source_record_count=len(fixtures.source_records.get("source_records", [])),
         signal_count=len(fixtures.signals.get("signals", [])),
         resolved_entity_count=len(entities_output.get("canonical_entities", [])),
@@ -119,6 +123,7 @@ def make_build_summary(
         validation_check_count=int(validation_report_output.get("check_count", 0)),
         failed_validation_check_count=int(validation_report_output.get("failed_check_count", 0)),
         top_10_recommendation_count=int(top_10_output.get("recommendation_count", 0)),
+        human_review_example_count=int(human_review_output.get("review_example_count", 0)),
         input_dir=str(paths.input_dir.as_posix()),
         output_dir=str(paths.output_dir.as_posix()),
         output_files=[
@@ -127,6 +132,7 @@ def make_build_summary(
             OUTPUT_FILES["entity_states"],
             OUTPUT_FILES["validation_report"],
             OUTPUT_FILES["top_10_accounts"],
+            OUTPUT_FILES["human_review_overrides"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=BUILD_WARNINGS,
@@ -165,12 +171,14 @@ def build_graph_from_fixtures(
         entity_states_output,
         validation_report_output,
     )
+    human_review_output = generate_human_review_override_model(top_10_output)
 
     write_json(paths.output_dir / OUTPUT_FILES["entities"], entities_output)
     write_json(paths.output_dir / OUTPUT_FILES["signal_links"], signal_links_output)
     write_json(paths.output_dir / OUTPUT_FILES["entity_states"], entity_states_output)
     write_json(paths.output_dir / OUTPUT_FILES["validation_report"], validation_report_output)
     write_json(paths.output_dir / OUTPUT_FILES["top_10_accounts"], top_10_output)
+    write_json(paths.output_dir / OUTPUT_FILES["human_review_overrides"], human_review_output)
 
     summary = make_build_summary(
         paths,
@@ -180,6 +188,7 @@ def build_graph_from_fixtures(
         entity_states_output,
         validation_report_output,
         top_10_output,
+        human_review_output,
     )
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
