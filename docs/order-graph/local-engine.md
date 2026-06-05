@@ -13,16 +13,16 @@ This file explains what the local engine does, what it must not do, how to run i
 The purpose of the local engine is simple:
 
 ```text
-Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Validate locally. Do not get fancy.
+Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Validate locally. Recommend for human review. Do not get fancy.
 ```
 
 The current engine proves this spine:
 
 ```text
-local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local validation report -> local output files
+local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local validation report -> top-10 account workflow -> local output files
 ```
 
-It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, first-pass entity state computation from generated graph outputs, and a local validation report over the generated outputs.
+It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, first-pass entity state computation from generated graph outputs, a local validation report over the generated outputs, and a deterministic top-10 account workflow for human review.
 
 ## How This Fits Into ChaOS
 
@@ -37,7 +37,7 @@ This engine follows:
 - `docs/order-graph/validation-checks.md`
 - `docs/order-graph/technical-requirements-and-development-roadmap.md`
 
-This validation-report step collects local evidence before Gate 5 workflow work begins.
+This top-10 workflow step prepares and partially proves Gate 5.
 
 ## What The Engine Does
 
@@ -68,6 +68,7 @@ It writes:
 - `signal-links.json`
 - `entity-states.json`
 - `validation-report.json`
+- `top-10-accounts.json`
 - `build-summary.json`
 
 ## Identity Resolution Rules
@@ -132,6 +133,28 @@ The validation report may check:
 
 The validation report must not call external systems, use LLM judgment, introduce hidden scoring, rank accounts, recommend actions beyond existing state text, or imply production readiness.
 
+## Top-10 Account Workflow Rules
+
+The top-10 account workflow must consume generated entity states and local validation evidence.
+
+The workflow may recommend resolved Account entities for human review when generated state includes priority evidence.
+
+The workflow must not recommend unresolved states.
+
+The workflow must not recommend no-current-priority states.
+
+The workflow must not recommend low-priority or monitor-only states for focus today.
+
+The workflow must sort recommendations deterministically by priority band and entity identifier.
+
+The workflow must explain each recommendation with generated state fields, supporting signals, supporting source records or relationships, unknowns, and confidence.
+
+The workflow must preserve excluded Account states with visible reasons.
+
+The workflow must not use numeric scores, hidden weights, external systems, LLM judgment, UI, agents, integrations, CRM writes, outreach automation, or deployment work.
+
+Recommendations are review prompts only. They are not actions.
+
 ## Signal Attachment Rules
 
 Signals live once and attach through generated links. Views must use links instead of duplicating signal objects.
@@ -178,6 +201,8 @@ It must not compute entity state with hidden numeric scoring or hidden weighting
 
 It must not validate outputs with hidden judgment or external systems.
 
+It must not turn recommendations into outreach actions, CRM writes, tasks, UI actions, or agent instructions.
+
 It must not create UI, agents, deployment configuration, real integrations, or production behavior.
 
 ## How To Run It
@@ -222,6 +247,12 @@ This file contains deterministic local validation results for generated entities
 
 It includes pass or fail status, check count, failed check count, individual check results, observed evidence, and warnings.
 
+### `top-10-accounts.json`
+
+This file contains deterministic account recommendations for human review.
+
+It includes recommendation rank, account identity, priority band, traceable rationale, supporting signals, supporting source records or relationships, unknowns, confidence, excluded account states, and automation boundaries.
+
 ### `build-summary.json`
 
 This file summarizes the run.
@@ -237,6 +268,7 @@ It includes:
 - Generated entity state count.
 - Validation check count.
 - Failed validation check count.
+- Top-10 recommendation count.
 - Input directory.
 - Output directory.
 - Output files.
@@ -256,6 +288,8 @@ A small deterministic local engine removes ambiguity about:
 - Which states are supported by generated links and fixture evidence.
 - Which states preserve missing or weak evidence.
 - Which generated outputs pass local validation checks.
+- Which accounts may be recommended for human review.
+- Why each recommended account appears.
 - Which output files future logic must consume.
 - Which implementation boundaries remain prohibited.
 
@@ -279,21 +313,24 @@ A reviewer may run the builder and confirm that:
 - Entity states are generated without reading `expected-entity-states.json`.
 - Entity states use visible rule labels instead of numeric scores.
 - The validation report passes with zero failed checks.
+- Top-10 recommendations are generated only from resolved Account states with high or medium priority evidence.
+- Low-priority and no-priority Account states are excluded with visible reasons.
+- Recommendation output remains human-review-only.
 - The build summary clearly states `builder_mode: entity_state_computation`.
 
-A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if validation relies on hidden judgment, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
+A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if validation relies on hidden judgment, if recommendations use hidden ranking, if recommendations imply action, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
 
 ## Future Considerations
 
 Future PRs may add real deterministic behavior in small steps after review gates allow it.
 
-The next likely PR is `Add top-10 account workflow`.
+The next likely PR is `Add human review override model`.
 
-That future PR must remain local-only and deterministic. It must produce recommendations from generated entity states and local validation evidence without automatic outreach, CRM writes, UI, agents, integrations, or hidden ranking logic.
+That future PR must remain local-only and deterministic. It must show how humans can accept, reject, revise, or flag recommendations without CRM writes, UI, agents, integrations, or autonomous action.
 
 Later PRs may add:
 
-- Top-10 recommendation output.
+- Human review and override examples.
 - Additional fixture cases.
 
 Each future PR must preserve traceability, inspectability, and the gated Order Graph build sequence.
