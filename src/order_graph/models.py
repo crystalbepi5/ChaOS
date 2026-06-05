@@ -34,8 +34,7 @@ class BuildPaths:
 class BuildSummary:
     """Inspectable summary of a local Order Graph build.
 
-    The summary must name which parts are real local logic and which parts
-    remain fixture projections.
+    The summary must name generated output counts and local validation results.
     """
 
     builder_mode: str
@@ -45,6 +44,8 @@ class BuildSummary:
     unresolved_record_count: int
     generated_signal_link_count: int
     generated_entity_state_count: int
+    validation_check_count: int
+    failed_validation_check_count: int
     input_dir: str
     output_dir: str
     output_files: list[str]
