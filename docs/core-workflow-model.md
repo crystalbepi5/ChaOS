@@ -1,10 +1,26 @@
 # Core Workflow Model
 
-This document defines the workflow model used by ChaOS:
+This document defines the workflow execution model used by ChaOS:
 
 Trigger -> Input -> Processing -> Decision -> Action -> Feedback
 
 It exists because every system needs a clear way to describe how work begins, what it consumes, how it is transformed, how choices are made, what happens, and how the system learns.
+
+## Workflow Model vs Semantic Model
+
+The workflow model describes how a specific run, event, or user action moves through the system:
+
+```text
+Trigger -> Input -> Processing -> Decision -> Action -> Feedback
+```
+
+The semantic system model describes what the system knows and how that knowledge changes over time:
+
+```text
+Entity -> Signal -> State -> Decision -> Outcome -> Feedback
+```
+
+These models must not be treated as competing frameworks. A workflow is usually an execution over the semantic model. For example, a workflow may start from a trigger, gather input about an entity, process signals into state, recommend a decision, route an action, and capture feedback.
 
 ## Trigger
 
@@ -15,7 +31,7 @@ The trigger starts the workflow. It may be a user request, scheduled review, ext
 ### Responsibilities
 
 - Declare why work is starting
-- Identify the affected entity
+- Identify the affected entity when one exists
 - Capture the initiating condition
 - Prevent duplicate or accidental starts
 
@@ -69,6 +85,7 @@ Processing transforms input into structured understanding.
 - Normalize information
 - Apply rules or models
 - Identify relevant signals
+- Interpret current state when the workflow requires it
 - Prepare decision options
 
 ### Failure Modes
@@ -77,6 +94,7 @@ Processing transforms input into structured understanding.
 - Over-processing simple inputs
 - Losing source traceability
 - Treating interpretation as fact
+- Treating state as an approved decision
 
 ### Evaluation Methods
 
@@ -95,13 +113,14 @@ The decision stage chooses or recommends what happens next.
 - State the decision
 - Explain rationale
 - Identify confidence and uncertainty
-- Reference supporting signals
+- Reference supporting entities, signals, and state
 
 ### Failure Modes
 
 - Untraceable decisions
 - Overconfident recommendations
 - Decisions based on weak signals
+- State treated as final action
 - No path for human override
 
 ### Evaluation Methods
@@ -164,8 +183,8 @@ Feedback captures what was learned after action.
 
 ## Example Workflow
 
-An RFP research workflow may begin when a new RFP is found. The input stage gathers requirements, deadlines, source documents, and company fit criteria. Processing extracts requirements and mismatches. The decision stage recommends bid, no-bid, or human review. The action stage records the recommendation or sends it for approval. Feedback captures the final human decision and later win or loss data.
+An RFP research workflow may begin when a new RFP is found. The input stage gathers requirements, deadlines, source documents, and company fit criteria. Processing extracts requirements, identifies signals, and interprets fit state. The decision stage recommends bid, no-bid, or human review. The action stage records the recommendation or sends it for approval. Feedback captures the final human decision and later win or loss data.
 
 ## Future Considerations
 
-Future versions may define workflow maturity levels, event contracts, or adapters for automation tools. Version 0.1 defines the portable pattern first.
+Future versions may define workflow maturity levels, event contracts, or adapters for automation tools. Version 0.1 defines the execution pattern first and must prove that this pattern accelerates real work before it claims portability.
