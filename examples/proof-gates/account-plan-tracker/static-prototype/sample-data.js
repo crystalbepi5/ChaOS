@@ -18,7 +18,25 @@ const sampleAccounts = [
       "Confirm current vendor contract timing.",
       "Find executive sponsor for rollout discussion."
     ],
-    signals: ["Event attendance", "Recent activity", "Intent signal", "Prior meeting"]
+    signals: ["Event attendance", "Recent activity", "Intent signal", "Prior meeting"],
+    actions: [
+      {
+        id: "act-northstar-1",
+        title: "Confirm vendor contract timing",
+        owner: "Maya Chen",
+        due: "This week",
+        status: "planned",
+        note: "Use public notes and prior meeting recap before drafting outreach."
+      },
+      {
+        id: "act-northstar-2",
+        title: "Draft expansion outreach for facilities leader",
+        owner: "Maya Chen",
+        due: "After contract timing is checked",
+        status: "planned",
+        note: "Human review required before any message is sent."
+      }
+    ]
   },
   {
     id: "acct-copperline",
@@ -40,7 +58,25 @@ const sampleAccounts = [
       "Technical evaluator is unknown.",
       "No confirmed decision timeline."
     ],
-    signals: ["Intent signal", "Persona gap", "Prior meeting"]
+    signals: ["Intent signal", "Persona gap", "Prior meeting"],
+    actions: [
+      {
+        id: "act-copperline-1",
+        title: "Identify economic buyer candidate",
+        owner: "Andre Patel",
+        due: "Tomorrow",
+        status: "in_progress",
+        note: "Do not recommend outreach until the buyer/persona gap is resolved."
+      },
+      {
+        id: "act-copperline-2",
+        title: "Find technical evaluator signal",
+        owner: "Andre Patel",
+        due: "This week",
+        status: "blocked",
+        note: "Blocked until reviewer confirms acceptable evidence source."
+      }
+    ]
   },
   {
     id: "acct-brightforge",
@@ -61,7 +97,25 @@ const sampleAccounts = [
       "No recent stakeholder activity.",
       "No current initiative confirmed."
     ],
-    signals: ["Stale account", "No recent touch", "Open opportunity"]
+    signals: ["Stale account", "No recent touch", "Open opportunity"],
+    actions: [
+      {
+        id: "act-brightforge-1",
+        title: "Refresh account research",
+        owner: "Sam Rivera",
+        due: "Today",
+        status: "in_progress",
+        note: "Research refresh comes before a new recommendation."
+      },
+      {
+        id: "act-brightforge-2",
+        title: "Decide whether stale opportunity should remain active",
+        owner: "Sam Rivera",
+        due: "After research refresh",
+        status: "planned",
+        note: "Reviewer must decide before account returns to outreach queue."
+      }
+    ]
   },
   {
     id: "acct-civicpeak",
@@ -83,7 +137,17 @@ const sampleAccounts = [
       "Opportunity stage is inconsistent.",
       "Recent account priority is not trusted."
     ],
-    signals: ["Open opportunity", "Prior meeting", "Persona gap"]
+    signals: ["Open opportunity", "Prior meeting", "Persona gap"],
+    actions: [
+      {
+        id: "act-civicpeak-1",
+        title: "Resolve owner conflict",
+        owner: "Jordan Ellis",
+        due: "Before any account action",
+        status: "blocked",
+        note: "No outreach action may be planned until ownership is clarified."
+      }
+    ]
   },
   {
     id: "acct-emberlane",
@@ -103,6 +167,24 @@ const sampleAccounts = [
     missingContext: [
       "No missing context for MVP review."
     ],
-    signals: ["Recent activity", "Prior meeting", "Intent signal", "Event attendance"]
+    signals: ["Recent activity", "Prior meeting", "Intent signal", "Event attendance"],
+    actions: [
+      {
+        id: "act-emberlane-1",
+        title: "Send recap with benchmark offer",
+        owner: "Priya Morgan",
+        due: "Completed in sample",
+        status: "completed",
+        note: "Fake completed action used to test outcome review."
+      },
+      {
+        id: "act-emberlane-2",
+        title: "Capture meeting quality after response",
+        owner: "Priya Morgan",
+        due: "After reply",
+        status: "deferred",
+        note: "Wait for response before judging play quality."
+      }
+    ]
   }
 ];
