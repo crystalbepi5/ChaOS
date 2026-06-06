@@ -31,9 +31,32 @@ The prototype lets a reviewer:
 - Inspect fake signals.
 - See interpreted account state.
 - Review a human-reviewable recommendation.
+- Track local account-plan actions after review.
+- Change action status locally in the browser.
+- Add a local action with owner, timing, status, and note.
 - Change review status locally in the browser.
 - Add or edit outcome and feedback text locally in the browser.
-- See summary counts by state and review status.
+- See summary counts by state, review status, and action status.
+
+## Action Tracking Loop
+
+The action tracking loop exists to test account-plan execution without turning the prototype into an automation system.
+
+The loop is:
+
+```text
+Reviewed recommendation -> Human-owned action -> Local status update -> Outcome/feedback note
+```
+
+Actions may be marked:
+
+- `planned`
+- `in_progress`
+- `blocked`
+- `completed`
+- `deferred`
+
+Actions are execution records, not automated tasks. They must not send outreach, write to CRM, trigger integrations, or claim that the system performed the work.
 
 ## How It Maps To The Proof Gate
 
@@ -43,9 +66,15 @@ The goal is not to prove the product is complete. The goal is to learn whether C
 
 ## Data Boundary
 
-All sample accounts are fake. The prototype uses manual sample data only.
+All sample accounts and actions are fake. The prototype uses manual sample data only.
 
 The prototype does not use real customer data, Salesforce, Outreach, 6sense, CRM data, email data, or external APIs.
+
+## State Boundary
+
+The prototype uses in-memory browser state only. Local edits disappear on refresh.
+
+The prototype does not use browser storage, files, databases, APIs, or persistence.
 
 ## Intentionally Out Of Scope
 
@@ -65,13 +94,14 @@ This prototype does not include:
 - CRM writes.
 - Salesforce, Outreach, or 6sense access.
 - Real customer data.
+- Persistence.
 - Deployment configuration.
 
 ## Guardrails
 
 The prototype must not execute outreach. It must not write to CRM. It must not claim automated prioritization authority.
 
-Recommendations are framed as human-reviewable. State must not silently become action.
+Recommendations are framed as human-reviewable. State must not silently become action. Actions must remain human-owned local tracking records.
 
 ## Proof Gate Questions
 
@@ -80,6 +110,8 @@ During review, answer:
 - Did this make Account Plan Tracker easier to understand?
 - Did ChaOS help structure the build?
 - Did the Entity/Signal/State/Decision/Outcome/Feedback model help or add friction?
+- Did action tracking make the prototype feel closer to real account-plan execution?
+- Did the local action loop preserve the boundary between recommendation and action?
 - Is the prototype useful enough to iterate?
 - What felt like abstraction tax?
 - What should be simplified before the next PR?
@@ -90,7 +122,8 @@ Reviewers should evaluate:
 
 - Whether the prototype makes account planning clearer.
 - Whether the account states are useful or too abstract.
-- Whether signals, state, recommendation, outcome, and feedback are clearly separated.
+- Whether signals, state, recommendation, action tracking, outcome, and feedback are clearly separated.
+- Whether action statuses are enough for a first execution loop.
 - Whether the first implementation should remain static, become a local app, or become a simpler document/spreadsheet artifact.
 - Whether the prototype is useful enough to become the next Codex build prompt.
 
