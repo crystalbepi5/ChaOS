@@ -13,16 +13,16 @@ This file explains what the local engine does, what it must not do, how to run i
 The purpose of the local engine is simple:
 
 ```text
-Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Validate locally. Recommend for human review. Preserve human review feedback. Do not get fancy.
+Read fixtures. Resolve only strong evidence. Attach signals through links. Compute explainable state. Validate locally. Recommend for human review. Preserve and validate human review feedback. Do not get fancy.
 ```
 
 The current engine proves this spine:
 
 ```text
-local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local validation report -> top-10 account workflow -> human review override model -> local output files
+local fake GTM fixture files -> deterministic identity resolution -> deterministic signal attachment -> explainable entity state -> local validation report -> top-10 account workflow -> human review override model -> human feedback validation report -> local output files
 ```
 
-It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, first-pass entity state computation from generated graph outputs, a local validation report over the generated outputs, a deterministic top-10 account workflow for human review, and a local human review override model.
+It now performs first-pass identity resolution for source records with strong keys, first-pass signal attachment from local signal evidence, first-pass entity state computation from generated graph outputs, a local validation report over the generated outputs, a deterministic top-10 account workflow for human review, a local human review override model, and deterministic human feedback validation checks.
 
 ## How This Fits Into ChaOS
 
@@ -37,7 +37,7 @@ This engine follows:
 - `docs/order-graph/validation-checks.md`
 - `docs/order-graph/technical-requirements-and-development-roadmap.md`
 
-This human review override step prepares and partially proves Gate 6.
+This human feedback validation step prepares and partially proves Gate 6.
 
 ## What The Engine Does
 
@@ -70,6 +70,7 @@ It writes:
 - `validation-report.json`
 - `top-10-accounts.json`
 - `human-review-overrides.json`
+- `human-feedback-validation.json`
 - `build-summary.json`
 
 ## Identity Resolution Rules
@@ -174,6 +175,22 @@ Flags must name the concern so weak logic or missing evidence can be inspected l
 
 Review records must be feedback only. They must not trigger outreach, CRM writes, task creation, UI actions, agents, integrations, or autonomous behavior.
 
+## Human Feedback Validation Rules
+
+The human feedback validation report must validate generated review examples only.
+
+The report may check:
+
+- Review examples reference generated top-10 recommendations.
+- Review examples cover accept, reject, revise, and flag actions.
+- Review examples include human-readable reasons.
+- Review examples preserve original recommendation text and rationale.
+- Revise examples preserve revised recommendation text.
+- Feedback targets match the recommendation, entity, and state referenced by the review record.
+- Automation boundaries remain feedback-only.
+
+The report must not persist reviews, create a UI, approve actions, write to CRM, create tasks, call external systems, use LLM judgment, or treat fixture examples as real human decisions.
+
 ## Signal Attachment Rules
 
 Signals live once and attach through generated links. Views must use links instead of duplicating signal objects.
@@ -223,6 +240,8 @@ It must not validate outputs with hidden judgment or external systems.
 It must not turn recommendations into outreach actions, CRM writes, tasks, UI actions, or agent instructions.
 
 It must not turn human review records into outreach actions, CRM writes, tasks, UI actions, or agent instructions.
+
+It must not treat human feedback validation as production approval.
 
 It must not create UI, agents, deployment configuration, real integrations, or production behavior.
 
@@ -282,6 +301,14 @@ It includes reviewable recommendation records, allowed review actions, local acc
 
 The fixture examples demonstrate record shape only. They must not be treated as real human approval.
 
+### `human-feedback-validation.json`
+
+This file contains deterministic local validation results for generated human review examples.
+
+It includes pass or fail status, check count, failed check count, individual check results, observed evidence, and warnings.
+
+The report validates feedback shape and traceability only. It must not imply that a real review happened.
+
 ### `build-summary.json`
 
 This file summarizes the run.
@@ -299,6 +326,8 @@ It includes:
 - Failed validation check count.
 - Top-10 recommendation count.
 - Human review example count.
+- Human feedback validation check count.
+- Failed human feedback validation check count.
 - Input directory.
 - Output directory.
 - Output files.
@@ -322,6 +351,7 @@ A small deterministic local engine removes ambiguity about:
 - Why each recommended account appears.
 - How a human may accept, reject, revise, or flag a recommendation.
 - Why rejected or revised recommendations must remain traceable.
+- Which feedback checks prove review examples preserve references, reasons, text, and boundaries.
 - Which output files future logic must consume.
 - Which implementation boundaries remain prohibited.
 
@@ -350,17 +380,18 @@ A reviewer may run the builder and confirm that:
 - Recommendation output remains human-review-only.
 - Human review examples preserve accept, reject, revise, and flag paths.
 - Rejected recommendations preserve reasons and connect back to the recommendation they evaluate.
-- The build summary clearly states `builder_mode: human_review_override_model`.
+- Human feedback validation passes with zero failed checks.
+- The build summary clearly states `builder_mode: human_feedback_validation_report`.
 
-A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if validation relies on hidden judgment, if recommendations use hidden ranking, if recommendations imply action, if human review records trigger action, if rejected recommendations disappear without feedback, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
+A reviewer must reject the change if the resolver guesses weak matches, if signal attachment duplicates signal objects, if entity state uses hidden scoring, if validation relies on hidden judgment, if recommendations use hidden ranking, if recommendations imply action, if human review records trigger action, if rejected recommendations disappear without feedback, if feedback validation treats fixture examples as real approval, if the engine calls external systems, if logic is hidden, or if it acts like a production graph engine.
 
 ## Future Considerations
 
 Future PRs may add real deterministic behavior in small steps after review gates allow it.
 
-The next likely PR is `Add human feedback validation checks`.
+The next likely PR is `Add additional review edge-case fixtures`.
 
-That future PR must remain local-only and deterministic. It may validate that human review examples preserve recommendation references, reasons, and automation boundaries.
+That future PR must remain local-only and deterministic. It may add a small number of review edge cases only if they improve Gate 6 evidence without adding persistence, UI, agents, integrations, LLMs, or autonomous behavior.
 
 Later PRs may add:
 

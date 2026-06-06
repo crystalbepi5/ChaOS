@@ -48,6 +48,8 @@ class BuildSummary:
     failed_validation_check_count: int
     top_10_recommendation_count: int
     human_review_example_count: int
+    human_feedback_validation_check_count: int
+    failed_human_feedback_validation_check_count: int
     input_dir: str
     output_dir: str
     output_files: list[str]
