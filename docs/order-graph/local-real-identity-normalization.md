@@ -6,7 +6,7 @@ This file defines the first local-real identity normalization expectations for t
 
 The local CSV adapter now creates SourceRecord-shaped outputs. The local builder can now consume those imported SourceRecords as a handoff artifact. The next risk is whether future identity logic will normalize messy imported domain values in a visible way, or quietly blend adapter mapping, normalization, and entity merging into one hidden step.
 
-This document prevents that drift. It separates adapter mapping, builder handoff, future normalization, and future identity resolution.
+This document prevents that drift. It separates adapter mapping, builder handoff, normalization, and future identity resolution.
 
 ## Purpose
 
@@ -16,14 +16,14 @@ The purpose of this document is to answer one narrow question:
 How must imported account domain values be normalized before they may become future identity-resolution evidence?
 ```
 
-This PR defines expectations only. It does not implement a normalizer, identity resolver, graph expansion path, or validation command.
+This stage implements a deterministic helper for normalization evidence only. It does not implement an identity resolver, graph expansion path, or builder output path for normalized evidence.
 
 ## How This Fits Into The Pipeline
 
 The local-real path must remain staged:
 
 ```text
-CSV adapter -> imported SourceRecords -> builder handoff -> future normalization -> future identity resolution
+CSV adapter -> imported SourceRecords -> builder handoff -> normalization evidence -> future identity resolution
 ```
 
 Each stage has a separate responsibility.
@@ -40,15 +40,23 @@ The builder handoff consumes imported SourceRecords and writes local handoff out
 
 The builder handoff must preserve imported values exactly. It must not merge entities, generate graph outputs, or treat normalized evidence as already approved.
 
-### Future Normalization
+### Normalization Evidence
 
-Future normalization may derive normalized identity evidence from imported domain values.
+Normalization evidence may derive a normalized domain from an imported domain value.
 
-Future normalization must be deterministic, visible, and inspectable. It must record what input value produced each normalized value.
+Normalization must be deterministic, visible, and inspectable. It must record what input value produced each normalized value.
+
+The helper lives at:
+
+```text
+src/order_graph/local_real_identity_normalization.py
+```
+
+The helper returns derived evidence only. It must not change adapter output, change builder handoff output, merge records, create entities, attach signals, compute states, recommend actions, or create review records.
 
 ### Future Identity Resolution
 
-Future identity resolution may use normalized domains as evidence only after the normalization expectations are approved and implemented.
+Future identity resolution may use normalized domains as evidence only after normalization outputs are wired into a visible local-real artifact and reviewed.
 
 Future identity resolution must not merge records by account name alone.
 
@@ -73,11 +81,11 @@ The fixture covers clean and messy local-real domain values, including:
 - malformed text
 - weak domain-like values without enough evidence
 
-The fixture is human-reviewable by design. It is not a schema, validator, or executable test.
+The fixture is human-reviewable by design. It remains the expectation source for the helper.
 
 ## What Normalization May Do
 
-Future normalization may:
+Normalization may:
 
 - Lowercase domain evidence.
 - Remove `http://` or `https://` when a valid host remains.
@@ -90,7 +98,7 @@ Future normalization may:
 
 ## What Normalization Must Not Do
 
-Future normalization must not:
+Normalization must not:
 
 - Change adapter raw values.
 - Change imported SourceRecord handoff values.
@@ -122,7 +130,13 @@ If the adapter normalizes values too early, future reviewers cannot tell whether
 
 ## Examples Of Use
 
-A future implementation PR may add a deterministic domain normalizer and verify it against `identity-normalization-cases.json`.
+A reviewer may call the helper directly from a local Python check and compare it against `identity-normalization-cases.json`.
+
+The helper exposes:
+
+- `normalize_local_real_domain(input_domain)`
+- `normalize_local_real_domain_as_dict(input_domain)`
+- `verify_identity_normalization_cases(fixture)`
 
 A future validation PR may check that:
 
@@ -147,6 +161,6 @@ This normalization boundary fails if:
 
 ## Future Considerations
 
-The next likely PR is `Implement local-real domain normalization helper`.
+The next likely PR is `Write local-real normalization evidence output`.
 
-That PR may add deterministic local code that reads or mirrors the expectations in `identity-normalization-cases.json`. It must not add full local-real identity resolution, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
+That PR may wire the helper into a deterministic local output file for imported SourceRecords. It must still avoid full local-real identity resolution, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
