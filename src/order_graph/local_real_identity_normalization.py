@@ -95,7 +95,7 @@ def normalize_local_real_domain(input_domain: str | None) -> DomainNormalization
         )
 
     warnings: list[str] = []
-    if parsed.path and parsed.path not in (host, f"www.{host}"):
+    if parsed.path not in ("", "/", host, f"www.{host}"):
         warnings.append("domain_path_ignored_for_identity_evidence")
 
     return DomainNormalizationEvidence(
