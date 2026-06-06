@@ -1,0 +1,6 @@
+AccountId,AccountName,Website,OwnerId,IntentScoreBand,AccountNotes,LegalReviewNotes,ApiToken,LegacySegmentCode,UnexpectedField
+acct_nova_001,NovaWorks Labs,novaworks.example,owner_north,high,,,,,
+acct_acme_001,ACME Corporation,acme.example,,medium,sanitized note indicates renewed buying committee review,,,,
+acct_acme_002,Acme Corp.,https://www.acme.example,owner_south,,,,,,
+acct_zenith_001,Zenith Systems,,owner_west,,,,,,
+acct_pioneer_001,Pioneer Systems,pioneersystems.example,,low,,,,,
