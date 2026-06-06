@@ -1,0 +1,128 @@
+{
+  "mapping_model": "local_real_export_field_mapping_example",
+  "purpose": "Show non-executable mapping shape for future local export adapters.",
+  "status": "example_only_not_executable_import_config",
+  "source_system": "salesforce_like_crm",
+  "source_object_type": "account_export",
+  "source_file_example": "examples/order-graph/local-real/exports/accounts.example.csv",
+  "classification_file_example": "configs/order-graph/local-real/field-classification.example.json",
+  "target_object": "SourceRecord",
+  "required_source_fields": [
+    "AccountId",
+    "AccountName",
+    "Website"
+  ],
+  "optional_source_fields": [
+    "OwnerId",
+    "CreatedDate",
+    "LastModifiedDate",
+    "IntentScoreBand",
+    "AccountNotes"
+  ],
+  "field_mappings": [
+    {
+      "source_field": "AccountId",
+      "source_classification": "structured_truth",
+      "target_path": "source_record.native_id",
+      "required": true,
+      "allowed_use": [
+        "source_record_identity",
+        "source_traceability"
+      ],
+      "on_missing": "fail_record_mapping",
+      "rationale": "A SourceRecord must preserve the source-native record identifier."
+    },
+    {
+      "source_field": "AccountName",
+      "source_classification": "structured_truth",
+      "target_path": "source_record.raw_values.account_name",
+      "required": true,
+      "allowed_use": [
+        "source_record_context",
+        "human_review_display"
+      ],
+      "on_missing": "warn_and_preserve_record_as_incomplete",
+      "rationale": "Account name is required for review context but must not be used alone for identity resolution."
+    },
+    {
+      "source_field": "Website",
+      "source_classification": "structured_truth",
+      "target_path": "source_record.normalized_values.domain",
+      "required": true,
+      "allowed_use": [
+        "domain_normalization",
+        "account_identity_resolution_evidence"
+      ],
+      "on_missing": "warn_and_preserve_as_unresolved_candidate",
+      "rationale": "Domain may support deterministic account resolution when present."
+    },
+    {
+      "source_field": "OwnerId",
+      "source_classification": "structured_truth",
+      "target_path": "source_record.raw_values.owner_id",
+      "required": false,
+      "allowed_use": [
+        "source_traceability",
+        "review_context"
+      ],
+      "on_missing": "no_warning",
+      "rationale": "Owner identifier may help review but is not required for identity resolution."
+    },
+    {
+      "source_field": "IntentScoreBand",
+      "source_classification": "derived_signal",
+      "target_path": "source_record.derived_values.intent_score_band",
+      "required": false,
+      "allowed_use": [
+        "source_derived_signal_context"
+      ],
+      "on_missing": "no_warning",
+      "rationale": "Source-system interpretation may be preserved as derived evidence when source and context remain visible."
+    },
+    {
+      "source_field": "AccountNotes",
+      "source_classification": "contextual_evidence",
+      "target_path": "source_record.context_values.account_notes_summary",
+      "required": false,
+      "allowed_use": [
+        "human_review_context_when_sanitized"
+      ],
+      "on_missing": "no_warning",
+      "rationale": "Notes may support human context only after sanitization; they must not drive identity or automatic state."
+    }
+  ],
+  "blocked_field_handling": [
+    {
+      "source_classification": "restricted",
+      "value_handling": "do_not_ingest_value",
+      "warning_handling": "safe_field_name_warning_only",
+      "source_record_handling": "do_not_include_restricted_values",
+      "rationale": "Restricted fields may be visible by safe field name for review but values must not enter SourceRecords."
+    },
+    {
+      "source_classification": "excluded",
+      "value_handling": "reject_value_and_do_not_copy",
+      "warning_handling": "safe_field_name_warning_only_when_needed",
+      "source_record_handling": "do_not_include_excluded_field_names_or_values",
+      "rationale": "Warnings may include safe excluded field names, but SourceRecords must never include excluded values."
+    },
+    {
+      "source_classification": "unknown_needs_review",
+      "value_handling": "block_value_until_classified",
+      "warning_handling": "safe_field_name_warning_only",
+      "source_record_handling": "do_not_include_unknown_values",
+      "rationale": "Unknown fields must remain blocked until reviewed."
+    }
+  ],
+  "expected_adapter_outputs_future_only": [
+    "source-records.json",
+    "import-summary.json",
+    "mapping-warnings.json"
+  ],
+  "example_boundaries": [
+    "This file is a non-executable example only.",
+    "This file must not be used to run an import.",
+    "This file must not contain real customer data.",
+    "This file does not approve import scripts, live integrations, CRM writes, outreach actions, UI, agents, LLM calls, or deployment work."
+  ]
+}
