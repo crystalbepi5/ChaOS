@@ -40,6 +40,16 @@ outputs/order-graph/local-real/draft-entities.json
 
 This artifact must be separate from canonical graph outputs. It must not be named `entities.json`, and it must not approve final identity resolution.
 
+## Draft Validation
+
+The local-real imported build path may validate draft entities to:
+
+```text
+outputs/order-graph/local-real/draft-entity-validation.json
+```
+
+The validation report must check that draft entities reference account identity candidates, preserve source record identifiers, preserve normalized-domain identity basis, keep unresolved candidates unresolved, and avoid canonical entity identifiers.
+
 ## What Draft Entities May Do
 
 Draft entities may:
@@ -78,6 +88,6 @@ The boundary fails if:
 
 ## Future Considerations
 
-The next likely PR is `Add local-real draft entity validation`.
+The next likely decision is whether validated draft entities are sufficient to propose a future canonical entity decision gate.
 
-That PR may validate the draft entity artifact against local expectations. It must still avoid canonical entity creation, `entities.json`, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
+That future step must still avoid premature canonical entity creation, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work unless a separate decision explicitly approves that expansion.
