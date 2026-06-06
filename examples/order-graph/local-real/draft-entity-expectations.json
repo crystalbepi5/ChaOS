@@ -1,0 +1,77 @@
+{
+  "fixture": "local_real_draft_entity_expectations",
+  "status": "expectation_only_not_final_identity_resolution",
+  "purpose": "Define how validated account identity candidates may become draft entity artifacts without creating canonical entities.",
+  "source_artifact": "outputs/order-graph/local-real/account-identity-candidates.json",
+  "draft_entity_expectations": [
+    {
+      "draft_entity_type": "account",
+      "source_candidate_id": "local_real_account_candidate_acme_example",
+      "expected_draft_entity_id": "draft_account_acme_example",
+      "identity_basis": {
+        "basis_type": "normalized_domain",
+        "normalized_domain": "acme.example"
+      },
+      "required_fields": [
+        "draft_entity_id",
+        "draft_entity_type",
+        "source_candidate_id",
+        "identity_basis",
+        "source_record_ids",
+        "evidence",
+        "status",
+        "allowed_use",
+        "must_not_do"
+      ],
+      "allowed_use": [
+        "future_human_review",
+        "future_canonical_entity_input"
+      ],
+      "must_not_do": [
+        "treat_as_canonical_entity",
+        "write_entities_json",
+        "merge_by_account_name_only",
+        "attach_signals",
+        "compute_state",
+        "generate_recommendations"
+      ]
+    }
+  ],
+  "unresolved_expectations": [
+    {
+      "rule": "candidate_without_normalized_domain_must_not_become_draft_entity",
+      "expected_handling": "preserve_as_unresolved_candidate",
+      "must_not_do": [
+        "guess_domain",
+        "create_draft_entity_from_account_name",
+        "merge_by_account_name_only"
+      ]
+    }
+  ],
+  "boundaries": [
+    "This fixture defines draft entity expectations only.",
+    "Draft entities are not canonical entities.",
+    "Draft entities may be created only from validated account identity candidates with normalized domains.",
+    "Unresolved candidates must not become draft entities.",
+    "Draft entity output must not write entities.json.",
+    "Account-name-only matching remains prohibited."
+  ],
+  "prohibited_in_this_fixture": [
+    "final_identity_resolution",
+    "canonical_entities",
+    "entities_json",
+    "signal_linking",
+    "entity_states",
+    "recommendations",
+    "human_review_records",
+    "feedback_validation_records",
+    "live_integrations",
+    "crm_writes",
+    "ui",
+    "agents",
+    "llm_calls",
+    "databases",
+    "package_changes",
+    "deployment_work"
+  ]
+}
