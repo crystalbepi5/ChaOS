@@ -11,7 +11,7 @@
     <div>
       <p class="eyebrow">ChaOS v0.1 proof gate · fake sample data</p>
       <h1>Account Plan Tracker</h1>
-      <p class="lede">Review account context, signals, interpreted state, recommended next action, outcome, and feedback before anything becomes action.</p>
+      <p class="lede">Review account context, signals, interpreted state, recommended next action, execution status, outcome, and feedback before anything leaves the local prototype.</p>
     </div>
     <div class="proof-badge" aria-label="Prototype boundary">
       <span>Local static prototype</span>
@@ -36,6 +36,22 @@
       <article class="summary-card">
         <span class="summary-label">Accepted</span>
         <strong id="acceptedCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Open Actions</span>
+        <strong id="openActionCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Blocked Actions</span>
+        <strong id="blockedActionCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Completed Actions</span>
+        <strong id="completedActionCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Selected Account</span>
+        <strong id="selectedActionCount">0</strong>
       </article>
     </section>
 
@@ -91,6 +107,50 @@
           </article>
         </div>
 
+        <section class="action-panel" aria-label="Local action tracking">
+          <div class="section-heading action-heading">
+            <div>
+              <h3>Action Tracking</h3>
+              <p>Local execution loop only. Actions are human-owned and disappear on refresh.</p>
+            </div>
+            <span class="action-boundary">No outreach execution</span>
+          </div>
+
+          <div id="actionList" class="action-list"></div>
+
+          <form class="action-form" id="actionForm">
+            <div class="form-row full-row">
+              <label for="actionTitle">New action</label>
+              <input id="actionTitle" name="actionTitle" type="text" placeholder="Example: confirm stakeholder, refresh research, draft reviewed follow-up">
+            </div>
+            <div class="form-row">
+              <label for="actionOwner">Owner</label>
+              <input id="actionOwner" name="actionOwner" type="text" placeholder="Human owner">
+            </div>
+            <div class="form-row">
+              <label for="actionDue">Due / timing</label>
+              <input id="actionDue" name="actionDue" type="text" placeholder="Example: today, this week, after review">
+            </div>
+            <div class="form-row">
+              <label for="actionStatus">Status</label>
+              <select id="actionStatus" name="actionStatus">
+                <option value="planned">planned</option>
+                <option value="in_progress">in_progress</option>
+                <option value="blocked">blocked</option>
+                <option value="completed">completed</option>
+                <option value="deferred">deferred</option>
+              </select>
+            </div>
+            <div class="form-row action-submit-row">
+              <button type="submit">Add Local Action</button>
+            </div>
+            <div class="form-row full-row">
+              <label for="actionNote">Action note</label>
+              <textarea id="actionNote" name="actionNote" rows="3" placeholder="Explain why this action exists or what must happen before it is safe to proceed."></textarea>
+            </div>
+          </form>
+        </section>
+
         <form class="review-form" id="reviewForm">
           <div class="form-row">
             <label for="reviewStatus">Review status</label>
@@ -116,7 +176,7 @@
   </main>
 
   <footer class="footer-note">
-    <p>This prototype uses fake sample data and in-memory browser state only. It does not send outreach, write to CRM, call APIs, use agents, or store real customer data.</p>
+    <p>This prototype uses fake sample data and in-memory browser state only. It does not send outreach, write to CRM, call APIs, use agents, persist changes, or store real customer data.</p>
   </footer>
 
   <script src="sample-data.js"></script>
