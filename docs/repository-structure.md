@@ -16,11 +16,13 @@ ChaOS/
     architectural-laws.md
     architecture.md
     assumptions.md
+    chaos-v0.1-scope.md
     core-agent-model.md
     core-system-model.md
     core-workflow-model.md
     decision-records/
       0001-order-graph-reference-implementation.md
+      0002-chaos-v0.1-scope-and-proof-gate.md
     decisions/
       0003-repository-alignment.md
       0004-authority-and-implementation-boundary.md
@@ -138,6 +140,18 @@ Examples:
 
 Future consideration: The docs directory may later be split into constitution, patterns, and governance if the repository grows.
 
+### docs/chaos-v0.1-scope.md
+
+This document defines the honest v0.1 scope, abstraction tax rule, pattern inheritance rule, upstreaming classifications, proof gate, and success/failure criteria.
+
+Examples:
+
+- A project declares that it inherits ChaOS v0.1 but bypasses the full workflow model.
+- A pattern adaptation is classified as `candidate_upstream_improvement`.
+- Major framework expansion pauses until a real build proves practical leverage.
+
+Future consideration: If these rules grow, ChaOS may split them into separate governance documents only after repeated use proves that one scope document is not enough.
+
 ### docs/decision-records/
 
 The decision-records directory contains approved decision records for implementation-track boundaries that must remain separate from exploratory journal entries.
@@ -145,6 +159,7 @@ The decision-records directory contains approved decision records for implementa
 Examples:
 
 - `0001-order-graph-reference-implementation.md` approves the controlled Order Graph reference implementation track while prohibiting production integrations, real customer data ingestion, databases, frontends, autonomous actions, and vendor lock-in at this stage.
+- `0002-chaos-v0.1-scope-and-proof-gate.md` records the decision to scope ChaOS v0.1 as a personal architecture operating system and local proof harness with a State primitive, abstraction tax rule, inheritance rules, upstreaming classifications, and a two-week proof gate.
 
 Current boundary: ChaOS currently contains both `docs/decision-records/` and `docs/decisions/`. Until a future cleanup decision is made, new formal architecture decision records must use `docs/decision-records/`. The `docs/decisions/` folder must not be expanded without a decision record clarifying its purpose.
 
@@ -193,7 +208,7 @@ Examples:
 - Validate an agent specification.
 - Validate a workflow definition.
 - Validate a decision record.
-- Validate an entity-signal-decision-outcome-feedback model.
+- Validate an entity-signal-state-decision-outcome-feedback model.
 
 Future consideration: Schemas may later gain versioning, examples, and compatibility notes.
 
