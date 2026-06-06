@@ -1,0 +1,149 @@
+{
+  "builder_mode": "csv_to_source_record_adapter_skeleton",
+  "record_count": 5,
+  "source_records": [
+    {
+      "adapter_boundary": "local_csv_skeleton_no_external_systems",
+      "context_values": {},
+      "derived_values": {
+        "intent_score_band": "high"
+      },
+      "field_classification_summary": {
+        "AccountId": "structured_truth",
+        "AccountName": "structured_truth",
+        "IntentScoreBand": "derived_signal",
+        "OwnerId": "structured_truth",
+        "Website": "structured_truth"
+      },
+      "normalized_values": {
+        "domain": "novaworks.example"
+      },
+      "raw_values": {
+        "account_name": "NovaWorks Labs",
+        "owner_id": "owner_north"
+      },
+      "source_native_id": "acct_nova_001",
+      "source_object_type": "account_export",
+      "source_record_id": "sr_import_salesforce_like_crm_account_export_acct_nova_001",
+      "source_reference": {
+        "row_number": 1,
+        "source_file": "examples/order-graph/local-real/exports/accounts.example.csv"
+      },
+      "source_system": "salesforce_like_crm",
+      "status": "mapped_from_local_csv"
+    },
+    {
+      "adapter_boundary": "local_csv_skeleton_no_external_systems",
+      "context_values": {},
+      "derived_values": {
+        "intent_score_band": "medium"
+      },
+      "field_classification_summary": {
+        "AccountId": "structured_truth",
+        "AccountName": "structured_truth",
+        "IntentScoreBand": "derived_signal",
+        "Website": "structured_truth"
+      },
+      "normalized_values": {
+        "domain": "acme.example"
+      },
+      "raw_values": {
+        "account_name": "ACME Corporation"
+      },
+      "source_native_id": "acct_acme_001",
+      "source_object_type": "account_export",
+      "source_record_id": "sr_import_salesforce_like_crm_account_export_acct_acme_001",
+      "source_reference": {
+        "row_number": 2,
+        "source_file": "examples/order-graph/local-real/exports/accounts.example.csv"
+      },
+      "source_system": "salesforce_like_crm",
+      "status": "mapped_from_local_csv"
+    },
+    {
+      "adapter_boundary": "local_csv_skeleton_no_external_systems",
+      "context_values": {},
+      "derived_values": {},
+      "field_classification_summary": {
+        "AccountId": "structured_truth",
+        "AccountName": "structured_truth",
+        "OwnerId": "structured_truth",
+        "Website": "structured_truth"
+      },
+      "normalized_values": {
+        "domain": "https://www.acme.example"
+      },
+      "raw_values": {
+        "account_name": "Acme Corp.",
+        "owner_id": "owner_south"
+      },
+      "source_native_id": "acct_acme_002",
+      "source_object_type": "account_export",
+      "source_record_id": "sr_import_salesforce_like_crm_account_export_acct_acme_002",
+      "source_reference": {
+        "row_number": 3,
+        "source_file": "examples/order-graph/local-real/exports/accounts.example.csv"
+      },
+      "source_system": "salesforce_like_crm",
+      "status": "mapped_from_local_csv"
+    },
+    {
+      "adapter_boundary": "local_csv_skeleton_no_external_systems",
+      "context_values": {},
+      "derived_values": {},
+      "field_classification_summary": {
+        "AccountId": "structured_truth",
+        "AccountName": "structured_truth",
+        "OwnerId": "structured_truth"
+      },
+      "normalized_values": {},
+      "raw_values": {
+        "account_name": "Zenith Systems",
+        "owner_id": "owner_west"
+      },
+      "source_native_id": "acct_zenith_001",
+      "source_object_type": "account_export",
+      "source_record_id": "sr_import_salesforce_like_crm_account_export_acct_zenith_001",
+      "source_reference": {
+        "row_number": 4,
+        "source_file": "examples/order-graph/local-real/exports/accounts.example.csv"
+      },
+      "source_system": "salesforce_like_crm",
+      "status": "mapped_from_local_csv"
+    },
+    {
+      "adapter_boundary": "local_csv_skeleton_no_external_systems",
+      "context_values": {},
+      "derived_values": {
+        "intent_score_band": "low"
+      },
+      "field_classification_summary": {
+        "AccountId": "structured_truth",
+        "AccountName": "structured_truth",
+        "IntentScoreBand": "derived_signal",
+        "Website": "structured_truth"
+      },
+      "normalized_values": {
+        "domain": "pioneersystems.example"
+      },
+      "raw_values": {
+        "account_name": "Pioneer Systems"
+      },
+      "source_native_id": "acct_pioneer_001",
+      "source_object_type": "account_export",
+      "source_record_id": "sr_import_salesforce_like_crm_account_export_acct_pioneer_001",
+      "source_reference": {
+        "row_number": 5,
+        "source_file": "examples/order-graph/local-real/exports/accounts.example.csv"
+      },
+      "source_system": "salesforce_like_crm",
+      "status": "mapped_from_local_csv"
+    }
+  ],
+  "warnings": [
+    "This adapter reads local CSV files only.",
+    "This adapter is a skeleton for fake or sanitized local exports.",
+    "This adapter must not be used with real customer data committed to the repository.",
+    "This adapter does not call external APIs, LLMs, databases, live integrations, UI, agents, CRM writes, outreach actions, or deployment systems."
+  ]
+}
