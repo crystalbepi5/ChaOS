@@ -5,8 +5,9 @@ This module proves this spine:
     local fake fixtures -> deterministic local output files
 
 The default path builds the fake GTM graph fixture. The imported SourceRecord
-path only consumes adapter-shaped SourceRecords and writes a local handoff output;
-it does not expand imported records into graph entities yet.
+path consumes adapter-shaped SourceRecords, writes a local handoff output, and
+writes derived normalization evidence; it does not expand imported records into
+graph entities yet.
 """
 
 from __future__ import annotations
@@ -21,6 +22,7 @@ from .entity_state import compute_entity_states
 from .human_feedback_validation import generate_human_feedback_validation_report
 from .human_review import generate_human_review_override_model
 from .identity import resolve_entities_from_source_records
+from .local_real_identity_normalization import normalize_local_real_domain_as_dict
 from .models import BuildPaths, BuildSummary, FixtureBundle, JsonObject
 from .signal_attachment import generate_signal_links
 from .top_10_workflow import generate_top_10_account_workflow
@@ -42,6 +44,7 @@ INPUT_FILES = {
 
 OUTPUT_FILES = {
     "source_records": "source-records.json",
+    "identity_normalization_evidence": "identity-normalization-evidence.json",
     "entities": "entities.json",
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
@@ -71,7 +74,8 @@ IMPORTED_SOURCE_RECORD_WARNINGS = [
     "Imported SourceRecords are consumed from local fake or sanitized adapter output only.",
     "Imported SourceRecords are not expanded into entities, signal links, entity states, recommendations, or human review records in this mode.",
     "The local-real fixture has no approved signal fixture or graph expectations yet.",
-    "Domain values are preserved exactly as imported; identity normalization remains a future gated step.",
+    "Domain values are preserved exactly as imported; identity normalization evidence is written separately.",
+    "Identity normalization evidence does not approve entity merging or account-name-only matching.",
     "No real customer data, live integrations, CRM writes, external APIs, LLMs, databases, credentials, UI, agents, or deployment work are used.",
 ]
 
@@ -196,6 +200,7 @@ def make_imported_source_record_summary(
         output_dir=str(paths.output_dir.as_posix()),
         output_files=[
             OUTPUT_FILES["source_records"],
+            OUTPUT_FILES["identity_normalization_evidence"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=IMPORTED_SOURCE_RECORD_WARNINGS,
@@ -263,11 +268,75 @@ def build_graph_from_fixtures(
     return summary
 
 
+def _imported_domain_value(source_record: JsonObject) -> str | None:
+    """Return the adapter-preserved domain value from one imported SourceRecord."""
+
+    normalized_values = source_record.get("normalized_values", {})
+    if not isinstance(normalized_values, dict):
+        return None
+
+    domain = normalized_values.get("domain")
+    if domain is None:
+        return None
+    return str(domain)
+
+
+def generate_identity_normalization_evidence(imported_source_records_output: JsonObject) -> JsonObject:
+    """Generate visible normalization evidence without resolving identities."""
+
+    evidence_records: list[JsonObject] = []
+    for source_record in imported_source_records_output.get("source_records", []):
+        if not isinstance(source_record, dict):
+            continue
+
+        imported_domain = _imported_domain_value(source_record)
+        evidence = normalize_local_real_domain_as_dict(imported_domain)
+        evidence_records.append(
+            {
+                "source_record_id": source_record.get("source_record_id"),
+                "source_system": source_record.get("source_system"),
+                "source_object_type": source_record.get("source_object_type"),
+                "source_native_id": source_record.get("source_native_id"),
+                "imported_domain_value": imported_domain,
+                "normalization_evidence": evidence,
+            }
+        )
+
+    return {
+        "builder_mode": "local_real_identity_normalization_evidence",
+        "source_record_count": len(imported_source_records_output.get("source_records", [])),
+        "evidence_record_count": len(evidence_records),
+        "normalizable_record_count": sum(
+            1
+            for evidence_record in evidence_records
+            if evidence_record["normalization_evidence"].get("normalized_domain") is not None
+        ),
+        "unresolved_candidate_count": sum(
+            1
+            for evidence_record in evidence_records
+            if evidence_record["normalization_evidence"].get("normalized_domain") is None
+        ),
+        "warning_record_count": sum(
+            1
+            for evidence_record in evidence_records
+            if evidence_record["normalization_evidence"].get("warnings")
+        ),
+        "evidence_records": evidence_records,
+        "boundaries": [
+            "This output contains derived normalization evidence only.",
+            "This output does not change imported SourceRecord values.",
+            "This output does not perform identity resolution.",
+            "This output does not create entities, signal links, entity states, recommendations, or review records.",
+            "Account-name-only matching remains prohibited.",
+        ],
+    }
+
+
 def build_from_imported_source_records(
     input_dir: Path = DEFAULT_LOCAL_REAL_INPUT_DIR,
     output_dir: Path = DEFAULT_LOCAL_REAL_OUTPUT_DIR,
 ) -> BuildSummary:
-    """Read local imported SourceRecords and write a deterministic handoff output."""
+    """Read local imported SourceRecords and write deterministic handoff outputs."""
 
     paths = BuildPaths(input_dir=input_dir, output_dir=output_dir)
     imported_output = load_imported_source_records(paths.input_dir)
@@ -279,8 +348,10 @@ def build_from_imported_source_records(
         "source_records": imported_output.get("source_records", []),
         "warnings": IMPORTED_SOURCE_RECORD_WARNINGS + list(imported_output.get("warnings", [])),
     }
+    normalization_evidence_output = generate_identity_normalization_evidence(source_records_output)
 
     write_json(paths.output_dir / OUTPUT_FILES["source_records"], source_records_output)
+    write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_evidence"], normalization_evidence_output)
     summary = make_imported_source_record_summary(paths, source_records_output)
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
