@@ -1,0 +1,127 @@
+{
+  "classification_model": "source_field_classification_example",
+  "purpose": "Show how local real-shaped export fields may be classified before ingestion.",
+  "status": "example_only_not_executable_mapping",
+  "source_system": "salesforce_like_crm",
+  "source_object_type": "account_export",
+  "field_classifications": [
+    {
+      "field_name": "AccountId",
+      "primary_classification": "structured_truth",
+      "allowed_use": [
+        "source_record_identity",
+        "source_traceability"
+      ],
+      "prohibited_use": [
+        "production_write",
+        "autonomous_action"
+      ],
+      "sanitization_requirement": "replace real identifier with stable fake identifier before commit",
+      "review_status": "approved_for_local_ingestion",
+      "rationale": "Source-native account identifier is explicit structured evidence."
+    },
+    {
+      "field_name": "Website",
+      "primary_classification": "structured_truth",
+      "allowed_use": [
+        "domain_normalization",
+        "account_identity_resolution_evidence"
+      ],
+      "prohibited_use": [
+        "identity_merge_without_approved_matching_rule",
+        "production_write"
+      ],
+      "sanitization_requirement": "replace real domain with fake domain before commit unless already approved as public sample data",
+      "review_status": "approved_for_local_ingestion",
+      "rationale": "Website can provide domain evidence when an approved deterministic matching rule uses it."
+    },
+    {
+      "field_name": "AccountNotes",
+      "primary_classification": "contextual_evidence",
+      "allowed_use": [
+        "human_review_context_when_sanitized"
+      ],
+      "prohibited_use": [
+        "identity_resolution",
+        "relationship_linking",
+        "automatic_high_priority_state"
+      ],
+      "sanitization_requirement": "remove private text and replace with fake summary before commit",
+      "review_status": "blocked_pending_review",
+      "rationale": "Free text may help reviewers understand context, but it must not become hard truth."
+    },
+    {
+      "field_name": "IntentScoreBand",
+      "primary_classification": "derived_signal",
+      "allowed_use": [
+        "source_derived_signal_context",
+        "state_support_when_source_and_time_are_visible"
+      ],
+      "prohibited_use": [
+        "hidden_ranking",
+        "autonomous_action",
+        "unexplained_priority"
+      ],
+      "sanitization_requirement": "preserve fake categorical band only",
+      "review_status": "approved_for_local_ingestion",
+      "rationale": "The value is a source-system interpretation and must remain traceable as derived evidence."
+    },
+    {
+      "field_name": "LegalReviewNotes",
+      "primary_classification": "restricted",
+      "allowed_use": [
+        "field_name_warning_only"
+      ],
+      "prohibited_use": [
+        "source_record_value_ingestion",
+        "state_support",
+        "recommendation_support",
+        "summary_generation"
+      ],
+      "sanitization_requirement": "do not include values in committed examples",
+      "review_status": "approved_for_warning_only",
+      "rationale": "Legal notes may contain sensitive content and have no approved local handling rule."
+    },
+    {
+      "field_name": "ApiToken",
+      "primary_classification": "excluded",
+      "allowed_use": [
+        "import_rejection_warning_by_field_name_only"
+      ],
+      "prohibited_use": [
+        "copy_value",
+        "transform_value",
+        "summarize_value",
+        "source_record_ingestion",
+        "logging_value"
+      ],
+      "sanitization_requirement": "field values must never be committed or ingested",
+      "review_status": "excluded_from_ingestion",
+      "rationale": "Tokens are secrets and must not appear in local test data or generated outputs."
+    },
+    {
+      "field_name": "LegacySegmentCode",
+      "primary_classification": "unknown_needs_review",
+      "allowed_use": [
+        "field_name_warning_only",
+        "classification_review_queue"
+      ],
+      "prohibited_use": [
+        "source_record_value_ingestion",
+        "identity_resolution",
+        "signal_generation",
+        "state_support",
+        "recommendation_support"
+      ],
+      "sanitization_requirement": "do not include values until meaning and sensitivity are reviewed",
+      "review_status": "blocked_pending_review",
+      "rationale": "The field meaning is unclear and must remain blocked until reviewed."
+    }
+  ],
+  "example_boundaries": [
+    "This file is an example contract artifact only.",
+    "This file must not be treated as executable import mapping.",
+    "This file must not contain real customer data.",
+    "This file does not approve import scripts, live integrations, CRM writes, outreach actions, UI, agents, LLM calls, or deployment work."
+  ]
+}
