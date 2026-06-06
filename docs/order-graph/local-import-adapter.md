@@ -125,6 +125,6 @@ This adapter skeleton and build handoff do not approve:
 
 ## Future Considerations
 
-The next likely PR is `Add local-real identity normalization fixture`.
+Local-real identity normalization expectations are documented in `docs/order-graph/local-real-identity-normalization.md` and `examples/order-graph/local-real/identity-normalization-cases.json`.
 
-That PR may decide how imported domain values such as `acme.example` and `https://www.acme.example` are normalized before identity resolution. It must preserve the current adapter boundary: mapping may preserve imported values exactly, and identity normalization must be a separate visible decision.
+Future implementation work may add a deterministic domain normalization helper only after those expectations are reviewed. That helper must preserve the current adapter boundary: mapping may preserve imported values exactly, and identity normalization must remain a separate visible decision before identity resolution.
