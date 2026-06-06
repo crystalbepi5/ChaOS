@@ -1,19 +1,21 @@
-"""Deterministic local builder for Order Graph GTM fixtures.
+"""Deterministic local builder for Order Graph fixtures.
 
 This module proves this spine:
 
     local fake fixtures -> deterministic local output files
 
-This PR adds deterministic validation checks for generated human review
-feedback examples.
+The default path builds the fake GTM graph fixture. The imported SourceRecord
+path only consumes adapter-shaped SourceRecords and writes a local handoff output;
+it does not expand imported records into graph entities yet.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from .entity_state import compute_entity_states
 from .human_feedback_validation import generate_human_feedback_validation_report
@@ -27,13 +29,19 @@ from .validation_report import generate_validation_report
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT_DIR = REPO_ROOT / "examples" / "order-graph" / "gtm"
 DEFAULT_OUTPUT_DIR = REPO_ROOT / "outputs" / "order-graph" / "gtm"
+DEFAULT_LOCAL_REAL_INPUT_DIR = REPO_ROOT / "examples" / "order-graph" / "local-real"
+DEFAULT_LOCAL_REAL_OUTPUT_DIR = REPO_ROOT / "outputs" / "order-graph" / "local-real"
+
+BuildMode = Literal["auto", "gtm", "imported-source-records"]
 
 INPUT_FILES = {
     "source_records": "source-records.json",
     "signals": "signals.json",
+    "imported_source_records": "expected-source-records.json",
 }
 
 OUTPUT_FILES = {
+    "source_records": "source-records.json",
     "entities": "entities.json",
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
@@ -57,6 +65,14 @@ BUILD_WARNINGS = [
     "Human feedback validation checks are generated from local review examples only.",
     "No numeric scoring or hidden weighting is used for entity state.",
     "No outreach automation, CRM writes, external APIs, LLMs, databases, credentials, integrations, UI, agents, or deployment work are used.",
+]
+
+IMPORTED_SOURCE_RECORD_WARNINGS = [
+    "Imported SourceRecords are consumed from local fake or sanitized adapter output only.",
+    "Imported SourceRecords are not expanded into entities, signal links, entity states, recommendations, or human review records in this mode.",
+    "The local-real fixture has no approved signal fixture or graph expectations yet.",
+    "Domain values are preserved exactly as imported; identity normalization remains a future gated step.",
+    "No real customer data, live integrations, CRM writes, external APIs, LLMs, databases, credentials, UI, agents, or deployment work are used.",
 ]
 
 
@@ -88,6 +104,16 @@ def load_fixture_bundle(input_dir: Path) -> FixtureBundle:
         source_records=load_json(input_dir / INPUT_FILES["source_records"]),
         signals=load_json(input_dir / INPUT_FILES["signals"]),
     )
+
+
+def load_imported_source_records(input_dir: Path) -> JsonObject:
+    """Load local adapter-shaped SourceRecords for the import handoff path."""
+
+    imported_output = load_json(input_dir / INPUT_FILES["imported_source_records"])
+    source_records = imported_output.get("source_records", [])
+    if not isinstance(source_records, list):
+        raise ValueError("Imported SourceRecord output must contain source_records as a list")
+    return imported_output
 
 
 def count_unresolved_records(entities_output: JsonObject) -> int:
@@ -146,11 +172,41 @@ def make_build_summary(
     )
 
 
+def make_imported_source_record_summary(
+    paths: BuildPaths,
+    imported_source_records_output: JsonObject,
+) -> BuildSummary:
+    """Create a summary for the imported SourceRecord handoff path."""
+
+    return BuildSummary(
+        builder_mode="imported_source_records_build_path",
+        source_record_count=len(imported_source_records_output.get("source_records", [])),
+        signal_count=0,
+        resolved_entity_count=0,
+        unresolved_record_count=0,
+        generated_signal_link_count=0,
+        generated_entity_state_count=0,
+        validation_check_count=0,
+        failed_validation_check_count=0,
+        top_10_recommendation_count=0,
+        human_review_example_count=0,
+        human_feedback_validation_check_count=0,
+        failed_human_feedback_validation_check_count=0,
+        input_dir=str(paths.input_dir.as_posix()),
+        output_dir=str(paths.output_dir.as_posix()),
+        output_files=[
+            OUTPUT_FILES["source_records"],
+            OUTPUT_FILES["build_summary"],
+        ],
+        warnings=IMPORTED_SOURCE_RECORD_WARNINGS,
+    )
+
+
 def build_graph_from_fixtures(
     input_dir: Path = DEFAULT_INPUT_DIR,
     output_dir: Path = DEFAULT_OUTPUT_DIR,
 ) -> BuildSummary:
-    """Read fake fixtures and write deterministic local outputs."""
+    """Read fake GTM fixtures and write deterministic local graph outputs."""
 
     paths = BuildPaths(input_dir=input_dir, output_dir=output_dir)
     fixtures = load_fixture_bundle(paths.input_dir)
@@ -207,10 +263,77 @@ def build_graph_from_fixtures(
     return summary
 
 
+def build_from_imported_source_records(
+    input_dir: Path = DEFAULT_LOCAL_REAL_INPUT_DIR,
+    output_dir: Path = DEFAULT_LOCAL_REAL_OUTPUT_DIR,
+) -> BuildSummary:
+    """Read local imported SourceRecords and write a deterministic handoff output."""
+
+    paths = BuildPaths(input_dir=input_dir, output_dir=output_dir)
+    imported_output = load_imported_source_records(paths.input_dir)
+
+    source_records_output: JsonObject = {
+        "builder_mode": "imported_source_records_build_path",
+        "source_input_file": INPUT_FILES["imported_source_records"],
+        "source_record_count": len(imported_output.get("source_records", [])),
+        "source_records": imported_output.get("source_records", []),
+        "warnings": IMPORTED_SOURCE_RECORD_WARNINGS + list(imported_output.get("warnings", [])),
+    }
+
+    write_json(paths.output_dir / OUTPUT_FILES["source_records"], source_records_output)
+    summary = make_imported_source_record_summary(paths, source_records_output)
+    write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
+    return summary
+
+
+def resolve_build_mode(input_dir: Path, requested_mode: BuildMode) -> BuildMode:
+    """Resolve auto mode from available local fixture files."""
+
+    if requested_mode != "auto":
+        return requested_mode
+
+    if (input_dir / INPUT_FILES["source_records"]).exists() and (input_dir / INPUT_FILES["signals"]).exists():
+        return "gtm"
+
+    if (input_dir / INPUT_FILES["imported_source_records"]).exists():
+        return "imported-source-records"
+
+    raise ValueError(
+        "Could not infer build mode. Expected either source-records.json plus signals.json, "
+        "or expected-source-records.json."
+    )
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse local builder arguments."""
+
+    parser = argparse.ArgumentParser(description="Run the deterministic local Order Graph builder.")
+    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT_DIR, help="Local input fixture directory.")
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_DIR, help="Local output directory.")
+    parser.add_argument(
+        "--mode",
+        choices=["auto", "gtm", "imported-source-records"],
+        default="auto",
+        help="Build mode. Auto chooses GTM fixtures or imported SourceRecords from local files.",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
     """Run the local builder from the repository root."""
 
-    summary = build_graph_from_fixtures()
+    args = parse_args()
+    input_dir = args.input.resolve()
+    output_dir = args.output.resolve()
+    mode = resolve_build_mode(input_dir, args.mode)
+
+    if mode == "gtm":
+        summary = build_graph_from_fixtures(input_dir=input_dir, output_dir=output_dir)
+    elif mode == "imported-source-records":
+        summary = build_from_imported_source_records(input_dir=input_dir, output_dir=output_dir)
+    else:
+        raise ValueError(f"Unsupported build mode: {mode}")
+
     print(json.dumps(asdict(summary), indent=2, sort_keys=True))
 
 
