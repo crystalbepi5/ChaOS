@@ -16,7 +16,6 @@ from typing import Any
 
 from .export_mapping import (
     decide_field,
-    field_classifications_by_name,
     required_mapping_fields,
     set_target_value,
     source_metadata,
@@ -111,7 +110,6 @@ def build_source_records(
     """Build SourceRecord-shaped output and warning records."""
 
     metadata = source_metadata(mapping_config, classification_config)
-    classifications = field_classifications_by_name(classification_config)
     required_fields = required_mapping_fields(mapping_config)
     source_records = []
     warnings = []
@@ -155,7 +153,11 @@ def build_source_records(
             source_record["source_native_id"] = native_id
             del source_record["native_id"]
 
-        source_record["field_classification_summary"] = _field_classification_summary(row, classifications)
+        source_record["field_classification_summary"] = _field_classification_summary(
+            row,
+            classification_config,
+            mapping_config,
+        )
         source_records.append(source_record)
 
     return (
@@ -247,16 +249,20 @@ def _source_record_id(metadata: JsonObject, row_index: int, row: JsonObject) -> 
     return f"sr_import_{source_system}_{source_object}_{_slug(native_id)}"
 
 
-def _field_classification_summary(row: JsonObject, classifications: dict[str, JsonObject]) -> JsonObject:
+def _field_classification_summary(
+    row: JsonObject,
+    classification_config: JsonObject,
+    mapping_config: JsonObject,
+) -> JsonObject:
+    """Summarize only fields whose values were approved for ingestion."""
+
     summary: JsonObject = {}
     for field_name, value in row.items():
         if not _has_value(value):
             continue
-        classification = classifications.get(field_name)
-        if classification is None:
-            summary[field_name] = "unknown_needs_review"
-        else:
-            summary[field_name] = classification.get("primary_classification")
+        decision = decide_field(field_name, classification_config, mapping_config)
+        if decision.value_handling == "ingest_value":
+            summary[field_name] = decision.classification
     return summary
 
 
