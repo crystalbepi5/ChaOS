@@ -2,9 +2,9 @@
 
 ## Why This File Exists
 
-This file defines expectations for local-real draft entity artifacts before ChaOS is allowed to write them.
+This file defines expectations for local-real draft entity artifacts before ChaOS is allowed to treat them as canonical entities.
 
-The local-real path can now produce account identity candidates, but candidates are not canonical entities. The next risk is treating candidates as final identity resolution too early. This document keeps the next step visible and bounded.
+The local-real path can now produce account identity candidates, but candidates are not canonical entities. The next risk is treating candidates as final identity resolution too early. This document keeps the draft step visible and bounded.
 
 ## Purpose
 
@@ -29,6 +29,16 @@ examples/order-graph/local-real/draft-entity-expectations.json
 ```
 
 The fixture defines required fields, allowed use, prohibited actions, and unresolved handling.
+
+## Draft Output
+
+The local-real imported build path may write draft entities to:
+
+```text
+outputs/order-graph/local-real/draft-entities.json
+```
+
+This artifact must be separate from canonical graph outputs. It must not be named `entities.json`, and it must not approve final identity resolution.
 
 ## What Draft Entities May Do
 
@@ -68,6 +78,6 @@ The boundary fails if:
 
 ## Future Considerations
 
-The next likely PR is `Write local-real draft entity output`.
+The next likely PR is `Add local-real draft entity validation`.
 
-That PR may write a separate draft entity artifact from validated account identity candidates. It must still avoid canonical entity creation, `entities.json`, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
+That PR may validate the draft entity artifact against local expectations. It must still avoid canonical entity creation, `entities.json`, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
