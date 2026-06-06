@@ -4,9 +4,9 @@
 
 This file defines the first local-real identity normalization expectations for the Order Graph.
 
-The local CSV adapter now creates SourceRecord-shaped outputs. The local builder can now consume those imported SourceRecords as a handoff artifact. The next risk is whether future identity logic will normalize messy imported domain values in a visible way, or quietly blend adapter mapping, normalization, and entity merging into one hidden step.
+The local CSV adapter now creates SourceRecord-shaped outputs. The local builder can now consume those imported SourceRecords as a handoff artifact and write separate normalization evidence. The next risk is whether future identity logic will normalize messy imported domain values in a visible way, or quietly blend adapter mapping, normalization, and entity merging into one hidden step.
 
-This document prevents that drift. It separates adapter mapping, builder handoff, normalization, and future identity resolution.
+This document prevents that drift. It separates adapter mapping, builder handoff, normalization evidence, and future identity resolution.
 
 ## Purpose
 
@@ -16,7 +16,7 @@ The purpose of this document is to answer one narrow question:
 How must imported account domain values be normalized before they may become future identity-resolution evidence?
 ```
 
-This stage implements a deterministic helper for normalization evidence only. It does not implement an identity resolver, graph expansion path, or builder output path for normalized evidence.
+This stage writes deterministic normalization evidence for imported SourceRecords. It does not implement an identity resolver or graph expansion path.
 
 ## How This Fits Into The Pipeline
 
@@ -38,7 +38,7 @@ The CSV adapter must preserve imported values exactly. It must not normalize dom
 
 The builder handoff consumes imported SourceRecords and writes local handoff output.
 
-The builder handoff must preserve imported values exactly. It must not merge entities, generate graph outputs, or treat normalized evidence as already approved.
+The builder handoff must preserve imported values exactly. It must not merge entities, generate graph entities, attach signals, compute states, or treat normalized evidence as an approved identity match.
 
 ### Normalization Evidence
 
@@ -52,11 +52,17 @@ The helper lives at:
 src/order_graph/local_real_identity_normalization.py
 ```
 
-The helper returns derived evidence only. It must not change adapter output, change builder handoff output, merge records, create entities, attach signals, compute states, recommend actions, or create review records.
+The imported SourceRecord build path writes normalization evidence to:
+
+```text
+outputs/order-graph/local-real/identity-normalization-evidence.json
+```
+
+The evidence output must not change adapter output, change builder handoff output, merge records, create entities, attach signals, compute states, recommend actions, or create review records.
 
 ### Future Identity Resolution
 
-Future identity resolution may use normalized domains as evidence only after normalization outputs are wired into a visible local-real artifact and reviewed.
+Future identity resolution may use normalized domains as evidence only after normalization outputs are reviewed.
 
 Future identity resolution must not merge records by account name alone.
 
@@ -82,6 +88,27 @@ The fixture covers clean and messy local-real domain values, including:
 - weak domain-like values without enough evidence
 
 The fixture is human-reviewable by design. It remains the expectation source for the helper.
+
+## Output Shape
+
+Each normalization evidence record must include:
+
+- SourceRecord identifier.
+- Source system.
+- Source object type.
+- Source-native identifier.
+- Imported domain value.
+- Normalization evidence.
+
+Normalization evidence must include:
+
+- Original input domain.
+- Normalized domain or `null`.
+- Status.
+- Warnings.
+- Allowed use.
+
+The output must also include boundaries that state the artifact is derived evidence only.
 
 ## What Normalization May Do
 
@@ -130,7 +157,11 @@ If the adapter normalizes values too early, future reviewers cannot tell whether
 
 ## Examples Of Use
 
-A reviewer may call the helper directly from a local Python check and compare it against `identity-normalization-cases.json`.
+A reviewer may run the imported SourceRecord builder path and inspect `identity-normalization-evidence.json`.
+
+```powershell
+python -m src.order_graph.build_graph --input examples/order-graph/local-real --output outputs/order-graph/local-real --mode imported-source-records
+```
 
 The helper exposes:
 
@@ -161,6 +192,6 @@ This normalization boundary fails if:
 
 ## Future Considerations
 
-The next likely PR is `Write local-real normalization evidence output`.
+The next likely PR is `Add local-real normalization evidence validation`.
 
-That PR may wire the helper into a deterministic local output file for imported SourceRecords. It must still avoid full local-real identity resolution, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
+That PR may validate that `identity-normalization-evidence.json` preserves imported values, records derived evidence separately, and keeps missing or malformed domains unresolved. It must still avoid full local-real identity resolution, signal linking, entity states, recommendations, human review records, UI, agents, LLM calls, live integrations, CRM writes, databases, package changes, or deployment work.
