@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account Plan Tracker Proof Prototype</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">ChaOS v0.1 proof gate · fake sample data</p>
+      <h1>Account Plan Tracker</h1>
+      <p class="lede">Review account context, signals, interpreted state, recommended next action, outcome, and feedback before anything becomes action.</p>
+    </div>
+    <div class="proof-badge" aria-label="Prototype boundary">
+      <span>Local static prototype</span>
+      <strong>No CRM writes</strong>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="summary-grid" aria-label="Account summary">
+      <article class="summary-card">
+        <span class="summary-label">Accounts</span>
+        <strong id="accountCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Ready</span>
+        <strong id="readyCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Needs Review</span>
+        <strong id="reviewCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Accepted</span>
+        <strong id="acceptedCount">0</strong>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <aside class="account-list" aria-label="Fake account list">
+        <div class="section-heading">
+          <h2>Accounts</h2>
+          <p>Fake/manual examples only</p>
+        </div>
+        <div id="accountCards" class="account-cards"></div>
+      </aside>
+
+      <section class="detail-panel" aria-live="polite">
+        <div class="detail-header">
+          <div>
+            <p class="eyebrow">Entity · Account</p>
+            <h2 id="detailName">Select an account</h2>
+            <p id="detailSegment" class="muted"></p>
+          </div>
+          <span id="detailState" class="state-pill"></span>
+        </div>
+
+        <div class="semantic-strip" aria-label="ChaOS semantic model">
+          <span>Entity</span>
+          <span>Signal</span>
+          <span>State</span>
+          <span>Decision</span>
+          <span>Outcome</span>
+          <span>Feedback</span>
+        </div>
+
+        <div class="detail-grid">
+          <article class="panel-card">
+            <h3>Known Context</h3>
+            <ul id="knownContext"></ul>
+          </article>
+          <article class="panel-card warning-card">
+            <h3>Missing Context</h3>
+            <ul id="missingContext"></ul>
+          </article>
+          <article class="panel-card wide-card">
+            <h3>Signals</h3>
+            <div id="signals" class="signal-list"></div>
+          </article>
+          <article class="panel-card">
+            <h3>Recommended Decision</h3>
+            <p id="decision" class="decision-text"></p>
+            <p class="guardrail">Human-reviewable recommendation. State must not silently become action.</p>
+          </article>
+          <article class="panel-card">
+            <h3>Owner</h3>
+            <p id="owner" class="owner-text"></p>
+          </article>
+        </div>
+
+        <form class="review-form" id="reviewForm">
+          <div class="form-row">
+            <label for="reviewStatus">Review status</label>
+            <select id="reviewStatus" name="reviewStatus">
+              <option>Needs more context</option>
+              <option>Accepted</option>
+              <option>Revised</option>
+              <option>Rejected</option>
+              <option>Completed</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="outcome">Outcome</label>
+            <input id="outcome" name="outcome" type="text" placeholder="Example: meeting booked, plan revised, no action yet">
+          </div>
+          <div class="form-row full-row">
+            <label for="feedback">Feedback note</label>
+            <textarea id="feedback" name="feedback" rows="4" placeholder="Capture what the reviewer accepted, changed, rejected, or still needs."></textarea>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer-note">
+    <p>This prototype uses fake sample data and in-memory browser state only. It does not send outreach, write to CRM, call APIs, use agents, or store real customer data.</p>
+  </footer>
+
+  <script src="sample-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -14,7 +14,13 @@ The purpose of this log is to track abstraction tax during the proof gate withou
 
 Initial abstraction tax status: `not_yet_measured`
 
-Proof status: proof_started_not_concluded
+Proof status: `implementation_proof_started_not_concluded`
+
+Implementation proof artifact:
+
+```text
+examples/proof-gates/account-plan-tracker/static-prototype/index.html
+```
 
 ## Where ChaOS Vocabulary Helped
 
@@ -66,7 +72,7 @@ Current recommendation: `continue_with_limited_mvp_scope`
 
 Rationale:
 
-ChaOS appears useful enough to create a clearer Account Plan Tracker starter package, but the proof must stay focused on a buildable artifact. If more framework concepts are needed before a build prompt emerges, the proof should pause and record failure risk.
+ChaOS appears useful enough to create a clearer Account Plan Tracker starter package and static prototype, but the proof must stay focused on a buildable artifact. If more framework concepts are needed before a useful next implementation step emerges, the proof should pause and record failure risk.
 
 ## Pattern Adaptation Records
 
@@ -85,6 +91,7 @@ At the decision deadline, update this log with answers to:
 - Did ChaOS reduce design time?
 - Did ChaOS create unnecessary translation work?
 - Did the starter package become a useful Codex build prompt?
+- Did the static prototype make the Account Plan Tracker easier to evaluate?
 - Did any pattern deserve `candidate_upstream_improvement`?
 - Did any pattern reveal `breaking_abstraction`?
 - Did any pattern become a `rejected_pattern`?
