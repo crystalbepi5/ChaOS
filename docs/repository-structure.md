@@ -208,7 +208,7 @@ Examples:
 - Validate an agent specification.
 - Validate a workflow definition.
 - Validate a decision record.
-- Validate an entity-signal-decision-outcome-feedback model.
+- Validate an entity-signal-state-decision-outcome-feedback model.
 
 Future consideration: Schemas may later gain versioning, examples, and compatibility notes.
 
