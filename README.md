@@ -4,9 +4,19 @@ ChaOS stands for Chase Architecture Operating System.
 
 ChaOS is a reusable operating system for turning ideas into systems. Its purpose is to eliminate the cost of starting over. Each future project must inherit stable architecture, agent patterns, workflow patterns, decision patterns, evaluation patterns, documentation patterns, and learning patterns before adding project-specific structure. Only the business context is expected to change.
 
+## Current v0.1 Positioning
+
+ChaOS v0.1 is a personal architecture operating system, a local proof harness, and a reusable pattern library under pressure test.
+
+ChaOS v0.1 is allowed to help one maintainer think, build, and audit more clearly before it claims to be portable for other maintainers.
+
+ChaOS v0.1 is not yet a universal framework, portable constitution for other humans, production application framework, deployed system, agent platform, or replacement for domain-specific judgment.
+
+ChaOS must pay for itself. If applying ChaOS to a project creates more translation cost than delivery leverage, the project may adapt, bypass, or fork the pattern, but the reason must be recorded.
+
 ## What ChaOS Is
 
-ChaOS is a foundational architecture repository. It defines reusable ways to reason about entities, signals, decisions, outcomes, feedback, workflows, agents, evaluations, and change management.
+ChaOS is a foundational architecture repository. It defines reusable ways to reason about entities, signals, state, decisions, outcomes, feedback, workflows, agents, evaluations, and change management.
 
 The documentation is the product. The repository is the container.
 
@@ -20,7 +30,7 @@ ChaOS must not become an implementation too early. Implementation belongs downst
 
 ## Who It Is For
 
-ChaOS is for founders, builders, operators, architects, and coding agents who need to turn unclear ideas into durable systems. It is especially useful when a project may later become a business, product, automation layer, research system, or internal operating system.
+ChaOS is for founders, builders, operators, architects, and coding agents who need to turn unclear ideas into durable systems. In v0.1, that claim is still under proof. ChaOS must demonstrate that it accelerates real builds before it claims broad portability.
 
 The repository is also for future maintainers who were not present when the original decisions were made. ChaOS must be understandable without private context.
 
@@ -32,7 +42,7 @@ For a new project, start with the Project Intake Packet:
 
 Start with the architectural laws, then model the domain through the core system model:
 
-Entity -> Signal -> Decision -> Outcome -> Feedback
+Entity -> Signal -> State -> Decision -> Outcome -> Feedback
 
 If the business context is incomplete, ambiguous, conflicting, or inherited from private memory, run Context Sufficiency Assessment before Architecture Generation:
 
@@ -62,6 +72,7 @@ A future project must copy or reference the stable ChaOS patterns, then replace 
 
 - Domain entities
 - Signals worth observing
+- States worth interpreting
 - Decisions worth supporting
 - Outcomes worth measuring
 - Feedback loops worth preserving
@@ -71,6 +82,16 @@ A future project must copy or reference the stable ChaOS patterns, then replace 
 
 If a future project needs to modify a ChaOS pattern, it must document why the inherited pattern was insufficient and whether the improvement belongs back in ChaOS.
 
+A project using ChaOS must declare the ChaOS pattern version inherited, patterns used, patterns adapted, patterns bypassed, and the reason for each adaptation or bypass.
+
+If a project modifies a ChaOS pattern, the change must be classified as `project_specific_exception`, `candidate_upstream_improvement`, `breaking_abstraction`, or `rejected_pattern`.
+
+## Proof Gate
+
+ChaOS must be used to accelerate a real build within two weeks of major framework expansion. If it cannot demonstrate practical leverage, expansion pauses.
+
+The proof gate measures whether ChaOS reduced decision or design time, clarified requirements, prevented rework, improved Codex prompts, improved PR audit quality, or produced a working artifact faster.
+
 ## Long-Term Vision
 
 ChaOS is intended to become a portable architecture constitution for new systems. It must make good system design repeatable without making it rigid. It must help humans and agents collaborate with shared language, visible assumptions, traceable decisions, and inspectable feedback.
@@ -79,7 +100,7 @@ The long-term measure of success is simple: a new project can begin from ChaOS a
 
 ## First Milestone
 
-Version 0.1 defines the constitution:
+Version 0.1 defines the constitution and proof harness:
 
 - Architectural laws
 - Core system model
@@ -89,9 +110,10 @@ Version 0.1 defines the constitution:
 - Documentation standards
 - Evaluation standards
 - Change management standards
+- Abstraction tax, inheritance, upstreaming, and proof-gate rules
 - Portable schemas, workflows, templates, and examples
 
-Version 0.1 intentionally avoids code. The first milestone is conceptual clarity.
+Version 0.1 intentionally avoids production application code. The first milestone is conceptual clarity under real-build pressure.
 
 ## Meta-Agent CLI
 
@@ -146,9 +168,10 @@ python scripts/run_meta_agent.py
 
 1. Read `AGENTS.md`.
 2. Read `docs/architectural-laws.md`.
-3. Read `docs/core-system-model.md`.
-4. Read `docs/core-workflow-model.md`.
-5. Read `docs/core-agent-model.md`.
-6. Read `docs/meta-agent.md`.
-7. Review schemas, workflows, and examples.
-8. Read `docs/assumptions.md`.
+3. Read `docs/chaos-v0.1-scope.md`.
+4. Read `docs/core-system-model.md`.
+5. Read `docs/core-workflow-model.md`.
+6. Read `docs/core-agent-model.md`.
+7. Read `docs/meta-agent.md`.
+8. Review schemas, workflows, and examples.
+9. Read `docs/assumptions.md`.
