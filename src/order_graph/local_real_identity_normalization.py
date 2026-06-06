@@ -130,7 +130,12 @@ def verify_identity_normalization_cases(fixture: JsonObject) -> JsonObject:
         evidence = normalize_local_real_domain(case.get("input_domain"))
         expected_domain = case.get("expected_normalized_domain")
         expected_status = case.get("expected_status")
-        passed = evidence.normalized_domain == expected_domain and evidence.status == expected_status
+        expected_allowed_use = case.get("allowed_use", [])
+        passed = (
+            evidence.normalized_domain == expected_domain
+            and evidence.status == expected_status
+            and evidence.allowed_use == expected_allowed_use
+        )
 
         checked_case = {
             "case_id": case.get("case_id"),
@@ -139,6 +144,8 @@ def verify_identity_normalization_cases(fixture: JsonObject) -> JsonObject:
             "actual_normalized_domain": evidence.normalized_domain,
             "expected_status": expected_status,
             "actual_status": evidence.status,
+            "expected_allowed_use": expected_allowed_use,
+            "actual_allowed_use": evidence.allowed_use,
             "passed": passed,
         }
         checked_cases.append(checked_case)
