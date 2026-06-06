@@ -1,0 +1,211 @@
+{
+  "fixture": "local_real_identity_normalization_cases",
+  "status": "expectation_only_not_identity_resolution",
+  "purpose": "Define deterministic domain normalization expectations for future local-real identity evidence without changing adapter output or merging entities.",
+  "source_fixture": "examples/order-graph/local-real/expected-source-records.json",
+  "cases": [
+    {
+      "case_id": "domain_plain",
+      "input_domain": "acme.example",
+      "expected_normalized_domain": "acme.example",
+      "expected_status": "normalizable",
+      "allowed_use": [
+        "future_identity_resolution_evidence"
+      ],
+      "must_preserve": [
+        "adapter_imported_value"
+      ],
+      "must_not_do": [
+        "alter_adapter_raw_value",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_https_www",
+      "input_domain": "https://www.acme.example",
+      "expected_normalized_domain": "acme.example",
+      "expected_status": "normalizable",
+      "allowed_use": [
+        "future_identity_resolution_evidence"
+      ],
+      "must_preserve": [
+        "adapter_imported_value"
+      ],
+      "must_not_do": [
+        "alter_adapter_raw_value",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_www_only",
+      "input_domain": "www.acme.example",
+      "expected_normalized_domain": "acme.example",
+      "expected_status": "normalizable",
+      "allowed_use": [
+        "future_identity_resolution_evidence"
+      ],
+      "must_preserve": [
+        "adapter_imported_value"
+      ],
+      "must_not_do": [
+        "alter_adapter_raw_value",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_https_trailing_slash",
+      "input_domain": "https://acme.example/",
+      "expected_normalized_domain": "acme.example",
+      "expected_status": "normalizable",
+      "allowed_use": [
+        "future_identity_resolution_evidence"
+      ],
+      "must_preserve": [
+        "adapter_imported_value"
+      ],
+      "must_not_do": [
+        "alter_adapter_raw_value",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_uppercase_https_www",
+      "input_domain": "HTTPS://WWW.ACME.EXAMPLE/",
+      "expected_normalized_domain": "acme.example",
+      "expected_status": "normalizable",
+      "allowed_use": [
+        "future_identity_resolution_evidence"
+      ],
+      "must_preserve": [
+        "adapter_imported_value"
+      ],
+      "must_not_do": [
+        "alter_adapter_raw_value",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_with_path",
+      "input_domain": "https://www.acme.example/company/about",
+      "expected_normalized_domain": "acme.example",
+      "expected_status": "normalizable_with_warning",
+      "allowed_use": [
+        "future_identity_resolution_evidence",
+        "warning"
+      ],
+      "must_preserve": [
+        "adapter_imported_value"
+      ],
+      "must_not_do": [
+        "alter_adapter_raw_value",
+        "treat_path_as_identity_key",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_missing_empty_string",
+      "input_domain": "",
+      "expected_normalized_domain": null,
+      "expected_status": "missing_domain_unresolved_candidate",
+      "allowed_use": [
+        "warning",
+        "human_review"
+      ],
+      "must_preserve": [
+        "missing_domain_evidence"
+      ],
+      "must_not_do": [
+        "guess_domain",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_missing_null",
+      "input_domain": null,
+      "expected_normalized_domain": null,
+      "expected_status": "missing_domain_unresolved_candidate",
+      "allowed_use": [
+        "warning",
+        "human_review"
+      ],
+      "must_preserve": [
+        "missing_domain_evidence"
+      ],
+      "must_not_do": [
+        "guess_domain",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_malformed_text",
+      "input_domain": "not a domain",
+      "expected_normalized_domain": null,
+      "expected_status": "malformed_domain_unresolved_candidate",
+      "allowed_use": [
+        "warning",
+        "human_review"
+      ],
+      "must_preserve": [
+        "malformed_domain_evidence"
+      ],
+      "must_not_do": [
+        "guess_domain",
+        "clean_into_possible_domain",
+        "merge_by_account_name_only"
+      ]
+    },
+    {
+      "case_id": "domain_not_enough_evidence",
+      "input_domain": "acme",
+      "expected_normalized_domain": null,
+      "expected_status": "not_enough_domain_evidence_unresolved_candidate",
+      "allowed_use": [
+        "warning",
+        "human_review"
+      ],
+      "must_preserve": [
+        "weak_domain_evidence"
+      ],
+      "must_not_do": [
+        "append_domain_suffix",
+        "guess_domain",
+        "merge_by_account_name_only"
+      ]
+    }
+  ],
+  "boundaries": [
+    "This fixture defines expected normalization behavior only.",
+    "This fixture does not implement identity resolution.",
+    "This fixture does not approve graph expansion from imported SourceRecords.",
+    "The CSV adapter must preserve imported values exactly.",
+    "The imported SourceRecord build handoff must preserve imported values exactly.",
+    "Future normalization must happen after SourceRecord handoff and before future identity resolution.",
+    "Future normalization must be deterministic and inspectable.",
+    "Future normalization must not create identity matches by account name alone.",
+    "Missing or malformed domains must not be guessed.",
+    "Malformed domains must become warnings or unresolved candidates."
+  ],
+  "future_use": [
+    "A future implementation PR may add a deterministic normalizer that reads this fixture as expectations.",
+    "A future identity resolution PR may use normalized domains as evidence only after normalization expectations are approved.",
+    "A future validation PR may confirm that adapter output preserves imported values while normalization output records derived evidence separately."
+  ],
+  "prohibited_in_this_fixture": [
+    "real_customer_data",
+    "live_integrations",
+    "crm_writes",
+    "outreach_actions",
+    "ui",
+    "agents",
+    "llm_calls",
+    "databases",
+    "package_changes",
+    "deployment_work",
+    "full_local_real_entity_resolution",
+    "signal_linking",
+    "entity_states",
+    "recommendations",
+    "human_review_records",
+    "feedback_validation_records"
+  ]
+}
