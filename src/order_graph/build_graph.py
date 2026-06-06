@@ -7,8 +7,9 @@ This module proves this spine:
 The default path builds the fake GTM graph fixture. The imported SourceRecord
 path consumes adapter-shaped SourceRecords, writes a local handoff output, writes
 derived normalization evidence, validates that boundary, writes account identity
-candidates, validates those candidates, and writes draft entities as review
-artifacts only. It does not expand imported records into canonical graph entities.
+candidates, validates those candidates, writes draft entities as review artifacts,
+and validates the draft entity boundary. It does not expand imported records into
+canonical graph entities.
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from .human_review import generate_human_review_override_model
 from .identity import resolve_entities_from_source_records
 from .local_real_candidate_validation import generate_local_real_candidate_validation_report
 from .local_real_draft_entities import generate_local_real_draft_entities
+from .local_real_draft_entity_validation import generate_local_real_draft_entity_validation_report
 from .local_real_identity_candidates import generate_local_real_account_identity_candidates
 from .local_real_identity_normalization import normalize_local_real_domain_as_dict
 from .local_real_normalization_validation import generate_local_real_normalization_validation_report
@@ -54,6 +56,7 @@ OUTPUT_FILES = {
     "account_identity_candidates": "account-identity-candidates.json",
     "account_identity_candidate_validation": "account-identity-candidate-validation.json",
     "draft_entities": "draft-entities.json",
+    "draft_entity_validation": "draft-entity-validation.json",
     "entities": "entities.json",
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
@@ -217,6 +220,7 @@ def make_imported_source_record_summary(
             OUTPUT_FILES["account_identity_candidates"],
             OUTPUT_FILES["account_identity_candidate_validation"],
             OUTPUT_FILES["draft_entities"],
+            OUTPUT_FILES["draft_entity_validation"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=IMPORTED_SOURCE_RECORD_WARNINGS,
@@ -377,6 +381,7 @@ def build_from_imported_source_records(
         OUTPUT_FILES["account_identity_candidates"],
         OUTPUT_FILES["account_identity_candidate_validation"],
         OUTPUT_FILES["draft_entities"],
+        OUTPUT_FILES["draft_entity_validation"],
         OUTPUT_FILES["build_summary"],
     ]
     normalization_validation_output = generate_local_real_normalization_validation_report(
@@ -389,6 +394,11 @@ def build_from_imported_source_records(
         normalization_evidence_output,
         output_files,
     )
+    draft_entity_validation_output = generate_local_real_draft_entity_validation_report(
+        draft_entities_output,
+        account_identity_candidates_output,
+        output_files,
+    )
 
     write_json(paths.output_dir / OUTPUT_FILES["source_records"], source_records_output)
     write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_evidence"], normalization_evidence_output)
@@ -396,10 +406,11 @@ def build_from_imported_source_records(
     write_json(paths.output_dir / OUTPUT_FILES["account_identity_candidates"], account_identity_candidates_output)
     write_json(paths.output_dir / OUTPUT_FILES["account_identity_candidate_validation"], candidate_validation_output)
     write_json(paths.output_dir / OUTPUT_FILES["draft_entities"], draft_entities_output)
+    write_json(paths.output_dir / OUTPUT_FILES["draft_entity_validation"], draft_entity_validation_output)
     summary = make_imported_source_record_summary(
         paths,
         source_records_output,
-        [normalization_validation_output, candidate_validation_output],
+        [normalization_validation_output, candidate_validation_output, draft_entity_validation_output],
     )
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
