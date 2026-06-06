@@ -22,6 +22,13 @@ Implementation proof artifact:
 examples/proof-gates/account-plan-tracker/static-prototype/index.html
 ```
 
+Current prototype scope:
+
+- Static account review.
+- Local action tracking loop.
+- In-memory review, action, outcome, and feedback edits.
+- No persistence, integrations, agents, CRM writes, or outreach execution.
+
 ## Where ChaOS Vocabulary Helped
 
 Initial observations:
@@ -30,6 +37,7 @@ Initial observations:
 - Signal helps prevent raw observations from becoming recommendations too early.
 - State helps name account readiness without treating readiness as action permission.
 - Decision helps keep next action recommendations traceable.
+- Action item helps test execution tracking without treating recommendations as automation.
 - Outcome and Feedback help prevent the tool from becoming a static planning document.
 - Workflow model helps outline a small review loop without assuming integrations.
 
@@ -41,6 +49,7 @@ Initial observations:
 - The full workflow model may be heavier than needed for a narrow MVP.
 - Contact/persona may not need to become a full entity in the first build.
 - State labels may need domain-native wording for BDR users.
+- Action item may be a simpler domain term than a full ChaOS entity in the static prototype.
 
 ## Concepts That Do Not Map Cleanly Yet
 
@@ -49,6 +58,7 @@ Initial observations:
 - Account plan: could be an entity, artifact, or view over account state.
 - Priority: could be state, decision, or UI ordering.
 - Persona gap: could be signal, state, or missing input.
+- Action item: could be an entity, workflow step, or execution record.
 
 ## Estimated Translation Cost
 
@@ -64,7 +74,7 @@ Current estimate: `medium_promising`
 
 Reason:
 
-The model already helps separate evidence, interpretation, recommendation, outcome, and feedback. That separation should reduce rework if the MVP becomes a build prompt.
+The model already helps separate evidence, interpretation, recommendation, human-owned action, outcome, and feedback. That separation should reduce rework if the MVP becomes a build prompt.
 
 ## Continue, Adapt, Or Pause
 
@@ -79,9 +89,10 @@ ChaOS appears useful enough to create a clearer Account Plan Tracker starter pac
 | Pattern | Current handling | Classification | Reason |
 | --- | --- | --- | --- |
 | Core semantic model | Use with State first-class. | `project_specific_exception` | The model maps well enough for MVP planning. |
-| Core workflow model | Adapt to one lightweight review loop. | `project_specific_exception` | Full workflow decomposition may be too heavy. |
+| Core workflow model | Adapt to one lightweight review and action-tracking loop. | `project_specific_exception` | Full workflow decomposition may be too heavy. |
 | Core agent model | Bypass. | `project_specific_exception` | No agent behavior is needed for first proof. |
 | Production integration model | Bypass. | `project_specific_exception` | Live integrations would hide whether the planning artifact is useful. |
+| Persistence model | Bypass. | `project_specific_exception` | In-memory edits are enough to test whether the action loop is understandable. |
 
 ## Proof Review Questions
 
@@ -92,6 +103,7 @@ At the decision deadline, update this log with answers to:
 - Did ChaOS create unnecessary translation work?
 - Did the starter package become a useful Codex build prompt?
 - Did the static prototype make the Account Plan Tracker easier to evaluate?
+- Did the action tracking loop make execution clearer without implying automation?
 - Did any pattern deserve `candidate_upstream_improvement`?
 - Did any pattern reveal `breaking_abstraction`?
 - Did any pattern become a `rejected_pattern`?
@@ -103,4 +115,5 @@ The proof should be considered at risk if:
 - More documents are needed before a build prompt can be written.
 - The MVP cannot be explained in account-planning language.
 - ChaOS terms replace domain clarity instead of improving it.
+- The action loop makes the prototype feel like hidden automation instead of human-owned tracking.
 - The proof produces framework refinement but no implementation-ready next step.
