@@ -6,8 +6,9 @@ This module proves this spine:
 
 The default path builds the fake GTM graph fixture. The imported SourceRecord
 path consumes adapter-shaped SourceRecords, writes a local handoff output, writes
-derived normalization evidence, validates that boundary, and writes account
-identity candidates; it does not expand imported records into graph entities yet.
+derived normalization evidence, validates that boundary, writes account identity
+candidates, and validates those candidates; it does not expand imported records
+into graph entities yet.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from .entity_state import compute_entity_states
 from .human_feedback_validation import generate_human_feedback_validation_report
 from .human_review import generate_human_review_override_model
 from .identity import resolve_entities_from_source_records
+from .local_real_candidate_validation import generate_local_real_candidate_validation_report
 from .local_real_identity_candidates import generate_local_real_account_identity_candidates
 from .local_real_identity_normalization import normalize_local_real_domain_as_dict
 from .local_real_normalization_validation import generate_local_real_normalization_validation_report
@@ -49,6 +51,7 @@ OUTPUT_FILES = {
     "identity_normalization_evidence": "identity-normalization-evidence.json",
     "identity_normalization_validation": "identity-normalization-validation.json",
     "account_identity_candidates": "account-identity-candidates.json",
+    "account_identity_candidate_validation": "account-identity-candidate-validation.json",
     "entities": "entities.json",
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
@@ -184,7 +187,7 @@ def make_build_summary(
 def make_imported_source_record_summary(
     paths: BuildPaths,
     imported_source_records_output: JsonObject,
-    validation_report_output: JsonObject,
+    validation_reports: list[JsonObject],
 ) -> BuildSummary:
     """Create a summary for the imported SourceRecord handoff path."""
 
@@ -196,8 +199,8 @@ def make_imported_source_record_summary(
         unresolved_record_count=0,
         generated_signal_link_count=0,
         generated_entity_state_count=0,
-        validation_check_count=int(validation_report_output.get("check_count", 0)),
-        failed_validation_check_count=int(validation_report_output.get("failed_check_count", 0)),
+        validation_check_count=sum(int(report.get("check_count", 0)) for report in validation_reports),
+        failed_validation_check_count=sum(int(report.get("failed_check_count", 0)) for report in validation_reports),
         top_10_recommendation_count=0,
         human_review_example_count=0,
         human_feedback_validation_check_count=0,
@@ -209,6 +212,7 @@ def make_imported_source_record_summary(
             OUTPUT_FILES["identity_normalization_evidence"],
             OUTPUT_FILES["identity_normalization_validation"],
             OUTPUT_FILES["account_identity_candidates"],
+            OUTPUT_FILES["account_identity_candidate_validation"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=IMPORTED_SOURCE_RECORD_WARNINGS,
@@ -366,19 +370,30 @@ def build_from_imported_source_records(
         OUTPUT_FILES["identity_normalization_evidence"],
         OUTPUT_FILES["identity_normalization_validation"],
         OUTPUT_FILES["account_identity_candidates"],
+        OUTPUT_FILES["account_identity_candidate_validation"],
         OUTPUT_FILES["build_summary"],
     ]
-    validation_report_output = generate_local_real_normalization_validation_report(
+    normalization_validation_output = generate_local_real_normalization_validation_report(
         source_records_output,
+        normalization_evidence_output,
+        output_files,
+    )
+    candidate_validation_output = generate_local_real_candidate_validation_report(
+        account_identity_candidates_output,
         normalization_evidence_output,
         output_files,
     )
 
     write_json(paths.output_dir / OUTPUT_FILES["source_records"], source_records_output)
     write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_evidence"], normalization_evidence_output)
-    write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_validation"], validation_report_output)
+    write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_validation"], normalization_validation_output)
     write_json(paths.output_dir / OUTPUT_FILES["account_identity_candidates"], account_identity_candidates_output)
-    summary = make_imported_source_record_summary(paths, source_records_output, validation_report_output)
+    write_json(paths.output_dir / OUTPUT_FILES["account_identity_candidate_validation"], candidate_validation_output)
+    summary = make_imported_source_record_summary(
+        paths,
+        source_records_output,
+        [normalization_validation_output, candidate_validation_output],
+    )
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
 
