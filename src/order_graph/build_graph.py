@@ -7,8 +7,8 @@ This module proves this spine:
 The default path builds the fake GTM graph fixture. The imported SourceRecord
 path consumes adapter-shaped SourceRecords, writes a local handoff output, writes
 derived normalization evidence, validates that boundary, writes account identity
-candidates, and validates those candidates; it does not expand imported records
-into graph entities yet.
+candidates, validates those candidates, and writes draft entities as review
+artifacts only. It does not expand imported records into canonical graph entities.
 """
 
 from __future__ import annotations
@@ -24,6 +24,7 @@ from .human_feedback_validation import generate_human_feedback_validation_report
 from .human_review import generate_human_review_override_model
 from .identity import resolve_entities_from_source_records
 from .local_real_candidate_validation import generate_local_real_candidate_validation_report
+from .local_real_draft_entities import generate_local_real_draft_entities
 from .local_real_identity_candidates import generate_local_real_account_identity_candidates
 from .local_real_identity_normalization import normalize_local_real_domain_as_dict
 from .local_real_normalization_validation import generate_local_real_normalization_validation_report
@@ -52,6 +53,7 @@ OUTPUT_FILES = {
     "identity_normalization_validation": "identity-normalization-validation.json",
     "account_identity_candidates": "account-identity-candidates.json",
     "account_identity_candidate_validation": "account-identity-candidate-validation.json",
+    "draft_entities": "draft-entities.json",
     "entities": "entities.json",
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
@@ -79,10 +81,11 @@ BUILD_WARNINGS = [
 
 IMPORTED_SOURCE_RECORD_WARNINGS = [
     "Imported SourceRecords are consumed from local fake or sanitized adapter output only.",
-    "Imported SourceRecords are not expanded into entities, signal links, entity states, recommendations, or human review records in this mode.",
+    "Imported SourceRecords are not expanded into canonical entities, signal links, entity states, recommendations, or human review records in this mode.",
     "The local-real fixture has no approved signal fixture or graph expectations yet.",
     "Domain values are preserved exactly as imported; identity normalization evidence is written separately.",
     "Account identity candidates are draft candidates only and do not approve entity merging.",
+    "Draft entities are review artifacts only and must not be written to entities.json.",
     "Account-name-only matching remains prohibited.",
     "No real customer data, live integrations, CRM writes, external APIs, LLMs, databases, credentials, UI, agents, or deployment work are used.",
 ]
@@ -213,6 +216,7 @@ def make_imported_source_record_summary(
             OUTPUT_FILES["identity_normalization_validation"],
             OUTPUT_FILES["account_identity_candidates"],
             OUTPUT_FILES["account_identity_candidate_validation"],
+            OUTPUT_FILES["draft_entities"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=IMPORTED_SOURCE_RECORD_WARNINGS,
@@ -365,12 +369,14 @@ def build_from_imported_source_records(
         source_records_output,
         normalization_evidence_output,
     )
+    draft_entities_output = generate_local_real_draft_entities(account_identity_candidates_output)
     output_files = [
         OUTPUT_FILES["source_records"],
         OUTPUT_FILES["identity_normalization_evidence"],
         OUTPUT_FILES["identity_normalization_validation"],
         OUTPUT_FILES["account_identity_candidates"],
         OUTPUT_FILES["account_identity_candidate_validation"],
+        OUTPUT_FILES["draft_entities"],
         OUTPUT_FILES["build_summary"],
     ]
     normalization_validation_output = generate_local_real_normalization_validation_report(
@@ -389,6 +395,7 @@ def build_from_imported_source_records(
     write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_validation"], normalization_validation_output)
     write_json(paths.output_dir / OUTPUT_FILES["account_identity_candidates"], account_identity_candidates_output)
     write_json(paths.output_dir / OUTPUT_FILES["account_identity_candidate_validation"], candidate_validation_output)
+    write_json(paths.output_dir / OUTPUT_FILES["draft_entities"], draft_entities_output)
     summary = make_imported_source_record_summary(
         paths,
         source_records_output,
