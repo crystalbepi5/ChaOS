@@ -31,6 +31,20 @@ textarea {
   font: inherit;
 }
 
+button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus {
+  background: var(--accent-dark);
+  outline: 2px solid rgba(23, 107, 135, 0.2);
+  outline-offset: 1px;
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -43,6 +57,7 @@ textarea {
 h1,
 h2,
 h3,
+h4,
 p {
   margin-top: 0;
 }
@@ -61,6 +76,12 @@ h2 {
 
 h3 {
   margin-bottom: 12px;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+h4 {
+  margin-bottom: 5px;
   font-size: 15px;
   letter-spacing: 0;
 }
@@ -207,12 +228,16 @@ h3 {
 }
 
 .card-meta {
+  margin: 8px 0 0;
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.35;
 }
 
 .state-pill,
-.review-pill {
+.review-pill,
+.action-pill,
+.action-boundary {
   display: inline-flex;
   max-width: 100%;
   padding: 5px 8px;
@@ -225,24 +250,40 @@ h3 {
 
 .state-pill.ready,
 .review-pill.accepted,
-.review-pill.completed {
+.review-pill.completed,
+.action-pill.completed {
   border-color: rgba(37, 111, 74, 0.3);
   background: #edf7f1;
   color: var(--ok);
 }
 
 .state-pill.review,
-.review-pill.needs {
+.review-pill.needs,
+.action-pill.planned {
   border-color: rgba(154, 91, 0, 0.3);
   background: #fff7e8;
   color: var(--warn);
 }
 
 .state-pill.blocked,
-.review-pill.rejected {
+.review-pill.rejected,
+.action-pill.blocked {
   border-color: rgba(154, 45, 45, 0.3);
   background: #fff0f0;
   color: var(--risk);
+}
+
+.action-pill.active {
+  border-color: rgba(23, 107, 135, 0.35);
+  background: #eef7fa;
+  color: var(--accent-dark);
+}
+
+.action-boundary {
+  border-color: rgba(154, 45, 45, 0.28);
+  background: #fff0f0;
+  color: var(--risk);
+  font-weight: 700;
 }
 
 .detail-panel {
@@ -283,11 +324,15 @@ h3 {
   gap: 12px;
 }
 
-.panel-card {
-  min-height: 150px;
+.panel-card,
+.action-panel {
   padding: 16px;
   border: 1px solid var(--line);
   background: #fbfcfd;
+}
+
+.panel-card {
+  min-height: 150px;
 }
 
 .wide-card,
@@ -334,14 +379,88 @@ li + li {
   line-height: 1.45;
 }
 
+.action-panel {
+  margin-top: 12px;
+  background: #ffffff;
+}
+
+.action-heading {
+  align-items: flex-start;
+}
+
+.action-heading h3 {
+  margin-bottom: 4px;
+}
+
+.action-heading p {
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.action-list {
+  display: grid;
+  gap: 10px;
+}
+
+.action-card {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: #fbfcfd;
+}
+
+.action-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.action-controls,
+.action-form,
 .review-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.action-controls {
+  grid-template-columns: minmax(140px, 0.8fr) repeat(2, minmax(0, 1fr));
+  margin-bottom: 12px;
+}
+
+.action-controls label,
+.action-note-label {
+  display: block;
+}
+
+.action-controls span,
+.action-note-label span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.action-form,
+.review-form {
   margin-top: 12px;
   padding: 16px;
   border: 1px solid var(--line);
   background: #f7fafb;
+}
+
+.action-submit-row {
+  display: flex;
+  align-items: end;
+}
+
+.action-submit-row button {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
 }
 
 .form-row label {
@@ -373,6 +492,16 @@ textarea {
   line-height: 1.5;
 }
 
+@media (max-width: 980px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .action-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .topbar,
   .detail-header {
@@ -381,10 +510,6 @@ textarea {
 
   .proof-badge {
     margin-top: 16px;
-  }
-
-  .summary-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .workspace {
@@ -401,6 +526,7 @@ textarea {
   .account-cards,
   .detail-grid,
   .review-form,
+  .action-form,
   .semantic-strip {
     grid-template-columns: 1fr;
   }
@@ -411,5 +537,15 @@ textarea {
 
   .detail-panel {
     min-height: auto;
+  }
+
+  .section-heading,
+  .action-card-header {
+    display: block;
+  }
+
+  .action-boundary,
+  .action-pill {
+    margin-top: 8px;
   }
 }
