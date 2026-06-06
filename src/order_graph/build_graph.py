@@ -5,9 +5,9 @@ This module proves this spine:
     local fake fixtures -> deterministic local output files
 
 The default path builds the fake GTM graph fixture. The imported SourceRecord
-path consumes adapter-shaped SourceRecords, writes a local handoff output, and
-writes derived normalization evidence; it does not expand imported records into
-graph entities yet.
+path consumes adapter-shaped SourceRecords, writes a local handoff output, writes
+derived normalization evidence, and validates that boundary; it does not expand
+imported records into graph entities yet.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ from .human_feedback_validation import generate_human_feedback_validation_report
 from .human_review import generate_human_review_override_model
 from .identity import resolve_entities_from_source_records
 from .local_real_identity_normalization import normalize_local_real_domain_as_dict
+from .local_real_normalization_validation import generate_local_real_normalization_validation_report
 from .models import BuildPaths, BuildSummary, FixtureBundle, JsonObject
 from .signal_attachment import generate_signal_links
 from .top_10_workflow import generate_top_10_account_workflow
@@ -45,6 +46,7 @@ INPUT_FILES = {
 OUTPUT_FILES = {
     "source_records": "source-records.json",
     "identity_normalization_evidence": "identity-normalization-evidence.json",
+    "identity_normalization_validation": "identity-normalization-validation.json",
     "entities": "entities.json",
     "signal_links": "signal-links.json",
     "entity_states": "entity-states.json",
@@ -179,6 +181,7 @@ def make_build_summary(
 def make_imported_source_record_summary(
     paths: BuildPaths,
     imported_source_records_output: JsonObject,
+    validation_report_output: JsonObject,
 ) -> BuildSummary:
     """Create a summary for the imported SourceRecord handoff path."""
 
@@ -190,8 +193,8 @@ def make_imported_source_record_summary(
         unresolved_record_count=0,
         generated_signal_link_count=0,
         generated_entity_state_count=0,
-        validation_check_count=0,
-        failed_validation_check_count=0,
+        validation_check_count=int(validation_report_output.get("check_count", 0)),
+        failed_validation_check_count=int(validation_report_output.get("failed_check_count", 0)),
         top_10_recommendation_count=0,
         human_review_example_count=0,
         human_feedback_validation_check_count=0,
@@ -201,6 +204,7 @@ def make_imported_source_record_summary(
         output_files=[
             OUTPUT_FILES["source_records"],
             OUTPUT_FILES["identity_normalization_evidence"],
+            OUTPUT_FILES["identity_normalization_validation"],
             OUTPUT_FILES["build_summary"],
         ],
         warnings=IMPORTED_SOURCE_RECORD_WARNINGS,
@@ -349,10 +353,22 @@ def build_from_imported_source_records(
         "warnings": IMPORTED_SOURCE_RECORD_WARNINGS + list(imported_output.get("warnings", [])),
     }
     normalization_evidence_output = generate_identity_normalization_evidence(source_records_output)
+    output_files = [
+        OUTPUT_FILES["source_records"],
+        OUTPUT_FILES["identity_normalization_evidence"],
+        OUTPUT_FILES["identity_normalization_validation"],
+        OUTPUT_FILES["build_summary"],
+    ]
+    validation_report_output = generate_local_real_normalization_validation_report(
+        source_records_output,
+        normalization_evidence_output,
+        output_files,
+    )
 
     write_json(paths.output_dir / OUTPUT_FILES["source_records"], source_records_output)
     write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_evidence"], normalization_evidence_output)
-    summary = make_imported_source_record_summary(paths, source_records_output)
+    write_json(paths.output_dir / OUTPUT_FILES["identity_normalization_validation"], validation_report_output)
+    summary = make_imported_source_record_summary(paths, source_records_output, validation_report_output)
     write_json(paths.output_dir / OUTPUT_FILES["build_summary"], asdict(summary))
     return summary
 
