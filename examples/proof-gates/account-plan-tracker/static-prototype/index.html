@@ -9,20 +9,21 @@
 <body>
   <header class="topbar">
     <div>
-      <p class="eyebrow">ChaOS v0.1 proof gate · fake sample data</p>
+      <p class="eyebrow">Proof prototype - fake sample data</p>
       <h1>Account Plan Tracker</h1>
-      <p class="lede">Review account context, signals, interpreted state, recommended next action, execution status, outcome, and feedback before anything leaves the local prototype.</p>
+      <p class="lede">Turn account context into a clear plan, track the work, and capture what happened without sending outreach or updating a CRM.</p>
     </div>
     <div class="proof-badge" aria-label="Prototype boundary">
       <span>Local static prototype</span>
-      <strong>No CRM writes</strong>
+      <strong>Fake data only</strong>
+      <small>No CRM writes. Refresh clears edits.</small>
     </div>
   </header>
 
   <main class="app-shell">
-    <section class="summary-grid" aria-label="Account summary">
+    <section class="summary-grid" aria-label="Plan summary">
       <article class="summary-card">
-        <span class="summary-label">Accounts</span>
+        <span class="summary-label">Total Accounts</span>
         <strong id="accountCount">0</strong>
       </article>
       <article class="summary-card">
@@ -34,32 +35,24 @@
         <strong id="reviewCount">0</strong>
       </article>
       <article class="summary-card">
-        <span class="summary-label">Accepted</span>
-        <strong id="acceptedCount">0</strong>
-      </article>
-      <article class="summary-card">
         <span class="summary-label">Open Actions</span>
         <strong id="openActionCount">0</strong>
       </article>
       <article class="summary-card">
-        <span class="summary-label">Blocked Actions</span>
+        <span class="summary-label">Blocked</span>
         <strong id="blockedActionCount">0</strong>
       </article>
       <article class="summary-card">
-        <span class="summary-label">Completed Actions</span>
+        <span class="summary-label">Completed</span>
         <strong id="completedActionCount">0</strong>
-      </article>
-      <article class="summary-card">
-        <span class="summary-label">Selected Account</span>
-        <strong id="selectedActionCount">0</strong>
       </article>
     </section>
 
     <section class="workspace">
-      <aside class="account-list" aria-label="Fake account list">
+      <aside class="account-list" aria-label="Account list">
         <div class="section-heading">
           <h2>Accounts</h2>
-          <p>Fake/manual examples only</p>
+          <p>Fake/manual examples</p>
         </div>
         <div id="accountCards" class="account-cards"></div>
       </aside>
@@ -67,60 +60,64 @@
       <section class="detail-panel" aria-live="polite">
         <div class="detail-header">
           <div>
-            <p class="eyebrow">Entity · Account</p>
+            <p class="eyebrow">Account Snapshot</p>
             <h2 id="detailName">Select an account</h2>
             <p id="detailSegment" class="muted"></p>
           </div>
           <span id="detailState" class="state-pill"></span>
         </div>
 
-        <div class="semantic-strip" aria-label="ChaOS semantic model">
-          <span>Entity</span>
-          <span>Signal</span>
-          <span>State</span>
-          <span>Decision</span>
-          <span>Outcome</span>
-          <span>Feedback</span>
-        </div>
+        <section class="progress-panel" aria-label="Selected account progress">
+          <div>
+            <span class="summary-label">Selected Account Progress</span>
+            <strong id="progressHeadline">0 actions tracked</strong>
+          </div>
+          <div class="progress-metrics">
+            <span><strong id="selectedOpenCount">0</strong> open</span>
+            <span><strong id="selectedBlockedCount">0</strong> blocked</span>
+            <span><strong id="selectedCompletedCount">0</strong> completed</span>
+            <span><strong id="selectedReviewStatus">-</strong></span>
+          </div>
+        </section>
 
         <div class="detail-grid">
           <article class="panel-card">
-            <h3>Known Context</h3>
+            <h3>Why This Account</h3>
             <ul id="knownContext"></ul>
           </article>
           <article class="panel-card warning-card">
-            <h3>Missing Context</h3>
+            <h3>Gaps / Blockers</h3>
             <ul id="missingContext"></ul>
           </article>
           <article class="panel-card wide-card">
-            <h3>Signals</h3>
+            <h3>Buying Signals</h3>
             <div id="signals" class="signal-list"></div>
           </article>
           <article class="panel-card">
-            <h3>Recommended Decision</h3>
+            <h3>Recommended Next Step</h3>
             <p id="decision" class="decision-text"></p>
-            <p class="guardrail">Human-reviewable recommendation. State must not silently become action.</p>
+            <p class="guardrail">Human review is required before a recommendation becomes tracked work.</p>
           </article>
           <article class="panel-card">
-            <h3>Owner</h3>
+            <h3>Plan Owner</h3>
             <p id="owner" class="owner-text"></p>
           </article>
         </div>
 
-        <section class="action-panel" aria-label="Local action tracking">
+        <section class="action-panel" aria-label="Action plan tracking">
           <div class="section-heading action-heading">
             <div>
-              <h3>Action Tracking</h3>
-              <p>Local execution loop only. Actions are human-owned and disappear on refresh.</p>
+              <h3>Action Plan</h3>
+              <p>Track local work only. Actions are human-owned and disappear on refresh.</p>
             </div>
-            <span class="action-boundary">No outreach execution</span>
+            <span class="action-boundary">No outreach sent</span>
           </div>
 
           <div id="actionList" class="action-list"></div>
 
           <form class="action-form" id="actionForm">
             <div class="form-row full-row">
-              <label for="actionTitle">New action</label>
+              <label for="actionTitle">Add action</label>
               <input id="actionTitle" name="actionTitle" type="text" placeholder="Example: confirm stakeholder, refresh research, draft reviewed follow-up">
             </div>
             <div class="form-row">
@@ -128,11 +125,11 @@
               <input id="actionOwner" name="actionOwner" type="text" placeholder="Human owner">
             </div>
             <div class="form-row">
-              <label for="actionDue">Due / timing</label>
+              <label for="actionDue">Timing</label>
               <input id="actionDue" name="actionDue" type="text" placeholder="Example: today, this week, after review">
             </div>
             <div class="form-row">
-              <label for="actionStatus">Status</label>
+              <label for="actionStatus">Progress</label>
               <select id="actionStatus" name="actionStatus">
                 <option value="planned">planned</option>
                 <option value="in_progress">in_progress</option>
@@ -145,7 +142,7 @@
               <button type="submit">Add Local Action</button>
             </div>
             <div class="form-row full-row">
-              <label for="actionNote">Action note</label>
+              <label for="actionNote">Note / blocker</label>
               <textarea id="actionNote" name="actionNote" rows="3" placeholder="Explain why this action exists or what must happen before it is safe to proceed."></textarea>
             </div>
           </form>
@@ -163,11 +160,11 @@
             </select>
           </div>
           <div class="form-row">
-            <label for="outcome">Outcome</label>
+            <label for="outcome">Results / learning</label>
             <input id="outcome" name="outcome" type="text" placeholder="Example: meeting booked, plan revised, no action yet">
           </div>
           <div class="form-row full-row">
-            <label for="feedback">Feedback note</label>
+            <label for="feedback">Review notes</label>
             <textarea id="feedback" name="feedback" rows="4" placeholder="Capture what the reviewer accepted, changed, rejected, or still needs."></textarea>
           </div>
         </form>
@@ -176,7 +173,7 @@
   </main>
 
   <footer class="footer-note">
-    <p>This prototype uses fake sample data and in-memory browser state only. It does not send outreach, write to CRM, call APIs, use agents, persist changes, or store real customer data.</p>
+    <p>All accounts are fake. Edits are in-memory only and clear on refresh. This prototype does not send outreach, write to CRM, call APIs, use agents, persist changes, or store real customer data.</p>
   </footer>
 
   <script src="sample-data.js"></script>
