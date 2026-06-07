@@ -26,14 +26,15 @@ Current prototype scope:
 
 - Static account review.
 - Local action tracking loop.
-- In-memory review, action, outcome, and feedback edits.
+- In-memory review, action, result, and review-note edits.
+- Account-planning product language in the visible UI.
 - No persistence, integrations, agents, CRM writes, or outreach execution.
 
 ## Where ChaOS Vocabulary Helped
 
 Initial observations:
 
-- Entity helps separate Account, Contact/persona, Action item, Owner, and Review.
+- Entity helps separate Account, Contact/persona, Action item, Owner, and Review in the architecture.
 - Signal helps prevent raw observations from becoming recommendations too early.
 - State helps name account readiness without treating readiness as action permission.
 - Decision helps keep next action recommendations traceable.
@@ -50,6 +51,13 @@ Initial observations:
 - Contact/persona may not need to become a full entity in the first build.
 - State labels may need domain-native wording for BDR users.
 - Action item may be a simpler domain term than a full ChaOS entity in the static prototype.
+- Visible Entity/Signal/State/Decision/Outcome/Feedback language helped prove the model but created product-language friction.
+
+## Product Language Adjustment
+
+The prototype now hides framework vocabulary from the visible UI and uses account-planning labels such as Account Snapshot, Why This Account, Plan Status, Buying Signals, Gaps / Blockers, Recommended Next Step, Action Plan, Results / Learning, and Review Notes.
+
+This preserves ChaOS as the internal organizing model while reducing user-facing abstraction tax.
 
 ## Concepts That Do Not Map Cleanly Yet
 
@@ -66,7 +74,7 @@ Current estimate: `medium_unknown`
 
 Reason:
 
-The ChaOS model gives useful structure, but several account-planning concepts need careful mapping before implementation. The proof should measure whether this mapping saves time later.
+The ChaOS model gives useful structure, but several account-planning concepts need careful mapping before implementation. The proof should measure whether this mapping saves time later. The first visible UI pass showed that framework vocabulary must not automatically become product vocabulary.
 
 ## Estimated Reuse Benefit
 
@@ -74,7 +82,7 @@ Current estimate: `medium_promising`
 
 Reason:
 
-The model already helps separate evidence, interpretation, recommendation, human-owned action, outcome, and feedback. That separation should reduce rework if the MVP becomes a build prompt.
+The model already helps separate evidence, interpretation, recommendation, human-owned action, result, and learning. That separation should reduce rework if the MVP becomes a build prompt.
 
 ## Continue, Adapt, Or Pause
 
@@ -93,6 +101,7 @@ ChaOS appears useful enough to create a clearer Account Plan Tracker starter pac
 | Core agent model | Bypass. | `project_specific_exception` | No agent behavior is needed for first proof. |
 | Production integration model | Bypass. | `project_specific_exception` | Live integrations would hide whether the planning artifact is useful. |
 | Persistence model | Bypass. | `project_specific_exception` | In-memory edits are enough to test whether the action loop is understandable. |
+| Framework vocabulary in UI | Hide from domain user interface. | `candidate_upstream_improvement` | Framework vocabulary should not leak into domain user interfaces unless the user is explicitly operating the framework. |
 
 ## Proof Review Questions
 
@@ -104,6 +113,7 @@ At the decision deadline, update this log with answers to:
 - Did the starter package become a useful Codex build prompt?
 - Did the static prototype make the Account Plan Tracker easier to evaluate?
 - Did the action tracking loop make execution clearer without implying automation?
+- Did product-language labels reduce user-facing abstraction tax?
 - Did any pattern deserve `candidate_upstream_improvement`?
 - Did any pattern reveal `breaking_abstraction`?
 - Did any pattern become a `rejected_pattern`?
