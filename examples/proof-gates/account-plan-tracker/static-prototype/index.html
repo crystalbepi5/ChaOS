@@ -11,7 +11,7 @@
     <div>
       <p class="eyebrow">Proof prototype - fake sample data</p>
       <h1>Account Plan Tracker</h1>
-      <p class="lede">Turn account context into a clear plan, track the work, and capture what happened without sending outreach or updating a CRM.</p>
+      <p class="lede">Open an account, see the next required move, clear blockers, and track the work without sending outreach or updating a CRM.</p>
     </div>
     <div class="proof-badge" aria-label="Prototype boundary">
       <span>Local static prototype</span>
@@ -31,16 +31,16 @@
         <strong id="readyCount">0</strong>
       </article>
       <article class="summary-card">
-        <span class="summary-label">Needs Review</span>
-        <strong id="reviewCount">0</strong>
+        <span class="summary-label">Needs Update</span>
+        <strong id="needsUpdateCount">0</strong>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">Blocked</span>
+        <strong id="blockedAccountCount">0</strong>
       </article>
       <article class="summary-card">
         <span class="summary-label">Open Actions</span>
         <strong id="openActionCount">0</strong>
-      </article>
-      <article class="summary-card">
-        <span class="summary-label">Blocked</span>
-        <strong id="blockedActionCount">0</strong>
       </article>
       <article class="summary-card">
         <span class="summary-label">Completed</span>
@@ -52,7 +52,7 @@
       <aside class="account-list" aria-label="Account list">
         <div class="section-heading">
           <h2>Accounts</h2>
-          <p>Fake/manual examples</p>
+          <p>Pick the plan that needs attention</p>
         </div>
         <div id="accountCards" class="account-cards"></div>
       </aside>
@@ -60,49 +60,60 @@
       <section class="detail-panel" aria-live="polite">
         <div class="detail-header">
           <div>
-            <p class="eyebrow">Account Snapshot</p>
+            <p class="eyebrow">Account Plan</p>
             <h2 id="detailName">Select an account</h2>
             <p id="detailSegment" class="muted"></p>
           </div>
-          <span id="detailState" class="state-pill"></span>
+          <span id="detailHealth" class="state-pill"></span>
         </div>
 
-        <section class="progress-panel" aria-label="Selected account progress">
+        <section class="next-move-panel" aria-label="Do this next">
+          <div class="next-move-main">
+            <span class="summary-label">Do This Next</span>
+            <h3 id="nextMoveTitle">Select an account</h3>
+            <p id="nextMoveReason" class="next-move-reason"></p>
+          </div>
+          <div class="next-move-meta">
+            <div>
+              <span class="summary-label">Owner</span>
+              <strong id="nextMoveOwner">-</strong>
+            </div>
+            <div>
+              <span class="summary-label">Timing</span>
+              <strong id="nextMoveTiming">-</strong>
+            </div>
+            <div>
+              <span class="summary-label">Plan Health</span>
+              <strong id="nextMoveHealth">-</strong>
+            </div>
+            <button id="primaryActionButton" type="button">Mark in progress</button>
+          </div>
+        </section>
+
+        <section class="progress-panel" aria-label="Plan progress">
           <div>
-            <span class="summary-label">Selected Account Progress</span>
+            <span class="summary-label">Plan Progress</span>
             <strong id="progressHeadline">0 actions tracked</strong>
           </div>
           <div class="progress-metrics">
             <span><strong id="selectedOpenCount">0</strong> open</span>
             <span><strong id="selectedBlockedCount">0</strong> blocked</span>
             <span><strong id="selectedCompletedCount">0</strong> completed</span>
+            <span><strong id="selectedUpdateCount">0</strong> updates needed</span>
             <span><strong id="selectedReviewStatus">-</strong></span>
           </div>
         </section>
 
-        <div class="detail-grid">
-          <article class="panel-card">
-            <h3>Why This Account</h3>
-            <ul id="knownContext"></ul>
+        <section class="workflow-grid" aria-label="Plan management">
+          <article class="panel-card update-panel">
+            <h3>Update Needed</h3>
+            <div id="updateNeededList" class="checklist"></div>
           </article>
-          <article class="panel-card warning-card">
-            <h3>Gaps / Blockers</h3>
-            <ul id="missingContext"></ul>
+          <article class="panel-card blocker-panel">
+            <h3>Active Blockers</h3>
+            <div id="blockerList" class="blocker-list"></div>
           </article>
-          <article class="panel-card wide-card">
-            <h3>Buying Signals</h3>
-            <div id="signals" class="signal-list"></div>
-          </article>
-          <article class="panel-card">
-            <h3>Recommended Next Step</h3>
-            <p id="decision" class="decision-text"></p>
-            <p class="guardrail">Human review is required before a recommendation becomes tracked work.</p>
-          </article>
-          <article class="panel-card">
-            <h3>Plan Owner</h3>
-            <p id="owner" class="owner-text"></p>
-          </article>
-        </div>
+        </section>
 
         <section class="action-panel" aria-label="Action plan tracking">
           <div class="section-heading action-heading">
@@ -146,6 +157,32 @@
               <textarea id="actionNote" name="actionNote" rows="3" placeholder="Explain why this action exists or what must happen before it is safe to proceed."></textarea>
             </div>
           </form>
+        </section>
+
+        <section class="supporting-context" aria-label="Supporting context">
+          <div class="section-heading">
+            <h3>Supporting Context</h3>
+            <p>Use this to understand or revise the plan</p>
+          </div>
+          <div class="detail-grid">
+            <article class="panel-card">
+              <h3>Why This Account</h3>
+              <ul id="knownContext"></ul>
+            </article>
+            <article class="panel-card wide-card">
+              <h3>Buying Signals</h3>
+              <div id="signals" class="signal-list"></div>
+            </article>
+            <article class="panel-card">
+              <h3>Recommended Next Step</h3>
+              <p id="decision" class="decision-text"></p>
+              <p class="guardrail">Human review is required before a recommendation becomes tracked work.</p>
+            </article>
+            <article class="panel-card">
+              <h3>Plan Owner</h3>
+              <p id="owner" class="owner-text"></p>
+            </article>
+          </div>
         </section>
 
         <form class="review-form" id="reviewForm">
