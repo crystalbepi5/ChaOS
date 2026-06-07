@@ -33,6 +33,7 @@ textarea {
 }
 
 button {
+  min-height: 44px;
   border: 1px solid var(--accent);
   background: var(--accent);
   color: #ffffff;
@@ -77,7 +78,7 @@ h2 {
 
 h3 {
   margin-bottom: 12px;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 0;
 }
 
@@ -166,7 +167,7 @@ h4 {
 
 .workspace {
   display: grid;
-  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
 }
@@ -242,18 +243,24 @@ h4 {
   font-weight: 700;
 }
 
-.card-meta {
+.card-meta,
+.next-card-move {
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.35;
 }
 
+.next-card-move {
+  color: var(--ink);
+}
+
 .state-pill,
 .review-pill,
 .action-pill,
 .action-boundary,
-.blocker-dot {
+.blocker-dot,
+.attention-dot {
   display: inline-flex;
   max-width: 100%;
   padding: 5px 8px;
@@ -275,7 +282,8 @@ h4 {
 
 .state-pill.review,
 .review-pill.needs,
-.action-pill.planned {
+.action-pill.planned,
+.attention-dot {
   border-color: rgba(154, 91, 0, 0.3);
   background: #fff7e8;
   color: var(--warn);
@@ -288,6 +296,12 @@ h4 {
   border-color: rgba(154, 45, 45, 0.3);
   background: #fff0f0;
   color: var(--risk);
+}
+
+.state-pill.paused {
+  border-color: rgba(98, 102, 109, 0.3);
+  background: #f3f5f7;
+  color: var(--muted);
 }
 
 .action-pill.active {
@@ -317,6 +331,57 @@ h4 {
   border-bottom: 1px solid var(--line);
 }
 
+.next-move-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: 18px;
+  margin: 16px 0;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(23, 107, 135, 0.28);
+  background: var(--soft);
+}
+
+.next-move-main h3 {
+  margin-bottom: 10px;
+  font-size: clamp(22px, 3vw, 30px);
+}
+
+.next-move-reason {
+  margin-bottom: 0;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.next-move-meta {
+  display: grid;
+  gap: 10px;
+}
+
+.next-move-meta strong {
+  display: block;
+  line-height: 1.35;
+}
+
+.primary-action {
+  width: 100%;
+  padding: 10px 12px;
+}
+
+.primary-action.blocked {
+  border-color: var(--risk);
+  background: var(--risk);
+}
+
+.primary-action.review {
+  border-color: var(--warn);
+  background: var(--warn);
+}
+
+.primary-action.ready {
+  border-color: var(--ok);
+  background: var(--ok);
+}
+
 .progress-panel {
   display: grid;
   grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1.2fr);
@@ -324,8 +389,8 @@ h4 {
   align-items: center;
   margin: 16px 0;
   padding: 16px;
-  border: 1px solid rgba(23, 107, 135, 0.25);
-  background: var(--soft);
+  border: 1px solid var(--line);
+  background: #fbfcfd;
 }
 
 .progress-panel strong {
@@ -354,6 +419,7 @@ h4 {
   font-size: 14px;
 }
 
+.workflow-grid,
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -361,7 +427,8 @@ h4 {
 }
 
 .panel-card,
-.action-panel {
+.action-panel,
+.supporting-context {
   padding: 16px;
   border: 1px solid var(--line);
   background: #fbfcfd;
@@ -376,8 +443,12 @@ h4 {
   grid-column: 1 / -1;
 }
 
-.warning-card {
+.update-panel {
   background: #fffaf0;
+}
+
+.blocker-panel {
+  background: #fffafa;
 }
 
 ul {
@@ -387,6 +458,90 @@ ul {
 
 li + li {
   margin-top: 8px;
+}
+
+.checklist,
+.blocker-list,
+.signal-list {
+  display: grid;
+  gap: 10px;
+}
+
+.checklist-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.checklist-item input {
+  width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+}
+
+.checklist-item strong,
+.checklist-item small {
+  display: block;
+}
+
+.checklist-item small {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.checklist-item.done {
+  background: #edf7f1;
+}
+
+.positive-empty {
+  margin-bottom: 0;
+  padding: 12px;
+  border: 1px solid rgba(37, 111, 74, 0.25);
+  background: #edf7f1;
+  color: var(--ok);
+  line-height: 1.45;
+}
+
+.blocker-card,
+.action-card {
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.blocker-header,
+.action-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.blocker-card p {
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+.blocker-card label,
+.action-controls label,
+.action-note-label {
+  display: block;
+}
+
+.blocker-card label span,
+.action-controls span,
+.action-note-label span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .signal-list {
@@ -415,9 +570,13 @@ li + li {
   line-height: 1.45;
 }
 
-.action-panel {
+.action-panel,
+.supporting-context {
   margin-top: 12px;
   background: #ffffff;
+}
+
+.action-panel {
   border-color: rgba(23, 107, 135, 0.28);
 }
 
@@ -441,20 +600,6 @@ li + li {
   gap: 10px;
 }
 
-.action-card {
-  padding: 14px;
-  border: 1px solid var(--line);
-  background: #fbfcfd;
-}
-
-.action-card-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
 .action-controls,
 .action-form,
 .review-form {
@@ -466,20 +611,6 @@ li + li {
 .action-controls {
   grid-template-columns: minmax(140px, 0.8fr) repeat(2, minmax(0, 1fr));
   margin-bottom: 12px;
-}
-
-.action-controls label,
-.action-note-label {
-  display: block;
-}
-
-.action-controls span,
-.action-note-label span {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 700;
 }
 
 .action-form,
@@ -497,7 +628,6 @@ li + li {
 
 .action-submit-row button {
   width: 100%;
-  min-height: 44px;
   padding: 10px 12px;
 }
 
@@ -543,7 +673,8 @@ textarea {
   }
 
   .action-controls,
-  .progress-panel {
+  .progress-panel,
+  .next-move-panel {
     grid-template-columns: 1fr;
   }
 
@@ -574,6 +705,7 @@ textarea {
 @media (max-width: 620px) {
   .summary-grid,
   .account-cards,
+  .workflow-grid,
   .detail-grid,
   .review-form,
   .action-form {
@@ -590,13 +722,17 @@ textarea {
 
   .section-heading,
   .action-card-header,
+  .blocker-header,
   .card-top {
     display: block;
   }
 
   .action-boundary,
   .action-pill,
-  .review-pill {
+  .review-pill,
+  .state-pill,
+  .blocker-dot,
+  .attention-dot {
     margin-top: 8px;
   }
 }
