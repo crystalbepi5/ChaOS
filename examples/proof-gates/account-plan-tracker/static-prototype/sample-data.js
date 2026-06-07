@@ -4,21 +4,21 @@ const sampleAccounts = [
     name: "Northstar Kitchens",
     segment: "Mid-market food service",
     owner: "Maya Chen",
-    state: "account_ready_for_outreach",
+    planStatus: "Ready for outreach",
     reviewStatus: "Accepted",
-    decision: "Recommend play: send expansion-focused outreach tied to recent event attendance and open equipment refresh initiative.",
-    outcome: "No action yet",
-    feedback: "Initial recommendation accepted for proof review.",
-    knownContext: [
+    recommendedNextStep: "Draft an expansion follow-up tied to recent event attendance and the equipment refresh initiative.",
+    result: "No action yet",
+    reviewNotes: "Initial recommendation accepted for proof review.",
+    accountSnapshot: [
       "Regional operator with 42 locations.",
       "Known facilities leader attended a fake industry event.",
       "Existing buying committee includes operations and finance personas."
     ],
-    missingContext: [
+    gapsBlockers: [
       "Confirm current vendor contract timing.",
       "Find executive sponsor for rollout discussion."
     ],
-    signals: ["Event attendance", "Recent activity", "Intent signal", "Prior meeting"],
+    buyingSignals: ["Event attendance", "Recent activity", "Expansion interest", "Prior meeting"],
     actions: [
       {
         id: "act-northstar-1",
@@ -30,7 +30,7 @@ const sampleAccounts = [
       },
       {
         id: "act-northstar-2",
-        title: "Draft expansion outreach for facilities leader",
+        title: "Draft reviewed follow-up for facilities leader",
         owner: "Maya Chen",
         due: "After contract timing is checked",
         status: "planned",
@@ -43,22 +43,22 @@ const sampleAccounts = [
     name: "Copperline Robotics",
     segment: "Manufacturing automation",
     owner: "Andre Patel",
-    state: "account_has_persona_gap",
+    planStatus: "Persona gap",
     reviewStatus: "Needs more context",
-    decision: "Request missing context before outreach: identify economic buyer and technical evaluator.",
-    outcome: "No action yet",
-    feedback: "Persona gap needs review before account can be worked.",
-    knownContext: [
+    recommendedNextStep: "Pause outreach until the economic buyer and technical evaluator are identified.",
+    result: "No action yet",
+    reviewNotes: "Persona gap needs review before account can be worked.",
+    accountSnapshot: [
       "Account is in target manufacturing segment.",
-      "Fake intent signal suggests interest in warehouse automation.",
+      "Fake interest marker suggests warehouse automation research.",
       "Prior meeting notes mention operations pain."
     ],
-    missingContext: [
+    gapsBlockers: [
       "Economic buyer is unknown.",
       "Technical evaluator is unknown.",
       "No confirmed decision timeline."
     ],
-    signals: ["Intent signal", "Persona gap", "Prior meeting"],
+    buyingSignals: ["Warehouse automation interest", "Persona gap", "Prior meeting"],
     actions: [
       {
         id: "act-copperline-1",
@@ -66,11 +66,11 @@ const sampleAccounts = [
         owner: "Andre Patel",
         due: "Tomorrow",
         status: "in_progress",
-        note: "Do not recommend outreach until the buyer/persona gap is resolved."
+        note: "Do not recommend outreach until the buyer gap is resolved."
       },
       {
         id: "act-copperline-2",
-        title: "Find technical evaluator signal",
+        title: "Find technical evaluator evidence",
         owner: "Andre Patel",
         due: "This week",
         status: "blocked",
@@ -83,21 +83,21 @@ const sampleAccounts = [
     name: "Brightforge Labs",
     segment: "Biotech services",
     owner: "Sam Rivera",
-    state: "account_has_stale_activity",
+    planStatus: "Research refresh needed",
     reviewStatus: "Revised",
-    decision: "Assign next action: refresh account research before recommending a play.",
-    outcome: "Plan revised",
-    feedback: "Reviewer changed next step from outreach to research refresh.",
-    knownContext: [
+    recommendedNextStep: "Refresh account research before recommending a new play.",
+    result: "Plan revised",
+    reviewNotes: "Reviewer changed next step from outreach to research refresh.",
+    accountSnapshot: [
       "Account was previously high priority.",
       "Last fake activity is older than 90 days.",
       "Open opportunity was marked inactive in sample notes."
     ],
-    missingContext: [
+    gapsBlockers: [
       "No recent stakeholder activity.",
       "No current initiative confirmed."
     ],
-    signals: ["Stale account", "No recent touch", "Open opportunity"],
+    buyingSignals: ["Stale activity", "No recent touch", "Inactive opportunity"],
     actions: [
       {
         id: "act-brightforge-1",
@@ -109,7 +109,7 @@ const sampleAccounts = [
       },
       {
         id: "act-brightforge-2",
-        title: "Decide whether stale opportunity should remain active",
+        title: "Decide whether opportunity should stay active",
         owner: "Sam Rivera",
         due: "After research refresh",
         status: "planned",
@@ -122,22 +122,22 @@ const sampleAccounts = [
     name: "CivicPeak Software",
     segment: "Public sector SaaS",
     owner: "Jordan Ellis",
-    state: "account_blocked_needs_review",
+    planStatus: "Blocked for review",
     reviewStatus: "Rejected",
-    decision: "Route to human review because account ownership and active opportunity status conflict.",
-    outcome: "Recommendation rejected",
-    feedback: "Reviewer flagged conflicting owner information; suppress until clarified.",
-    knownContext: [
+    recommendedNextStep: "Resolve ownership and opportunity conflicts before any next step is planned.",
+    result: "Recommendation rejected",
+    reviewNotes: "Reviewer flagged conflicting owner information; suppress until clarified.",
+    accountSnapshot: [
       "Fake account has active opportunity marker.",
       "Two possible owners appear in manual sample notes.",
       "Prior meeting exists but next step is unclear."
     ],
-    missingContext: [
+    gapsBlockers: [
       "Correct owner is unknown.",
       "Opportunity stage is inconsistent.",
       "Recent account priority is not trusted."
     ],
-    signals: ["Open opportunity", "Prior meeting", "Persona gap"],
+    buyingSignals: ["Possible opportunity", "Prior meeting", "Ownership conflict"],
     actions: [
       {
         id: "act-civicpeak-1",
@@ -154,28 +154,28 @@ const sampleAccounts = [
     name: "Emberlane Studios",
     segment: "Creative operations",
     owner: "Priya Morgan",
-    state: "account_plan_ready",
+    planStatus: "Plan ready",
     reviewStatus: "Completed",
-    decision: "Prioritize account and assign next action: send recap with creative operations benchmark offer.",
-    outcome: "Action completed",
-    feedback: "Completed in prototype review; next version should track meeting quality.",
-    knownContext: [
+    recommendedNextStep: "Prioritize account and send reviewed recap with creative operations benchmark offer.",
+    result: "Action completed",
+    reviewNotes: "Completed in prototype review; next version should track meeting quality.",
+    accountSnapshot: [
       "Account has complete fake persona map.",
       "Recent activity indicates workflow redesign interest.",
       "Prior meeting identified a clear operational pain."
     ],
-    missingContext: [
+    gapsBlockers: [
       "No missing context for MVP review."
     ],
-    signals: ["Recent activity", "Prior meeting", "Intent signal", "Event attendance"],
+    buyingSignals: ["Recent activity", "Prior meeting", "Workflow redesign interest", "Event attendance"],
     actions: [
       {
         id: "act-emberlane-1",
-        title: "Send recap with benchmark offer",
+        title: "Send reviewed recap with benchmark offer",
         owner: "Priya Morgan",
         due: "Completed in sample",
         status: "completed",
-        note: "Fake completed action used to test outcome review."
+        note: "Fake completed action used to test result review."
       },
       {
         id: "act-emberlane-2",
