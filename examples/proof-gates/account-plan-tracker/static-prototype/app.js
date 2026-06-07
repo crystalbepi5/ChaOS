@@ -1,8 +1,8 @@
 const accounts = sampleAccounts.map((account) => ({
   ...account,
-  knownContext: [...account.knownContext],
-  missingContext: [...account.missingContext],
-  signals: [...account.signals],
+  accountSnapshot: [...account.accountSnapshot],
+  gapsBlockers: [...account.gapsBlockers],
+  buyingSignals: [...account.buyingSignals],
   actions: account.actions.map((action) => ({ ...action }))
 }));
 let selectedAccountId = accounts[0].id;
@@ -12,11 +12,14 @@ const accountCards = document.getElementById("accountCards");
 const accountCount = document.getElementById("accountCount");
 const readyCount = document.getElementById("readyCount");
 const reviewCount = document.getElementById("reviewCount");
-const acceptedCount = document.getElementById("acceptedCount");
 const openActionCount = document.getElementById("openActionCount");
 const blockedActionCount = document.getElementById("blockedActionCount");
 const completedActionCount = document.getElementById("completedActionCount");
-const selectedActionCount = document.getElementById("selectedActionCount");
+const progressHeadline = document.getElementById("progressHeadline");
+const selectedOpenCount = document.getElementById("selectedOpenCount");
+const selectedBlockedCount = document.getElementById("selectedBlockedCount");
+const selectedCompletedCount = document.getElementById("selectedCompletedCount");
+const selectedReviewStatus = document.getElementById("selectedReviewStatus");
 const detailName = document.getElementById("detailName");
 const detailSegment = document.getElementById("detailSegment");
 const detailState = document.getElementById("detailState");
@@ -42,9 +45,10 @@ function selectedAccount() {
   return accounts.find((account) => account.id === selectedAccountId) || accounts[0];
 }
 
-function stateClass(state) {
-  if (state.includes("ready") || state.includes("plan_ready")) return "ready";
-  if (state.includes("blocked")) return "blocked";
+function planClass(status) {
+  const normalized = status.toLowerCase();
+  if (normalized.includes("ready")) return "ready";
+  if (normalized.includes("blocked") || normalized.includes("gap")) return "blocked";
   return "review";
 }
 
@@ -63,6 +67,10 @@ function actionClass(status) {
   return "planned";
 }
 
+function actionLabel(status) {
+  return status.replace(/_/g, " ");
+}
+
 function allActions() {
   return accounts.flatMap((account) => account.actions);
 }
@@ -71,21 +79,40 @@ function openActions(actions) {
   return actions.filter((action) => action.status !== "completed" && action.status !== "deferred");
 }
 
+function blockedActions(actions) {
+  return actions.filter((action) => action.status === "blocked");
+}
+
+function completedActions(actions) {
+  return actions.filter((action) => action.status === "completed");
+}
+
 function renderSummary() {
   const actions = allActions();
   accountCount.textContent = accounts.length;
-  readyCount.textContent = accounts.filter((account) => account.state.includes("ready")).length;
-  reviewCount.textContent = accounts.filter((account) => account.reviewStatus === "Needs more context").length;
-  acceptedCount.textContent = accounts.filter((account) => account.reviewStatus === "Accepted" || account.reviewStatus === "Completed").length;
+  readyCount.textContent = accounts.filter((account) => account.planStatus.toLowerCase().includes("ready")).length;
+  reviewCount.textContent = accounts.filter((account) => account.reviewStatus === "Needs more context" || planClass(account.planStatus) === "blocked").length;
   openActionCount.textContent = openActions(actions).length;
-  blockedActionCount.textContent = actions.filter((action) => action.status === "blocked").length;
-  completedActionCount.textContent = actions.filter((action) => action.status === "completed").length;
-  selectedActionCount.textContent = selectedAccount().actions.length;
+  blockedActionCount.textContent = blockedActions(actions).length;
+  completedActionCount.textContent = completedActions(actions).length;
+}
+
+function renderSelectedProgress(account) {
+  const open = openActions(account.actions).length;
+  const blocked = blockedActions(account.actions).length;
+  const completed = completedActions(account.actions).length;
+  progressHeadline.textContent = `${account.actions.length} action${account.actions.length === 1 ? "" : "s"} tracked`;
+  selectedOpenCount.textContent = open;
+  selectedBlockedCount.textContent = blocked;
+  selectedCompletedCount.textContent = completed;
+  selectedReviewStatus.textContent = `Review: ${account.reviewStatus}`;
 }
 
 function renderCards() {
   accountCards.innerHTML = "";
   accounts.forEach((account) => {
+    const openCount = openActions(account.actions).length;
+    const hasBlocker = planClass(account.planStatus) === "blocked" || blockedActions(account.actions).length > 0;
     const button = document.createElement("button");
     button.type = "button";
     button.className = `account-card ${account.id === selectedAccountId ? "active" : ""}`;
@@ -97,8 +124,11 @@ function renderCards() {
         </div>
         <span class="review-pill ${reviewClass(account.reviewStatus)}">${account.reviewStatus}</span>
       </div>
-      <p class="card-meta">${account.state}</p>
-      <p class="card-meta">${openActions(account.actions).length} open action(s)</p>
+      <div class="card-footer">
+        <span class="state-pill ${planClass(account.planStatus)}">${account.planStatus}</span>
+        <span class="card-meta">${openCount} open</span>
+        ${hasBlocker ? '<span class="blocker-dot">Blocker</span>' : ""}
+      </div>
     `;
     button.addEventListener("click", () => {
       selectedAccountId = account.id;
@@ -134,6 +164,7 @@ function updateAction(actionId, field, value) {
   action[field] = value;
   renderSummary();
   renderCards();
+  renderSelectedProgress(account);
   renderActions(account);
 }
 
@@ -153,20 +184,20 @@ function renderActions(account) {
     card.className = "action-card";
 
     const options = actionStatuses
-      .map((status) => `<option value="${status}" ${status === action.status ? "selected" : ""}>${status}</option>`)
+      .map((status) => `<option value="${status}" ${status === action.status ? "selected" : ""}>${actionLabel(status)}</option>`)
       .join("");
 
     card.innerHTML = `
       <div class="action-card-header">
         <div>
           <h4>${action.title}</h4>
-          <p class="card-meta">Owner: ${action.owner || "Unassigned"} · Timing: ${action.due || "Not set"}</p>
+          <p class="card-meta">Owner: ${action.owner || "Unassigned"} | Timing: ${action.due || "Not set"}</p>
         </div>
-        <span class="action-pill ${actionClass(action.status)}">${action.status}</span>
+        <span class="action-pill ${actionClass(action.status)}">${actionLabel(action.status)}</span>
       </div>
       <div class="action-controls">
         <label>
-          <span>Status</span>
+          <span>Progress</span>
           <select data-action-field="status" data-action-id="${action.id}">${options}</select>
         </label>
         <label>
@@ -175,11 +206,11 @@ function renderActions(account) {
         </label>
         <label>
           <span>Timing</span>
-          <input data-action-field="due" data-action-id="${action.id}" type="text" value="${action.due}" placeholder="Due / timing">
+          <input data-action-field="due" data-action-id="${action.id}" type="text" value="${action.due}" placeholder="Timing">
         </label>
       </div>
       <label class="action-note-label">
-        <span>Execution note</span>
+        <span>Note / blocker</span>
         <textarea data-action-field="note" data-action-id="${action.id}" rows="3">${action.note}</textarea>
       </label>
     `;
@@ -199,17 +230,18 @@ function renderDetail() {
   const account = selectedAccount();
   detailName.textContent = account.name;
   detailSegment.textContent = account.segment;
-  detailState.textContent = account.state;
-  detailState.className = `state-pill ${stateClass(account.state)}`;
-  renderList(knownContext, account.knownContext);
-  renderList(missingContext, account.missingContext);
-  renderSignals(account.signals);
-  decision.textContent = account.decision;
+  detailState.textContent = account.planStatus;
+  detailState.className = `state-pill ${planClass(account.planStatus)}`;
+  renderSelectedProgress(account);
+  renderList(knownContext, account.accountSnapshot);
+  renderList(missingContext, account.gapsBlockers);
+  renderSignals(account.buyingSignals);
+  decision.textContent = account.recommendedNextStep;
   owner.textContent = account.owner;
   renderActions(account);
   reviewStatus.value = account.reviewStatus;
-  outcome.value = account.outcome;
-  feedback.value = account.feedback;
+  outcome.value = account.result;
+  feedback.value = account.reviewNotes;
 }
 
 function updateSelectedAccount(field, value) {
@@ -217,6 +249,7 @@ function updateSelectedAccount(field, value) {
   account[field] = value;
   renderSummary();
   renderCards();
+  renderSelectedProgress(account);
 }
 
 function render() {
@@ -230,11 +263,11 @@ reviewStatus.addEventListener("change", (event) => {
 });
 
 outcome.addEventListener("input", (event) => {
-  updateSelectedAccount("outcome", event.target.value);
+  updateSelectedAccount("result", event.target.value);
 });
 
 feedback.addEventListener("input", (event) => {
-  updateSelectedAccount("feedback", event.target.value);
+  updateSelectedAccount("reviewNotes", event.target.value);
 });
 
 actionForm.addEventListener("submit", (event) => {
