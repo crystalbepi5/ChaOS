@@ -24,7 +24,9 @@ examples/proof-gates/account-plan-tracker/static-prototype/index.html
 
 Current prototype scope:
 
-- Static account review.
+- Guided account-plan workflow.
+- Prominent next-move panel.
+- Plan health, update-needed checklist, and actionable blocker cards.
 - Local action tracking loop.
 - In-memory review, action, result, and review-note edits.
 - Account-planning product language in the visible UI.
@@ -52,12 +54,25 @@ Initial observations:
 - State labels may need domain-native wording for BDR users.
 - Action item may be a simpler domain term than a full ChaOS entity in the static prototype.
 - Visible Entity/Signal/State/Decision/Outcome/Feedback language helped prove the model but created product-language friction.
+- The product-language pass improved labels, but the app still felt like a review screen until the workflow became decision-first.
 
 ## Product Language Adjustment
 
-The prototype now hides framework vocabulary from the visible UI and uses account-planning labels such as Account Snapshot, Why This Account, Plan Status, Buying Signals, Gaps / Blockers, Recommended Next Step, Action Plan, Results / Learning, and Review Notes.
+The prototype now hides framework vocabulary from the visible UI and uses account-planning labels such as Account Snapshot, Why This Account, Plan Health, Buying Signals, Update Needed, Active Blockers, Do This Next, Action Plan, Results / Learning, and Review Notes.
 
 This preserves ChaOS as the internal organizing model while reducing user-facing abstraction tax.
+
+## Guided Workflow Adjustment
+
+The UI now prioritizes the user's next decision or action before showing supporting evidence.
+
+The guided workflow is:
+
+```text
+Open account -> See plan health -> Do this next -> Update plan / review blocker / track action -> Consult supporting context
+```
+
+This shifts the prototype from displaying account data to guiding plan management.
 
 ## Concepts That Do Not Map Cleanly Yet
 
@@ -65,8 +80,9 @@ This preserves ChaOS as the internal organizing model while reducing user-facing
 - Owner: could be an entity, assignment field, or workflow responsibility.
 - Account plan: could be an entity, artifact, or view over account state.
 - Priority: could be state, decision, or UI ordering.
-- Persona gap: could be signal, state, or missing input.
+- Persona gap: could be signal, state, missing input, or blocker.
 - Action item: could be an entity, workflow step, or execution record.
+- Plan health: could be state, review status, or product-specific summary.
 
 ## Estimated Translation Cost
 
@@ -74,7 +90,7 @@ Current estimate: `medium_unknown`
 
 Reason:
 
-The ChaOS model gives useful structure, but several account-planning concepts need careful mapping before implementation. The proof should measure whether this mapping saves time later. The first visible UI pass showed that framework vocabulary must not automatically become product vocabulary.
+The ChaOS model gives useful structure, but several account-planning concepts need careful mapping before implementation. The proof should measure whether this mapping saves time later. The first visible UI pass showed that framework vocabulary must not automatically become product vocabulary. The guided workflow pass showed that product screens must prioritize the user's next decision before supporting evidence.
 
 ## Estimated Reuse Benefit
 
@@ -102,6 +118,7 @@ ChaOS appears useful enough to create a clearer Account Plan Tracker starter pac
 | Production integration model | Bypass. | `project_specific_exception` | Live integrations would hide whether the planning artifact is useful. |
 | Persistence model | Bypass. | `project_specific_exception` | In-memory edits are enough to test whether the action loop is understandable. |
 | Framework vocabulary in UI | Hide from domain user interface. | `candidate_upstream_improvement` | Framework vocabulary should not leak into domain user interfaces unless the user is explicitly operating the framework. |
+| Supporting evidence in UI | Place after the user's next decision/action. | `candidate_upstream_improvement` | Product UIs should prioritize the user's next decision/action before showing supporting evidence. |
 
 ## Proof Review Questions
 
@@ -114,6 +131,7 @@ At the decision deadline, update this log with answers to:
 - Did the static prototype make the Account Plan Tracker easier to evaluate?
 - Did the action tracking loop make execution clearer without implying automation?
 - Did product-language labels reduce user-facing abstraction tax?
+- Did the guided workflow make the next move clear within 10 seconds?
 - Did any pattern deserve `candidate_upstream_improvement`?
 - Did any pattern reveal `breaking_abstraction`?
 - Did any pattern become a `rejected_pattern`?
@@ -126,4 +144,5 @@ The proof should be considered at risk if:
 - The MVP cannot be explained in account-planning language.
 - ChaOS terms replace domain clarity instead of improving it.
 - The action loop makes the prototype feel like hidden automation instead of human-owned tracking.
+- The guided workflow still leaves the user unsure what to do next.
 - The proof produces framework refinement but no implementation-ready next step.
